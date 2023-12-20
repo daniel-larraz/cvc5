@@ -23,7 +23,7 @@ runs:
         # Create ZIP file
         cd ${{ inputs.build-dir }}
         mv install ${{ inputs.package-name }}
-        unzip -r ${{ inputs.package-name }} ${{ inputs.package-name }}
+        zip -r ${{ inputs.package-name }} ${{ inputs.package-name }}
         echo "::endgroup::"
 
     - name: Upload package

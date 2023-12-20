@@ -161,7 +161,8 @@ jobs:
         package-name: ${{ matrix.package-name }}-static
 
     - name: Add shared package to latest and release
-      if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      #if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.package-name
       uses: ./.github/actions/store-package
       with:
         package: ${{ matrix.package-name }}-shared.zip
@@ -170,7 +171,8 @@ jobs:
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
 
     - name: Add static package to latest and release
-      if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      #if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.package-name
       uses: ./.github/actions/store-package
       with:
         package: ${{ matrix.package-name }}-static.zip

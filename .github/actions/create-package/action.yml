@@ -1,0 +1,33 @@
+name: Create package
+description: Create a package with build artifacts
+inputs:
+  build-dir:
+    description: path to the build directory
+  package-name:
+    description: target name of the package
+runs:
+  using: composite
+  steps:
+    - name: Create ZIP file
+      shell: bash
+      run: |
+        echo "::group::Create ZIP file"
+        # Run 'make install' on build directory
+        pushd ${{ inputs.build-dir }}
+        make install
+        popd
+
+        # Copy COPYING file to install directory
+        cp COPYING ${{ inputs.build-dir }}/install/
+
+        # Create ZIP file
+        cd ${{ inputs.build-dir }}
+        mv install ${{ inputs.package-name }}
+        unzip -r ${{ inputs.package-name }} ${{ inputs.package-name }}
+        echo "::endgroup::"
+
+    - name: Upload package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.package-name }}
+        path: ${{ inputs.build-dir }}/${{ inputs.package-name }}.zip

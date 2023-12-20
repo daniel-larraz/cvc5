@@ -141,34 +141,22 @@ jobs:
       with:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
 
-    - name: Create shared package
+    - name: Create and add shared package to latest and release
       if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: ./.github/actions/create-package
+      uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
         package-name: ${{ matrix.package-name }}-shared
-
-    - name: Create static package
-      if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: ./.github/actions/create-package
-      with:
-        build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
-        package-name: ${{ matrix.package-name }}-static
-
-    - name: Add shared package to latest and release
-      if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: ./.github/actions/store-package
-      with:
-        package: ${{ matrix.package-name }}-shared.zip
         # when using GITHUB_TOKEN, no further workflows are triggered
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
 
-    - name: Add static package to latest and release
+    - name: Create and add static package to latest and release
       if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: ./.github/actions/store-package
+      uses: ./.github/actions/add-package
       with:
-        package: ${{ matrix.package-name }}-static.zip
+        build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
+        package-name: ${{ matrix.package-name }}-static
         # when using GITHUB_TOKEN, no further workflows are triggered
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}

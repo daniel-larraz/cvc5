@@ -21,13 +21,18 @@ runs:
         cp COPYING ${{ inputs.build-dir }}/install/
 
         # Create ZIP file
-        cd ${{ inputs.build-dir }}
+        pushd ${{ inputs.build-dir }}
         mv install ${{ inputs.package-name }}
         zip -r ${{ inputs.package-name }} ${{ inputs.package-name }}
+        popd
+
+        # Move package to root directory
+        mv ${{ inputs.build-dir }}/${{ inputs.package-name }}.zip .
         echo "::endgroup::"
 
-    - name: Upload package
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ inputs.package-name }}
-        path: ${{ inputs.build-dir }}/${{ inputs.package-name }}.zip
+    # For testing purposes:
+    #- name: Upload package
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: ${{ inputs.package-name }}
+    #    path: ${{ inputs.build-dir }}/${{ inputs.package-name }}.zip

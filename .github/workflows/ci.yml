@@ -160,15 +160,33 @@ jobs:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
         package-name: ${{ matrix.package-name }}-static
 
-    - name: Add binary to latest and release
-      if: matrix.binary-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: ./.github/actions/store-binary
+    - name: Add shared package to latest and release
+      if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      uses: ./.github/actions/store-package
       with:
-        binary: ${{ steps.configure-and-build.outputs.static-build-dir }}/bin/cvc5${{ matrix.binary-ext }}
-        binary-name: ${{ matrix.binary-name }}
+        package: ${{ matrix.package-name }}-shared.zip
         # when using GITHUB_TOKEN, no further workflows are triggered
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+
+    - name: Add static package to latest and release
+      if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      uses: ./.github/actions/store-package
+      with:
+        package: ${{ matrix.package-name }}-static.zip
+        # when using GITHUB_TOKEN, no further workflows are triggered
+        github-token-latest: ${{ secrets.GITHUB_TOKEN }}
+        github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+
+    # - name: Add binary to latest and release
+    #   if: matrix.binary-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+    #   uses: ./.github/actions/store-binary
+    #   with:
+    #     binary: ${{ steps.configure-and-build.outputs.static-build-dir }}/bin/cvc5${{ matrix.binary-ext }}
+    #     binary-name: ${{ matrix.binary-name }}
+    #     # when using GITHUB_TOKEN, no further workflows are triggered
+    #     github-token-latest: ${{ secrets.GITHUB_TOKEN }}
+    #     github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
 
   update-pr:
     runs-on: ubuntu-latest

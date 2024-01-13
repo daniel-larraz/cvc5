@@ -1,8 +1,4 @@
-on:
-  release:
-    types: [published]
-  schedule:
-    - cron: '0 1 * * *'
+on: [push]
 
 name: PyPi packaging
 
@@ -10,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ macos-latest ]
 
     runs-on: ${{ matrix.os }}
     if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')

@@ -36,29 +36,29 @@ runs:
 
         ls *.whl
       
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.7'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.7'
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.8'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.8'
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.9'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.9'
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.10'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.10'
 
     - name: Build wheels for macOS
       if: runner.os == 'macOS'
@@ -66,55 +66,55 @@ runs:
       with:
         python-version: '3.11'
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: 'pypy-3.7'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: 'pypy-3.7'
         
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: 'pypy-3.8'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: 'pypy-3.8'
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: 'pypy-3.9'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: 'pypy-3.9'
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: 'pypy-3.10'
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: 'pypy-3.10'
 
-    - name: Upload wheels to pypi.org
-      if: inputs.upload-to-pypi == 'true'
-      shell: bash
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ inputs.pypi-token }}
-      run: |
-        echo "::group::Upload to pypi.org"
-        for wheel in `ls *.whl`
-        do
-          twine upload $wheel
-        done
-        echo "::endgroup::"
+    # - name: Upload wheels to pypi.org
+    #   if: inputs.upload-to-pypi == 'true'
+    #   shell: bash
+    #   env:
+    #     TWINE_USERNAME: __token__
+    #     TWINE_PASSWORD: ${{ inputs.pypi-token }}
+    #   run: |
+    #     echo "::group::Upload to pypi.org"
+    #     for wheel in `ls *.whl`
+    #     do
+    #       twine upload $wheel
+    #     done
+    #     echo "::endgroup::"
 
-    - name: Upload wheels to test.pypi.org
-      if: inputs.upload-to-test-pypi == 'true'
-      shell: bash
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ inputs.test-pypi-token }}
-      run: |
-        echo "::group::Upload to test.pypi.org"
-        for wheel in `ls *.whl`
-        do
-          twine upload --repository testpypi $wheel
-        done
-        echo "::endgroup::"
+    # - name: Upload wheels to test.pypi.org
+    #   if: inputs.upload-to-test-pypi == 'true'
+    #   shell: bash
+    #   env:
+    #     TWINE_USERNAME: __token__
+    #     TWINE_PASSWORD: ${{ inputs.test-pypi-token }}
+    #   run: |
+    #     echo "::group::Upload to test.pypi.org"
+    #     for wheel in `ls *.whl`
+    #     do
+    #       twine upload --repository testpypi $wheel
+    #     done
+    #     echo "::endgroup::"
 

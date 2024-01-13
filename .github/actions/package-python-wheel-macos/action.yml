@@ -26,4 +26,5 @@ runs:
     - name: Upload wheel
       uses: actions/upload-artifact@v3
       with:
-        path: *.whl
+        name: wheel-macos-cp311
+        path: cvc5-1.1.1.dev19-cp311-cp311-macosx_10_13_universal2.whl

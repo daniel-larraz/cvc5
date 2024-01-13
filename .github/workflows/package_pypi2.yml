@@ -1,6 +1,6 @@
 on: [push]
 
-name: PyPi packaging
+name: PyPi packaging 2
 
 jobs:
   build:

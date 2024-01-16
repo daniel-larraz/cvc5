@@ -3,6 +3,8 @@ description: Package cvc5 into a python wheel on macOS for one python version
 inputs:
   python-version:
     default: ""
+  config:
+    default: ""
   platform:
     default: ""
 runs:
@@ -18,7 +20,13 @@ runs:
       if: runner.os == 'macOS'
       run: |
         echo "::group::Build macOS wheel for ${{ inputs.python-version }}"
-        ./contrib/packaging_python/mk_clean_wheel.sh python "production --auto-download" ${{ inputs.platform }}
+        ./contrib/packaging_python/mk_clean_wheel.sh python "${{ inputs.config }}" ${{ inputs.platform }}
 
         ls *.whl
         echo "::endgroup::"
+
+    - name: Upload wheel
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.platform }}
+        path: ./*.whl

@@ -110,6 +110,7 @@ int runCvc5(int argc, char* argv[], std::unique_ptr<cvc5::Solver>& solver)
   // If we're reading from stdin, use interactive mode if we are a TTY.
   if (!solver->getOptionInfo("interactive").setByUser)
   {
+    AlwaysAssert(!inputFromStdin || isatty(fileno(stdin)));
     pExecutor->setOptionInternal(
         "interactive",
         (inputFromStdin && isatty(fileno(stdin))) ? "true"  : "false");

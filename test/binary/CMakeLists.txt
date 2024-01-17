@@ -44,6 +44,13 @@ if (USE_EDITLINE)
       "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell_parser_inc.py"
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
-    set_tests_properties(interactive_shell_parser_inc PROPERTIES LABELS "binary")
+    set_tests_properties(stdin_non_interactive PROPERTIES LABELS "binary")
+    add_test(
+      NAME stdin_non_interactive
+      COMMAND
+      "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/stdin_non_interactive.py"
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    )
+    set_tests_properties(stdin_non_interactive PROPERTIES LABELS "binary")
   endif()
 endif()

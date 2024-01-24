@@ -44,7 +44,7 @@ jobs:
 
           - name: win64:production
             os: ubuntu-latest
-            config: production --auto-download --java-bindings --win64
+            config: production --auto-download --java-bindings --win64 -DJAVA_HOME=/usr/lib/jvm/temurin-11-jdk-amd64/
             cache-key: productionwin64
             strip-bin: x86_64-w64-mingw32-strip
             windows-build: true

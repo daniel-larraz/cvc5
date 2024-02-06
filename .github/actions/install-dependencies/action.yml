@@ -99,7 +99,7 @@ runs:
         echo "::endgroup::"
 
     - name: Install Python libraries
-      shell: |
+      run: |
         echo "::group::Install Python libraries"
         python3 -m pip install --user pexpect setuptools tomli pyparsing
         echo "::endgroup::"

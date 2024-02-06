@@ -68,21 +68,10 @@ runs:
         msystem: MINGW64
         path-type: inherit
         install: |
-          autoconf
-          automake
-          curl
-          dos2unix
-          git
-          gperf
-          lzip
-          m4
           make
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
-          mingw-w64-x86_64-ninja
-          patch
-          tar
-          unzip
+          mingw-w64-x86_64-gmp
 
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software

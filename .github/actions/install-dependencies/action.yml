@@ -60,7 +60,7 @@ runs:
         sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
         echo "::endgroup::"
 
-    - name: Install software for Windows
+    - name: Install Windows software
       if: runner.os == 'Windows' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
@@ -73,6 +73,23 @@ runs:
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
+          mingw-w64-x86_64-sed
+
+    - name: Set up Windows environment variables
+      if: runner.os == 'Windows' && inputs.windows-build == 'true'
+      shell: ${{ inputs.shell }}
+      run: |
+        echo "::group::Set up Windows environment variables"
+        # Make ImageVersion accessible as env.image_version. Environment
+        # variables of the runner are not automatically imported:
+        #
+        # https://github.com/actions/runner/blob/master/docs/adrs/0278-env-context.md#dont-populate-the-env-context-with-environment-variables-from-runner-machine
+        echo "SED=sed" >> $GITHUB_ENV
+        echo "CCACHE_CONFIGPATH=/home/runner/.ccache/ccache.conf" >> $GITHUB_ENV
+        echo "image_version=$ImageVersion" >> $GITHUB_ENV
+        echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
+        echo "/mingw64/lib/ccache" >> $GITHUB_PATH
+        echo "::endgroup::"
 
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software

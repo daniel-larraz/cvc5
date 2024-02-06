@@ -46,7 +46,7 @@ jobs:
             os: ubuntu-latest
             config: production --auto-download --win64
             cache-key: productionwin64
-            strip-bin: x86_64-w64-mingw32-strip
+            strip-bin: strip
             windows-build: true
             package-name: cvc5-Win64
 
@@ -104,10 +104,10 @@ jobs:
         shell: ${{ matrix.shell }}
 
     - name: Setup caches
-      if: runner.os != 'Windows'
       uses: ./.github/actions/setup-cache
       with:
         cache-key: ${{ matrix.cache-key }}
+        shell: ${{ matrix.shell }}
 
     - name: Configure and build
       id: configure-and-build
@@ -121,7 +121,6 @@ jobs:
         shell: ${{ matrix.shell }}
 
     - name: ccache Statistics
-      if: runner.os != 'Windows'
       run: ccache -s
 
     - name: Run tests
@@ -135,7 +134,7 @@ jobs:
         regressions-exclude: ${{ matrix.exclude_regress }}
   
     - name: Run tests
-      if: matrix.run_regression_args && runner.os != 'Windows'
+      if: matrix.run_regression_args
       uses: ./.github/actions/run-tests
       with:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}

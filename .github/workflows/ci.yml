@@ -13,6 +13,7 @@ jobs:
         include:
           - name: ubuntu:production
             os: ubuntu-20.04
+            shell: bash
             config: production --auto-download --all-bindings --editline --docs
             cache-key: production
             strip-bin: strip
@@ -25,6 +26,7 @@ jobs:
 
           - name: macos:production
             os: macos-11
+            shell: bash
             config: production --auto-download --all-bindings --editline
             cache-key: production
             strip-bin: strip
@@ -36,6 +38,7 @@ jobs:
  
           - name: macos:production-arm64
             os: macos-11
+            shell: bash
             config: production --auto-download --all-bindings --editline --arm64
             cache-key: production-arm64
             strip-bin: strip
@@ -44,6 +47,7 @@ jobs:
 
           - name: win64:production
             os: ubuntu-latest
+            shell: bash
             config: production --auto-download --win64
             cache-key: productionwin64
             strip-bin: x86_64-w64-mingw32-strip
@@ -52,14 +56,15 @@ jobs:
 
           - name: win64-native:production
             os: windows-2019
+            shell: msys2
             config: production --auto-download --win64-native
             cache-key: production-win64-native
             strip-bin: x86_64-w64-mingw32-strip
             windows-build: true
-            shell: "msys2 {0}"
 
           - name: ubuntu:production-clang
             os: ubuntu-latest
+            shell: bash
             env: CC=clang CXX=clang++
             config: production --auto-download --no-poly
             cache-key: productionclang
@@ -69,6 +74,7 @@ jobs:
 
           - name: ubuntu:production-dbg
             os: ubuntu-latest
+            shell: bash
             config: production --auto-download --assertions --tracing --unit-testing --all-bindings --editline --cocoa
             cache-key: dbg
             exclude_regress: 3-4
@@ -77,11 +83,15 @@ jobs:
 
           - name: ubuntu:production-dbg-clang
             os: ubuntu-latest
+            shell: bash
             env: CC=clang CXX=clang++
             config: production --auto-download --assertions --tracing --cln --gpl
             cache-key: dbgclang
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
+    defaults:
+      run:
+        shell: '${{ matrix.os.shell }} {0}'
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}

@@ -13,8 +13,6 @@ inputs:
     type: boolean
   strip-bin:
     default: ""
-  shell:
-    default: bash
 outputs:
   shared-build-dir:
     description: build directory of the shared build
@@ -30,7 +28,6 @@ runs:
     #   # Boolean inputs are actually strings:
     #   # https://github.com/actions/runner/issues/1483
     #   if: inputs.build-shared == '' || inputs.build-shared == 'true'
-    #   shell: ${{ inputs.shell }}
     #   run: |
     #     echo "::group::Shared build"
     #     ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
@@ -50,7 +47,6 @@ runs:
       # Boolean inputs are actually strings:
       # https://github.com/actions/runner/issues/1483
       if: inputs.build-static == '' || inputs.build-static == 'true'
-      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Static build"
         ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
@@ -69,7 +65,6 @@ runs:
         echo "::endgroup::"
         
     # - name: Reset ccache base_dir
-    #   shell: ${{ inputs.shell }}
     #   run: |
     #     echo "::group::Reset ccache base_dir"
     #     $SED -i.orig -n -e '/^base_dir = /!p' -e "\$abase_dir =" $CCACHE_CONFIGPATH

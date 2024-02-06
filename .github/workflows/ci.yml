@@ -50,6 +50,13 @@ jobs:
             windows-build: true
             package-name: cvc5-Win64
 
+          - name: win64-native:production
+            os: windows-2019
+            config: production --auto-download --win64-native
+            cache-key: production-win64-native
+            strip-bin: x86_64-w64-mingw32-strip
+            windows-build: true
+
           - name: ubuntu:production-clang
             os: ubuntu-latest
             env: CC=clang CXX=clang++
@@ -95,6 +102,7 @@ jobs:
         windows-build: ${{ matrix.windows-build }}
 
     - name: Setup caches
+      if: runner.os != 'Windows'
       uses: ./.github/actions/setup-cache
       with:
         cache-key: ${{ matrix.cache-key }}
@@ -110,6 +118,7 @@ jobs:
         strip-bin: ${{ matrix.strip-bin }}
 
     - name: ccache Statistics
+      if: runner.os != 'Windows'
       run: ccache -s
 
     - name: Run tests
@@ -123,7 +132,7 @@ jobs:
         regressions-exclude: ${{ matrix.exclude_regress }}
   
     - name: Run tests
-      if: matrix.run_regression_args
+      if: matrix.run_regression_args && runner.os != 'Windows'
       uses: ./.github/actions/run-tests
       with:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}

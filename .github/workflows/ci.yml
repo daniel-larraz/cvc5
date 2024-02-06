@@ -89,12 +89,12 @@ jobs:
             cache-key: dbgclang
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
-    defaults:
-      run:
-        shell: '${{ matrix.os.shell }} {0}'
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: '${{ matrix.shell }} {0}'
 
     # cancel already running jobs for the same branch/pr/tag
     concurrency:

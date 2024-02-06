@@ -68,6 +68,9 @@ runs:
         msystem: MINGW64
         path-type: inherit
         install: |
+          autoconf
+          automake
+          m4
           make
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc

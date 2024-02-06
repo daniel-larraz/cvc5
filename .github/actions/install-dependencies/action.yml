@@ -10,12 +10,14 @@ inputs:
   windows-build:
     default: false
     type: boolean
+  shell:
+    default: bash
 runs:
   using: composite
   steps:
     - name: Install Linux software
       if: runner.os == 'Linux'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install Linux software"
         sudo apt-get update
@@ -45,7 +47,7 @@ runs:
       # Boolean inputs are actually strings:
       # https://github.com/actions/runner/issues/1483
       if: runner.os == 'Linux' && inputs.windows-build == 'true'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install software for cross-compiling for Windows"
         sudo apt-get update
@@ -73,7 +75,7 @@ runs:
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software
       if: runner.os == 'macOS'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install macOS software"
         brew config
@@ -99,6 +101,7 @@ runs:
         echo "::endgroup::"
 
     - name: Install Python libraries
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install Python libraries"
         python3 -m pip install --user pexpect setuptools tomli pyparsing
@@ -106,7 +109,7 @@ runs:
 
     - name: Install software for Python bindings
       if: inputs.with-python-bindings == 'true'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install software for Python bindings"
         python3 -m pip install -q --upgrade pip
@@ -119,7 +122,7 @@ runs:
 
     - name: Install software for Python packaging
       if: inputs.with-python-packaging == 'true'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install software for Python packaging"
         python3 -m pip install -q --upgrade pip
@@ -129,7 +132,7 @@ runs:
     
     - name: Install software for documentation
       if: inputs.with-documentation == 'true'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install software for documentation"
         sudo apt-get install -y doxygen python3-docutils python3-jinja2

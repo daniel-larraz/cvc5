@@ -71,6 +71,9 @@ runs:
           make
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gmp
+          gmp-devel
+          gmp
 
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software

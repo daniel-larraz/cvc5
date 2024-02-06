@@ -73,7 +73,6 @@ runs:
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
-          mingw-w64-x86_64-sed
 
     - name: Set up Windows environment variables
       if: runner.os == 'Windows' && inputs.windows-build == 'true'
@@ -84,11 +83,9 @@ runs:
         # variables of the runner are not automatically imported:
         #
         # https://github.com/actions/runner/blob/master/docs/adrs/0278-env-context.md#dont-populate-the-env-context-with-environment-variables-from-runner-machine
-        echo "SED=sed" >> $GITHUB_ENV
-        echo "CCACHE_CONFIGPATH=/home/runner/.ccache/ccache.conf" >> $GITHUB_ENV
         echo "image_version=$ImageVersion" >> $GITHUB_ENV
         echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
-        echo "/mingw64/lib/ccache" >> $GITHUB_PATH
+        echo "${MSYSTEM_PREFIX}/lib/ccache" >> $GITHUB_PATH
         echo "::endgroup::"
 
     # Note: macOS comes with a libedit; it does not need to brew-installed

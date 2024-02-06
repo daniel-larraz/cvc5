@@ -25,25 +25,25 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Shared build
-      id: shared-build
-      # Boolean inputs are actually strings:
-      # https://github.com/actions/runner/issues/1483
-      if: inputs.build-shared == '' || inputs.build-shared == 'true'
-      shell: ${{ inputs.shell }}
-      run: |
-        echo "::group::Shared build"
-        ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
-          --prefix=$(pwd)/build-shared/install --werror --name=build-shared
+    # - name: Shared build
+    #   id: shared-build
+    #   # Boolean inputs are actually strings:
+    #   # https://github.com/actions/runner/issues/1483
+    #   if: inputs.build-shared == '' || inputs.build-shared == 'true'
+    #   shell: ${{ inputs.shell }}
+    #   run: |
+    #     echo "::group::Shared build"
+    #     ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
+    #       --prefix=$(pwd)/build-shared/install --werror --name=build-shared
         
-        # can not use `ccache --set-config=base_dir=` due to ccache bug, fixed with 3.7.10
-        cd build-shared/ && pwd=$(pwd)
-        #$SED -i.orig -n -e '/^base_dir = /!p' -e "\$abase_dir = $pwd" $CCACHE_CONFIGPATH
+    #     # can not use `ccache --set-config=base_dir=` due to ccache bug, fixed with 3.7.10
+    #     cd build-shared/ && pwd=$(pwd)
+    #     #$SED -i.orig -n -e '/^base_dir = /!p' -e "\$abase_dir = $pwd" $CCACHE_CONFIGPATH
         
-        make -j${{ env.num_proc }}
+    #     make -j${{ env.num_proc }}
 
-        echo "build-dir=$pwd" >> $GITHUB_OUTPUT 
-        echo "::endgroup::"
+    #     echo "build-dir=$pwd" >> $GITHUB_OUTPUT 
+    #     echo "::endgroup::"
 
     - name: Static build
       id: static-build

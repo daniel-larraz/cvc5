@@ -33,7 +33,7 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Shared build"
-        ./configure.sh ${{ inputs.configure-config }} \
+        ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
           --prefix=$(pwd)/build-shared/install --werror --name=build-shared
         
         # can not use `ccache --set-config=base_dir=` due to ccache bug, fixed with 3.7.10
@@ -53,7 +53,7 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Static build"
-        ./configure.sh ${{ inputs.configure-config }} \
+        ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
           --prefix=$(pwd)/build-static/install --werror --static --name=build-static --no-java-bindings
 
         cd build-static/ && pwd=$(pwd)

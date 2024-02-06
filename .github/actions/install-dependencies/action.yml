@@ -72,8 +72,6 @@ runs:
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
-          gmp-devel
-          gmp
 
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software
@@ -102,17 +100,6 @@ runs:
         echo "num_proc=$(( $(sysctl -n hw.logicalcpu) + 1 ))" >> $GITHUB_ENV
         echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
         echo "::endgroup::"
-
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: Install Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
 
     - name: Install Python libraries
       shell: ${{ inputs.shell }}

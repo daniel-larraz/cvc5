@@ -56,7 +56,7 @@ jobs:
             cache-key: production-win64-native
             strip-bin: x86_64-w64-mingw32-strip
             windows-build: true
-            shell: msys2 {0}
+            shell: "msys2 {0}"
 
           - name: ubuntu:production-clang
             os: ubuntu-latest

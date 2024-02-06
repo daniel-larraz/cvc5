@@ -103,6 +103,17 @@ runs:
         echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
         echo "::endgroup::"
 
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
     - name: Install Python libraries
       shell: ${{ inputs.shell }}
       run: |

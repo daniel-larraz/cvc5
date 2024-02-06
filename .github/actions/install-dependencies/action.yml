@@ -61,14 +61,14 @@ runs:
     - name: Install software for Windows
       if: runner.os == 'Windows' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          msystem: MINGW64
-          path-type: inherit
-          install: |
-            make
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-gcc
+      with:
+        update: true
+        msystem: MINGW64
+        path-type: inherit
+        install: |
+          make
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-gcc
 
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software

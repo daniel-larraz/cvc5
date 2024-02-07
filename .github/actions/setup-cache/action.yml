@@ -48,7 +48,6 @@ runs:
         ccache --set-config=compression=true
         ccache --set-config=compression_level=6
         ccache -M 500M
-        ccache -z
 
     - name: Setup contrib dependencies cache
       id: contrib-cache

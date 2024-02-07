@@ -85,17 +85,9 @@ runs:
         # https://github.com/actions/runner/blob/master/docs/adrs/0278-env-context.md#dont-populate-the-env-context-with-environment-variables-from-runner-machine
         echo "image_version=$ImageVersion" >> $GITHUB_ENV
         echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
-        echo "${MSYSTEM_PREFIX}/lib/ccache/bin" >> $GITHUB_PATH
+        echo "PATH=${MSYSTEM_PREFIX}/lib/ccache/bin:$PATH" >> ~/.bash_profile
+        echo "PATH=${MSYSTEM_PREFIX}/lib/ccache/bin:$PATH" >> ~/.profile
         echo "::endgroup::"
-
-    - name: Check PATH
-      if: runner.os == 'Windows' && inputs.windows-build == 'true'
-      shell: ${{ inputs.shell }}
-      run: |
-        echo ${MSYSTEM_PREFIX}/lib/ccache/bin
-        ls -la ${MSYSTEM_PREFIX}/lib/ccache/bin
-        echo $PATH
-        which cc++
 
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software

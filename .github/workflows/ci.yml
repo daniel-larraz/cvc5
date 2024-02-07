@@ -85,9 +85,6 @@ jobs:
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: '${{ matrix.shell }} {0}'
 
     # cancel already running jobs for the same branch/pr/tag
     concurrency:
@@ -122,9 +119,6 @@ jobs:
         build-static: ${{ matrix.build-static }}
         strip-bin: ${{ matrix.strip-bin }}
         shell: ${{ matrix.shell }}
-
-    - name: ccache Statistics
-      run: ccache -s
 
     - name: Run tests
       if: matrix.run_regression_args

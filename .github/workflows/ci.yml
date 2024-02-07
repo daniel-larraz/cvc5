@@ -85,6 +85,9 @@ jobs:
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: '${{ matrix.shell }} {0}'
 
     # cancel already running jobs for the same branch/pr/tag
     concurrency:
@@ -121,7 +124,6 @@ jobs:
         shell: ${{ matrix.shell }}
 
     - name: ccache Statistics
-      shell: ${{ matrix.shell }}
       run: ccache -s
 
     - name: Run tests

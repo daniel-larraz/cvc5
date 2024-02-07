@@ -36,6 +36,7 @@ runs:
   steps:
     - name: Compute short SHA
       id: sha
+      shell: bash
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Setup ccache cache

@@ -52,8 +52,8 @@ jobs:
 
           - name: win64-native:production
             os: windows-2019
-            config: production --auto-download --win64-native --ccache
-            cache-key: p
+            config: production --auto-download --win64-native
+            cache-key: production-win64-native
             strip-bin: strip
             windows-build: true
             shell: 'msys2 {0}'

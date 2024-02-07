@@ -87,7 +87,7 @@ runs:
         echo "image_version=$ImageVersion" >> $GITHUB_ENV
         echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
         #echo "PATH=${MSYSTEM_PREFIX}/lib/ccache/bin:\$PATH" >> ~/.bash_profile
-        echo "PATH=C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts:\$PATH" >> ~/.bash_profile
+        echo "PATH=C:/Users/runneradmin/AppData/Roaming/Python/Python37/Scripts:\$PATH" >> ~/.bash_profile
         echo "::endgroup::"
 
     # Note: macOS comes with a libedit; it does not need to brew-installed

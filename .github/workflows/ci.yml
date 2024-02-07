@@ -46,7 +46,7 @@ jobs:
             os: ubuntu-latest
             config: production --auto-download --win64
             cache-key: productionwin64
-            strip-bin: strip
+            strip-bin: x86_64-w64-mingw32-strip
             windows-build: true
             package-name: cvc5-Win64
 
@@ -54,7 +54,7 @@ jobs:
             os: windows-2019
             config: production --auto-download --win64-native
             cache-key: production-win64-native
-            strip-bin: x86_64-w64-mingw32-strip
+            strip-bin: strip
             windows-build: true
             shell: 'msys2 {0}'
 

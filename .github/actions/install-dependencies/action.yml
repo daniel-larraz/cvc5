@@ -68,6 +68,7 @@ runs:
         msystem: MINGW64
         path-type: inherit
         install: |
+          flex
           make
           mingw-w64-x86_64-ccache
           mingw-w64-x86_64-cmake

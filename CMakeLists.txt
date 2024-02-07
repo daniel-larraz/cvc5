@@ -235,7 +235,7 @@ if (WIN32)
 endif ()
 
 execute_process(COMMAND uname OUTPUT_VARIABLE uname)
-if (uname NOT MATCHES "^MSYS" AND uname NOT MATCHES "^MINGW")
+if (NOT (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW"))
   #-----------------------------------------------------------------------------#
   # Use ld.mold if available, otherwise use ld.gold if available
 

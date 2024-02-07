@@ -88,6 +88,15 @@ runs:
         echo "${MSYSTEM_PREFIX}/lib/ccache/bin" >> $GITHUB_PATH
         echo "::endgroup::"
 
+    - name: Check PATH
+      if: runner.os == 'Windows' && inputs.windows-build == 'true'
+      shell: ${{ inputs.shell }}
+      run: |
+        echo ${MSYSTEM_PREFIX}/lib/ccache/bin
+        ls -la ${MSYSTEM_PREFIX}/lib/ccache/bin
+        echo $PATH
+        which cc++
+
     # Note: macOS comes with a libedit; it does not need to brew-installed
     - name: Install macOS software
       if: runner.os == 'macOS'

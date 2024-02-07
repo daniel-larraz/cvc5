@@ -121,6 +121,7 @@ jobs:
         shell: ${{ matrix.shell }}
 
     - name: ccache Statistics
+      shell: ${{ matrix.shell }}
       run: ccache -s
 
     - name: Run tests

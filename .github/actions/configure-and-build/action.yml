@@ -33,6 +33,8 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Shared build"
+        echo $PATH
+        which cc++
         ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
           --prefix=$(pwd)/build-shared/install --werror --name=build-shared
         

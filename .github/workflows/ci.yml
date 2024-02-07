@@ -57,6 +57,7 @@ jobs:
             strip-bin: strip
             windows-build: true
             shell: 'msys2 {0}'
+            python-bindings: true
 
           - name: ubuntu:production-clang
             os: ubuntu-latest

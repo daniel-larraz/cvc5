@@ -74,6 +74,8 @@ runs:
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
+          mingw-w64-x86_64-python3
+          mingw-w64-x86_64-python3-pip
 
     - name: Set up Windows environment variables
       if: runner.os == 'Windows' && inputs.windows-build == 'true'

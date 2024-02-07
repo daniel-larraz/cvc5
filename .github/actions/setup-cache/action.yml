@@ -34,11 +34,15 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Compute short SHA
+      id: sha
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
     - name: Setup ccache cache
       uses: actions/cache@v4
       with:
         path: ccache-dir
-        key: ${{ inputs.cache-key }}-${{ runner.os }}-ccache-${{ github.sha }}
+        key: ${{ inputs.cache-key }}-${{ runner.os }}-ccache-${{ steps.sha.outputs.sha_short }}
         restore-keys: ${{ inputs.cache-key }}-${{ runner.os }}-ccache-
 
     - name: Configure ccache

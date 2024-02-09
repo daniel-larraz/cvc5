@@ -57,6 +57,9 @@ jobs:
             strip-bin: strip
             windows-build: true
             shell: 'msys2 {0}'
+            check-examples: true
+            exclude_regress: 3-4
+            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
           - name: ubuntu:production-clang
             os: ubuntu-latest
@@ -129,6 +132,7 @@ jobs:
         check-python-bindings: ${{ matrix.python-bindings }}
         regressions-args: ${{ matrix.run_regression_args }}
         regressions-exclude: ${{ matrix.exclude_regress }}
+        shell: ${{ matrix.shell }}
   
     - name: Run tests
       if: matrix.run_regression_args
@@ -140,6 +144,7 @@ jobs:
         check-python-bindings: false
         regressions-args: ${{ matrix.run_regression_args }}
         regressions-exclude: 1-4
+        shell: ${{ matrix.shell }}
 
     - name: Build documentation
       if: matrix.build-documentation

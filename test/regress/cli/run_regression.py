@@ -38,15 +38,15 @@ class Color:
 
 
 def print_info(msg):
-    print(Color.BLUE + "▶ " + msg + Color.ENDC)
+    print(Color.BLUE + msg + Color.ENDC)
 
 
 def print_ok(msg):
-    print(Color.GREEN + "✓ " + msg + Color.ENDC)
+    print(Color.GREEN + msg + Color.ENDC)
 
 
 def print_error(err):
-    print(Color.RED + "✖ " + err + Color.ENDC)
+    print(Color.RED + err + Color.ENDC)
 
 
 class Tester:

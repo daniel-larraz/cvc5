@@ -42,6 +42,14 @@ runs:
         key: ${{ inputs.cache-key }}-${{ runner.os }}-ccache-${{ github.sha }}
         restore-keys: ${{ inputs.cache-key }}-${{ runner.os }}-ccache-
 
+    - name: Setup sccache cache
+      if: runner.os == 'Windows'
+      uses: actions/cache@v4
+      with:
+        path: sccache-dir
+        key: ${{ inputs.cache-key }}-${{ runner.os }}-sccache-${{ github.sha }}
+        restore-keys: ${{ inputs.cache-key }}-${{ runner.os }}-sccache-
+
     - name: Configure ccache
       if: runner.os != 'Windows'
       shell: ${{ inputs.shell }}
@@ -51,6 +59,13 @@ runs:
         ccache --set-config=compression_level=6
         ccache -M 500M
         ccache -z
+
+    - name: Configure sccache
+      if: runner.os == 'Windows'
+      shell: ${{ inputs.shell }}
+      run: |
+        echo "SCCACHE_DIR=${{ github.workspace }}/sccache-dir" >> $GITHUB_ENV
+        echo "SCCACHE_CACHE_SIZE=\"500M\"" >> $GITHUB_ENV
 
     - name: Setup contrib dependencies cache
       id: contrib-cache

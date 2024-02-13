@@ -53,8 +53,8 @@ jobs:
             package-name: cvc5-macOS-arm64
 
           - name: win64:production
-            os: windows-2019
-            config: production --auto-download --win64-native
+            os: windows-2022
+            config: production --auto-download --win64-native --sccache
             cache-key: production-win64-native
             strip-bin: strip
             windows-build: true

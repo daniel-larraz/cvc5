@@ -32,6 +32,7 @@ runs:
           libfl-dev
         echo "SED=sed" >> $GITHUB_ENV
         echo "CCACHE_CONFIGPATH=/home/runner/.ccache/ccache.conf" >> $GITHUB_ENV
+        echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
         echo "/usr/lib/ccache" >> $GITHUB_PATH
         echo "::endgroup::"
 
@@ -61,15 +62,17 @@ runs:
         path-type: inherit
         install: |
           make
+          mingw-w64-x86_64-ccache
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
 
-    - name: Set up num_proc variable for Linux and Windows
-      if: runner.os == 'Linux' || runner.os == 'Windows'
+    - name: Set up environment variables for Windows
+      if: runner.os == 'Windows' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
-        echo "::group::Set up num_proc variable for Linux and Windows"
+        echo "::group::Set up environment variables for Windows"
+        echo "PATH=${MSYSTEM_PREFIX}/lib/ccache/bin:\$PATH" >> ~/.bash_profile
         echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
         echo "::endgroup::"
 

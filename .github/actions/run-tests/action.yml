@@ -18,6 +18,13 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Copy DLLs
+      if: runner.os == 'Windows'
+      shell: ${{ inputs.shell }}
+      run: |
+        cd ${{ inputs.build-dir }}
+        find . -iname "*.dll" -exec cp {} bin \;
+
     - name: Run CTest
       shell: ${{ inputs.shell }}
       run: |

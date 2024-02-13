@@ -123,28 +123,28 @@ jobs:
         strip-bin: ${{ matrix.strip-bin }}
         shell: ${{ matrix.shell }}
 
-    # - name: Run tests
-    #   if: matrix.run_regression_args
-    #   uses: ./.github/actions/run-tests
-    #   with:
-    #     build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
-    #     check-examples: ${{ matrix.check-examples }}
-    #     check-python-bindings: ${{ matrix.python-bindings }}
-    #     regressions-args: ${{ matrix.run_regression_args }}
-    #     regressions-exclude: ${{ matrix.exclude_regress }}
-    #     shell: ${{ matrix.shell }}
-  
     - name: Run tests
       if: matrix.run_regression_args
       uses: ./.github/actions/run-tests
       with:
-        build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
-        check-examples: false
-        check-install: false
-        check-python-bindings: false
+        build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
+        check-examples: ${{ matrix.check-examples }}
+        check-python-bindings: ${{ matrix.python-bindings }}
         regressions-args: ${{ matrix.run_regression_args }}
-        regressions-exclude: 1-4
+        regressions-exclude: ${{ matrix.exclude_regress }}
         shell: ${{ matrix.shell }}
+  
+    # - name: Run tests
+    #   if: matrix.run_regression_args
+    #   uses: ./.github/actions/run-tests
+    #   with:
+    #     build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
+    #     check-examples: false
+    #     check-install: false
+    #     check-python-bindings: false
+    #     regressions-args: ${{ matrix.run_regression_args }}
+    #     regressions-exclude: 1-4
+    #     shell: ${{ matrix.shell }}
 
     - name: Build documentation
       if: matrix.build-documentation

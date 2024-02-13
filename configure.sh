@@ -26,6 +26,7 @@ General options;
   --win64                  cross-compile for Windows 64 bit
   --win64-native           natively compile for Windows 64 bit
   --ninja                  use Ninja build system
+  --sccache                use sccache
   --docs                   build Api documentation
 
 
@@ -121,6 +122,7 @@ poly=ON
 cocoa=default
 muzzle=default
 ninja=default
+sccache=default
 profiling=default
 python_bindings=default
 java_bindings=default
@@ -231,6 +233,8 @@ do
     --arm64) arm64=ON;;
 
     --ninja) ninja=ON;;
+
+    --sccache) sccache=ON;;
 
     --docs) docs=ON;;
     --no-docs) docs=OFF;;
@@ -364,6 +368,7 @@ fi
 [ $arm64 != default ] \
   && cmake_opts="$cmake_opts -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-aarch64.cmake"
 [ $ninja != default ] && cmake_opts="$cmake_opts -G Ninja"
+[ $sccache != default ] && cmake_opts="$cmake_opts -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_C_COMPILER_LAUNCHER=sccache"
 [ $muzzle != default ] \
   && cmake_opts="$cmake_opts -DENABLE_MUZZLE=$muzzle"
 [ $build_shared != default ] \

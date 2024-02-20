@@ -101,8 +101,6 @@ configure_file(__init__.py.in cvc5/__init__.py COPYONLY)
 
 if (WIN32)
   set(PYTHON_EXT "pyd")
-elseif (APPLE)
-  set(PYTHON_EXT "dylib")
 else()
   set(PYTHON_EXT "so")
 endif()

@@ -95,15 +95,21 @@ copy_file_from_src(cvc5.pxd)
 copy_file_from_src(cvc5_python_base.pyx)
 copy_file_from_src(setup.py)
 
+if (WIN32)
+  set(PYTHON_EXT "pyd")
+  set(SETUP_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include;${CMAKE_BINARY_DIR}/include")
+  set(SETUP_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src;${CMAKE_BINARY_DIR}/src/parser")
+else()
+  set(PYTHON_EXT "so")
+  set(SETUP_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include:${CMAKE_BINARY_DIR}/include")
+  set(SETUP_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src:${CMAKE_BINARY_DIR}/src/parser")
+  set(SETUP_RPATH "rpath=${CMAKE_BINARY_DIR}/src:${CMAKE_BINARY_DIR}/src/parser")
+endif()
+
+
 configure_file(pyproject.toml.in pyproject.toml)
 configure_file(setup.cfg.in setup.cfg)
 configure_file(__init__.py.in cvc5/__init__.py COPYONLY)
-
-if (WIN32)
-  set(PYTHON_EXT "pyd")
-else()
-  set(PYTHON_EXT "so")
-endif()
 
 set(CVC5_PYTHON_BASE_LIB
   "${CMAKE_CURRENT_BINARY_DIR}/cvc5/cvc5_python_base.${PYTHON_EXT}")

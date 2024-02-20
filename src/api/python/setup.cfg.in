@@ -1,5 +1,5 @@
 [build_ext]
-include_dirs=${PROJECT_SOURCE_DIR}/include:${CMAKE_BINARY_DIR}/include
-library_dirs=${CMAKE_BINARY_DIR}/src:${CMAKE_BINARY_DIR}/src/parser
-rpath=${CMAKE_BINARY_DIR}/src:${CMAKE_BINARY_DIR}/src/parser
 inplace=1
+include_dirs=${SETUP_INCLUDE_DIRS}
+library_dirs=${SETUP_LIBRARY_DIRS}
+${SETUP_RPATH}

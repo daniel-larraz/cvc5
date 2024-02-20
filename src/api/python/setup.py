@@ -21,6 +21,9 @@ from Cython.Build import cythonize
 from setuptools import setup
 from setuptools.extension import Extension
 
+if sys.platform == 'darwin':
+   os.environ['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
+
 compiler_directives = {
     'language_level': 3,
     'binding': False,

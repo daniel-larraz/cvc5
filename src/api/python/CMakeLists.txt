@@ -119,6 +119,7 @@ add_custom_command(
     ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
   DEPENDS
     cvc5 cvc5parser
+    ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
     ${CMAKE_CURRENT_BINARY_DIR}/setup.py
     cvc5kinds cvc5types cvc5proofrules
     ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxi

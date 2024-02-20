@@ -118,10 +118,12 @@ add_custom_command(
   MAIN_DEPENDENCY
     ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
   DEPENDS
+    cvc5 cvc5parser
     ${CMAKE_CURRENT_BINARY_DIR}/setup.py
     cvc5kinds cvc5types cvc5proofrules
     ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxi
     ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxd
+  COMMENT "Generating cvc5_python_base.${PYTHON_EXT}"
 )
 
 # Copy the pythonic API to the right place. It does not come with its own

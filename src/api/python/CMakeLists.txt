@@ -15,8 +15,9 @@
 
 find_package(Python ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Development)
 
-# setuptools for building and installing the module
+# Python modules for building and installing
 check_python_module("setuptools")
+check_python_module("Cython")
 
 configure_file(genenums.py.in genenums.py)
 

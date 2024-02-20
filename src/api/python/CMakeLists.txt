@@ -119,6 +119,9 @@ add_custom_command(
   OUTPUT
     ${CVC5_PYTHON_BASE_LIB}
   COMMAND
+    # Force a new build if any dependency has changed
+    ${CMAKE_COMMAND} -E remove cvc5_python_base.cpp
+  COMMAND
     "${Python_EXECUTABLE}" setup.py build_ext
   MAIN_DEPENDENCY
     ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
@@ -198,14 +201,20 @@ execute_process(OUTPUT_VARIABLE IN_VIRTUALENV
 print('YES' if 'VIRTUAL_ENV' in os.environ else 'NO', end='')")
 
 set(INSTALL_CMD
-    "${Python_EXECUTABLE} -m pip install ${CMAKE_CURRENT_BINARY_DIR}")
+    "${Python_EXECUTABLE} setup.py install")
 # if we're in a virtualenv, we install it in the virtualenv lib location
 # otherwise install in prefix
+# option --single-version-externally-managed prevents it from being
+# an .egg distribution and --record records the list of installed files
 if ("${IN_VIRTUALENV}" STREQUAL "NO")
-  set(INSTALL_CMD "${INSTALL_CMD} --prefix ${CMAKE_INSTALL_PREFIX}")
+  set(INSTALL_CMD "${INSTALL_CMD}
+          --prefix ${CMAKE_INSTALL_PREFIX}
+          --single-version-externally-managed
+          --record cvc5-installed-files.txt")
 endif()
 
 message("Python bindings install command: ${INSTALL_CMD}")
 
-install(CODE "execute_process(COMMAND ${INSTALL_CMD})"
+install(CODE "execute_process(COMMAND ${INSTALL_CMD}
+              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})"
         FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)

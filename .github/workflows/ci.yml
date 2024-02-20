@@ -46,7 +46,7 @@ jobs:
 
           - name: macos:production-arm64-cross
             os: macos-11
-            config: production --auto-download --all-bindings --editline --arm64
+            config: production --auto-download --java-bindings --editline --arm64
             cache-key: production-arm64-cross
             strip-bin: strip
             python-bindings: false

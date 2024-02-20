@@ -49,7 +49,7 @@ jobs:
             config: production --auto-download --all-bindings --editline --arm64
             cache-key: production-arm64-cross
             strip-bin: strip
-            python-bindings: true
+            python-bindings: false
             package-name: cvc5-macOS-arm64
 
           - name: win64:production

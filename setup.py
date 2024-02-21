@@ -29,13 +29,17 @@ compiler_directives = {
     'binding': False,
 }
 
+extra_compile_args = ["-std=c++17", "-fno-var-tracking"]
+
 if sys.platform == 'win32':
    os.environ['PATH'] += r';C:\msys64\mingw64\bin'
+   # See https://stackoverflow.com/questions/64898146/how-to-fix-error-division-by-zero-is-not-a-constant-expression-tdm-gcc-and-pip
+   extra_compile_args += ["-DMS_WIN64"]
 
 ext_options = {
     "libraries" : ["cvc5", "cvc5parser"],
     "language" : "c++",
-    "extra_compile_args" : ["-std=c++17", "-fno-var-tracking"]
+    "extra_compile_args" : extra_compile_args
 }
 
 mod_name = "cvc5.cvc5_python_base"

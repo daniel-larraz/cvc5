@@ -31,6 +31,11 @@ jobs:
         msystem: mingw64
         path-type: inherit
 
+    - name: Store MinGW64 path
+      id: mingw64-path
+      shell: msys2 {0}
+      run: echo "bin=$(cygpath -m $(dirname $(which gcc)))" >> $GITHUB_OUTPUT
+
     - name: Build wheels
       uses: pypa/cibuildwheel@v2.16.5
       with:
@@ -42,7 +47,8 @@ jobs:
         CIBW_BEFORE_ALL_WINDOWS: msys2 -c ./contrib/cibw_before_all_windows.sh
         # Use delvewheel on windows
         CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
-        CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
+        CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
+          "delvewheel repair -w {dest_dir} {wheel} --add-path \"{project}\install\lib;${{ steps.mingw64-path.outputs.bin }}\""
         CIBW_ENVIRONMENT_LINUX: >
           CPLUS_INCLUDE_PATH="$(pwd)/install/include"
           LIBRARY_PATH="$(pwd)/install/lib64"

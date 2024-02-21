@@ -43,6 +43,7 @@ jobs:
             check-examples: true
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+            package-name: cvc5-macOS-arm64
 
           # - name: macos:production-arm64-cross
           #   os: macos-11

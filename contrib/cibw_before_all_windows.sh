@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-echo '[build]' > setup.cfg
-echo 'compiler = mingw32' >> setup.cfg
-echo '[build_ext]' >> setup.cfg
-echo 'include_dirs=$(pwd)/install/include' >> setup.cfg
-echo 'library_dirs=$(pwd)/install/lib' >> setup.cfg
+echo "[build]" > setup.cfg
+echo "compiler = mingw32" >> setup.cfg
+echo "[build_ext]" >> setup.cfg
+echo "include_dirs=$(cygpath -m $(pwd)/install/include)" >> setup.cfg
+echo "library_dirs=$(cygpath -m $(pwd)/install/lib)" >> setup.cfg
+cat setup.cfg
 
 pacman -S --noconfirm \
     make\

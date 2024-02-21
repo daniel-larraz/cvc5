@@ -32,6 +32,7 @@ jobs:
         path-type: inherit
 
     - name: Store MinGW64 path
+      if: runner.os == 'Windows'
       id: mingw64-path
       shell: msys2 {0}
       run: echo "bin=$(cygpath -m $(dirname $(which gcc)))" >> $GITHUB_OUTPUT

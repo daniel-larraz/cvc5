@@ -30,6 +30,11 @@ jobs:
       with:
         msystem: mingw64
         path-type: inherit
+        install: |
+          make
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gmp
 
     - name: Store MinGW64 path
       if: runner.os == 'Windows'
@@ -49,7 +54,7 @@ jobs:
         # Use delvewheel on windows
         CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
         CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
-          "delvewheel repair -w {dest_dir} {wheel} --add-path \"{project}\install\lib;${{ steps.mingw64-path.outputs.bin }}\""
+          delvewheel repair -w {dest_dir} {wheel} --add-path "${{ github.workspace }}\install\lib;${{ steps.mingw64-path.outputs.bin }}"
         CIBW_ENVIRONMENT_LINUX: >
           CPLUS_INCLUDE_PATH="$(pwd)/install/include"
           LIBRARY_PATH="$(pwd)/install/lib64"

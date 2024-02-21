@@ -2,6 +2,11 @@
 
 python3 -m pip install --user -r contrib/requirements_build.txt
 
-./configure.sh production --auto-download --python-bindings --only-python-ext-src --prefix=./install
+./configure.sh production --auto-download
 
-cd build/src/src/api/python/
+pushd build
+make -j$(( $(nproc) + 1 ))
+popd
+
+export CPLUS_INCLUDE_PATH=./include:./build/include
+export LIBRARY_PATH=./build/src:./build/src/parser

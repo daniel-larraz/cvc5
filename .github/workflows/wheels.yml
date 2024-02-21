@@ -8,8 +8,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # macos-13 is an intel runner, macos-14 is apple silicon
-        os: [ubuntu-latest, macos-13, macos-14]
+        include:
+          - name: manylinux-x86_64
+            os: ubuntu-latest
+          - name: macos-x86_64
+            os: macos-13
+            env: MACOSX_DEPLOYMENT_TARGET=10.13
+          - name: macos-arm64
+            os: macos-14
+            env: MACOSX_DEPLOYMENT_TARGET=11
 
     steps:
     - uses: actions/checkout@v4

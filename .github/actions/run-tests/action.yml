@@ -20,9 +20,8 @@ runs:
       shell: bash
       run: |
         make -j${{ env.num_proc }} build-tests
-        ARCH=$(uname -m)
         # Temporarily disable problematic test for macOS-arm64
-        if [[ "$ARCH" == "arm64" && "$RUNNER_OS" == "macOS" ]]; then
+        if [[ "$RUNNER_OS" == "macOS" ]]; then
           exclude="-E interactive_shell_define_fun_rec_multiline"
         else
           exclude=""

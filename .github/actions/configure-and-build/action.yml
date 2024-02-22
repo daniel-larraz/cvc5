@@ -43,28 +43,28 @@ runs:
         echo "build-dir=$pwd" >> $GITHUB_OUTPUT 
         echo "::endgroup::"
 
-    # - name: Static build
-    #   id: static-build
-    #   # Boolean inputs are actually strings:
-    #   # https://github.com/actions/runner/issues/1483
-    #   if: inputs.build-static == '' || inputs.build-static == 'true'
-    #   shell: bash
-    #   run: |
-    #     echo "::group::Static build"
-    #     ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
-    #       --prefix=$(pwd)/build-static/install --werror --static --name=build-static --no-java-bindings
+    - name: Static build
+      id: static-build
+      # Boolean inputs are actually strings:
+      # https://github.com/actions/runner/issues/1483
+      if: inputs.build-static == '' || inputs.build-static == 'true'
+      shell: bash
+      run: |
+        echo "::group::Static build"
+        ${{ inputs.configure-env }} ./configure.sh ${{ inputs.configure-config }} \
+          --prefix=$(pwd)/build-static/install --werror --static --name=build-static --no-java-bindings
 
-    #     cd build-static/ && pwd=$(pwd)
-    #     $SED -i.orig -n -e '/^base_dir = /!p' -e "\$abase_dir = $pwd" $CCACHE_CONFIGPATH
+        cd build-static/ && pwd=$(pwd)
+        $SED -i.orig -n -e '/^base_dir = /!p' -e "\$abase_dir = $pwd" $CCACHE_CONFIGPATH
 
-    #     make -j${{ env.num_proc }}
+        make -j${{ env.num_proc }}
 
-    #     if [[ "${{ inputs.strip-bin }}" != "" ]]; then
-    #       ${{ inputs.strip-bin }} bin/cvc5*
-    #     fi
+        if [[ "${{ inputs.strip-bin }}" != "" ]]; then
+          ${{ inputs.strip-bin }} bin/cvc5*
+        fi
 
-    #     echo "build-dir=$pwd" >> $GITHUB_OUTPUT
-    #     echo "::endgroup::"
+        echo "build-dir=$pwd" >> $GITHUB_OUTPUT
+        echo "::endgroup::"
         
     - name: Reset ccache base_dir
       shell: bash

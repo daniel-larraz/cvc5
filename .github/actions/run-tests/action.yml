@@ -20,13 +20,7 @@ runs:
       shell: bash
       run: |
         make -j${{ env.num_proc }} build-tests
-        # Temporarily disable problematic test for macOS-arm64
-        if [[ "$RUNNER_OS" == "macOS" ]]; then
-          exclude="-E interactive_shell_define_fun_rec_multiline"
-        else
-          exclude=""
-        fi
-        if ! ctest -j${{ env.num_proc }} --output-on-failure -LE regress[${{ inputs.regressions-exclude }}] ${exclude}
+        if ! ctest -j${{ env.num_proc }} --output-on-failure -LE regress[${{ inputs.regressions-exclude }}]
         then
           ctest --output-on-failure --rerun-failed
         fi

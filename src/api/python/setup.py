@@ -41,6 +41,7 @@ else:
     from Cython.Build import cythonize
 
     if sys.platform == 'darwin':
+        import platform
         macos_ver = "11.0" if platform.machine() == "arm64" else "10.13"
         os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", macos_ver)
 

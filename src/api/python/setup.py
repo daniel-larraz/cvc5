@@ -12,48 +12,72 @@
 # #############################################################################
 
 import os
-import sys
-import sysconfig
-
-from Cython.Distutils import build_ext
-from Cython.Build import cythonize
-
 from setuptools import setup
-from setuptools.extension import Extension
 
-if sys.platform == 'darwin':
-   os.environ['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
+ext_suffix = 'pyd' if os.name == 'nt' else 'so'
+ext_filename = 'cvc5_python_base.' + ext_suffix
 
-compiler_directives = {
-    'language_level': 3,
-    'binding': False,
-}
+packages=['cvc5', 'cvc5.pythonic']
+license_files=["COPYING", "licenses/*"]
 
-if sys.platform == 'win32':
-   os.environ['PATH'] += r';C:\msys64\mingw64\bin'
+# If we have already compiled the Python extension module,
+# include the module directly instead of recompiling it.
+if os.path.isfile(os.path.join('cvc5', ext_filename)):
+    setup(
+        packages=packages,
+        package_data={'': [ext_filename]},
+        # Let setuptools know the package include an extension module
+        # so that the generated wheel name includes
+        # the python version, the ABI tag, and the platform name.
+        has_ext_modules=lambda: True,
+        license_files=license_files
+    )
+else:
+    import sys
+    import sysconfig
+    from setuptools.extension import Extension
 
-ext_options = {
-    "libraries" : ["cvc5", "cvc5parser"],
-    "language" : "c++",
-    "extra_compile_args" : ["-std=c++17", "-fno-var-tracking"]
-}
+    from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
 
-mod_name = "cvc5.cvc5_python_base"
-mod_src_files = ["cvc5_python_base.pyx"]
+    if sys.platform == 'darwin':
+        macos_ver = "11.0" if platform.machine() == "arm64" else "10.13"
+        os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", macos_ver)
 
-ext_module = Extension(mod_name, mod_src_files, **ext_options)
-ext_module.cython_directives = {"embedsignature": True}
+    compiler_directives = {
+        'language_level': 3,
+        'binding': False,
+    }
 
-class ExtensionBuilder(build_ext):
-    def get_ext_filename(self, ext_name):
-        filename = super().get_ext_filename(ext_name)
-        suffix = sysconfig.get_config_var('EXT_SUFFIX')
-        ext = os.path.splitext(filename)[1]
-        return filename.replace(suffix, "") + ext
+    if sys.platform == 'win32':
+        os.environ['PATH'] += r';C:\msys64\mingw64\bin'
 
-setup(
-    cmdclass={'build_ext': ExtensionBuilder},
-    ext_modules=cythonize([ext_module], compiler_directives=compiler_directives),
-    packages=['cvc5', 'cvc5.pythonic'],
-    license_files=["COPYING", "licenses/*"]
-)
+    ext_options = {
+        "libraries" : ["cvc5", "cvc5parser"],
+        "language" : "c++",
+        "extra_compile_args" : ["-std=c++17", "-fno-var-tracking"]
+    }
+
+    mod_name = "cvc5.cvc5_python_base"
+    mod_src_files = ["cvc5_python_base.pyx"]
+
+    ext_module = Extension(mod_name, mod_src_files, **ext_options)
+    ext_module.cython_directives = {"embedsignature": True}
+
+    class ExtensionBuilder(build_ext):
+        def get_ext_filename(self, ext_name):
+            # Do not include the python version, the ABI tag, and
+            # the platform name in the extension module name.
+            # This facilitates specifying the dependencies of
+            # the module in CMake.
+            filename = super().get_ext_filename(ext_name)
+            suffix = sysconfig.get_config_var('EXT_SUFFIX')
+            ext = os.path.splitext(filename)[1]
+            return filename.replace(suffix, "") + ext
+
+    setup(
+        cmdclass={'build_ext': ExtensionBuilder},
+        ext_modules=cythonize([ext_module], compiler_directives=compiler_directives),
+        packages=packages,
+        license_files=license_files
+    )

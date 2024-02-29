@@ -24,7 +24,7 @@ jobs:
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
           - name: macos:production
-            os: macos-11
+            os: macos-latest
             config: production --auto-download --all-bindings --editline
             cache-key: production
             strip-bin: strip
@@ -43,14 +43,15 @@ jobs:
             check-examples: true
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+            package-name: cvc5-macOS-arm64
 
           - name: macos:production-arm64-cross
-            os: macos-11
+            os: macos-latest
             config: production --auto-download --all-bindings --editline --arm64
             cache-key: production-arm64-cross
             strip-bin: strip
             python-bindings: true
-            package-name: cvc5-macOS-arm64
+            package-name: cvc5-macOS-arm64-cross
 
           - name: win64:production
             os: windows-2019

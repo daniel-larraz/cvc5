@@ -78,7 +78,7 @@ if(NOT CaDiCaL_FOUND_SYSTEM)
   endif()
 
   if(APPLE AND DEFINED CMAKE_OSX_DEPLOYMENT_TARGET)
-    set(CXXFLAGS "${CXXFLAGS} --mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
+    set(CXXFLAGS "${CXXFLAGS} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
   endif()
 
   # check for getc_unlocked

@@ -15,6 +15,10 @@
 
 cmake_minimum_required(VERSION 3.12)
 
+# Set minimum version for x86_64. On arm64, it uses 11.0
+# which is the minimal supported deployment target
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum macOS version")
+
 #-----------------------------------------------------------------------------#
 # Project configuration
 

@@ -77,6 +77,10 @@ if(NOT CaDiCaL_FOUND_SYSTEM)
     set(CXXFLAGS "${CXXFLAGS} -arch ${CMAKE_OSX_ARCHITECTURES}")
   endif()
 
+  if(DEFINED CMAKE_OSX_DEPLOYMENT_TARGET)
+    set(CXXFLAGS "${CXXFLAGS} --mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
+  endif()
+
   # check for getc_unlocked
   check_symbol_exists("getc_unlocked" "cstdio" HAVE_UNLOCKED_IO)
   if(NOT HAVE_UNLOCKED_IO)

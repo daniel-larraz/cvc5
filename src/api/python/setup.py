@@ -42,11 +42,14 @@ else:
 
     if sys.platform == 'darwin':
         import platform
-        macos_ver = "11.0" if platform.machine() == "arm64" else "10.13"
-        os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", macos_ver)
-        if platform.machine() == "x86_64":
-          os.environ.setdefault("_PYTHON_HOST_PLATFORM", "macosx-10.13-x86_64")
-          os.environ.setdefault("ARCHFLAGS", "-arch x86_64")
+        version_str, _, _ = platform.mac_ver()
+        major_minor = version_str.split(".")[:2]
+        mac_ver = ".".join(major_minor)
+        host_platform = "macosx-" + mac_ver + "-" + platform.machine()
+        arch_flags = "-arch " + platform.machine()
+        os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", mac_ver)
+        os.environ.setdefault("_PYTHON_HOST_PLATFORM", host_platform)
+        os.environ.setdefault("ARCHFLAGS", arch_flags)
 
     compiler_directives = {
         'language_level': 3,

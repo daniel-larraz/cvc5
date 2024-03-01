@@ -69,6 +69,8 @@ else:
     }
 
     if sys.platform == 'win32':
+        extra_compile_args += ["-DMS_WIN64"]
+        # Use default installation path for local development
         os.environ['PATH'] += r';C:\msys64\mingw64\bin'
 
     ext_options = {

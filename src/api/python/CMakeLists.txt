@@ -94,7 +94,6 @@ endmacro()
 copy_file_from_src(cvc5.pxi)
 copy_file_from_src(cvc5.pxd)
 copy_file_from_src(cvc5_python_base.pyx)
-copy_file_from_src(setup.py)
 copy_file_from_src(pyproject.toml)
 
 if (WIN32)
@@ -108,6 +107,11 @@ else()
   set(SETUP_RPATH "rpath=${CMAKE_BINARY_DIR}/src:${CMAKE_BINARY_DIR}/src/parser")
 endif()
 
+if (CMAKE_CROSSCOMPILING_MACOS)
+  set(MACOS_ARCH "arm64")
+endif()
+
+configure_file(setup.py.in setup.py)
 configure_file(setup.cfg.in setup.cfg)
 configure_file(__init__.py.in cvc5/__init__.py)
 

@@ -48,9 +48,11 @@ else:
           major_minor = version_str.split(".")[:2]
           mac_ver = ".".join(major_minor)
           os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", mac_ver)
-        host_platform = "macosx-" + mac_ver + "-" + platform.machine()
+        arch = "${MACOS_ARCH}" # Optionally set by CMake
+        arch = platform.machine() if arch == "" else arch
+        host_platform = "macosx-" + mac_ver + "-" + arch
         os.environ.setdefault("_PYTHON_HOST_PLATFORM", host_platform)
-        arch_flags = "-arch " + platform.machine()
+        arch_flags = "-arch " + arch
         os.environ.setdefault("ARCHFLAGS", arch_flags)
 
     compiler_directives = {

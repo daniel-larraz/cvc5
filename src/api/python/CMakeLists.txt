@@ -81,16 +81,6 @@ add_custom_command(
 )
 add_custom_target(cvc5types DEPENDS ${GENERATED_TYPES_FILES})
 
-macro(copy_file_from_src filename)
-  add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${filename}
-    COMMAND ${CMAKE_COMMAND} -E copy
-      ${CMAKE_CURRENT_SOURCE_DIR}/${filename}
-      ${CMAKE_CURRENT_BINARY_DIR}/${filename}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${filename}
-  )
-endmacro()
-
 copy_file_from_src(cvc5.pxi)
 copy_file_from_src(cvc5.pxd)
 copy_file_from_src(cvc5_python_base.pyx)

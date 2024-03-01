@@ -43,8 +43,11 @@ else:
     if sys.platform == 'darwin':
         import platform
         version_str, _, _ = platform.mac_ver()
-        major_minor = version_str.split(".")[:2]
-        mac_ver = ".".join(major_minor)
+        target = os.environ.get("MACOSX_DEPLOYMENT_TARGET")
+        if target is not None:
+            version_str = target
+        major, minor = tuple(version_str.split(".")[:2])
+        mac_ver = major+"."+minor if major == "10" else major+".0"
         host_platform = "macosx-" + mac_ver + "-" + platform.machine()
         arch_flags = "-arch " + platform.machine()
         os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", mac_ver)

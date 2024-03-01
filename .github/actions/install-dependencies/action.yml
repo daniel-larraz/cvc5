@@ -41,7 +41,7 @@ runs:
       run: |
         echo "::group::Install Linux software for cross-compiling for arm64"
         sudo apt-get install -y \
-          aarch64-linux-gnu-gcc \
+          gcc-aarch64-linux-gnu \
           g++-aarch64-linux-gnu
         echo "::endgroup::"
 

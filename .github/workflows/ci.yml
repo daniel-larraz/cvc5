@@ -25,10 +25,9 @@ jobs:
 
           - name: ubuntu:production-arm64-cross
             os: ubuntu-20.04
-            config: production --auto-download --all-bindings --editline --arm64
+            config: production --auto-download --editline --arm64
             cache-key: production-arm64-cross
             strip-bin: strip
-            python-bindings: true
             package-name: cvc5-Linux-arm64
 
           - name: macos:production

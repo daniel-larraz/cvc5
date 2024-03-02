@@ -36,6 +36,7 @@ source ./$ENVDIR/bin/activate
 
 # install packages
 pip install -q --upgrade pip auditwheel
+pip install wheel
 pip install -r contrib/requirements_build.txt
 pip install -r contrib/requirements_python_dev.txt
 if [ "$(uname)" == "Darwin" ]; then

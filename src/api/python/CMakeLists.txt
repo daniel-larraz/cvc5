@@ -159,6 +159,9 @@ add_custom_command(
   DEPENDS CVC5PythonicAPI
 )
 
+# Copy license files to build directory where setup() can find them
+add_custom_target(cvc5_python_licenses DEPENDS ${LICENSE_FILES})
+
 set(COPIED_PYTHONIC_FILES
   "${CMAKE_CURRENT_BINARY_DIR}/cvc5/pythonic/__init__.py"
   "${CMAKE_CURRENT_BINARY_DIR}/cvc5/pythonic/cvc5_pythonic.py"

@@ -40,13 +40,13 @@ runs:
 
         ls *.whl
       
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.7'
-        config: ${{ inputs.config }}
-        platform: ${{ inputs.platform }}
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.7'
+    #     config: ${{ inputs.config }}
+    #     platform: ${{ inputs.platform }}
 
     - name: Build wheels for macOS
       if: runner.os == 'macOS'

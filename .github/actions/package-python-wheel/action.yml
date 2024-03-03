@@ -48,37 +48,37 @@ runs:
     #     config: ${{ inputs.config }}
     #     platform: ${{ inputs.platform }}
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.8'
-        config: ${{ inputs.config }}
-        platform: ${{ inputs.platform }}
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.8'
+    #     config: ${{ inputs.config }}
+    #     platform: ${{ inputs.platform }}
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.9'
-        config: ${{ inputs.config }}
-        platform: ${{ inputs.platform }}
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.9'
+    #     config: ${{ inputs.config }}
+    #     platform: ${{ inputs.platform }}
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.10'
-        config: ${{ inputs.config }}
-        platform: ${{ inputs.platform }}
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.10'
+    #     config: ${{ inputs.config }}
+    #     platform: ${{ inputs.platform }}
 
-    - name: Build wheels for macOS
-      if: runner.os == 'macOS'
-      uses: ./.github/actions/package-python-wheel-macos
-      with:
-        python-version: '3.11'
-        config: ${{ inputs.config }}
-        platform: ${{ inputs.platform }}
+    # - name: Build wheels for macOS
+    #   if: runner.os == 'macOS'
+    #   uses: ./.github/actions/package-python-wheel-macos
+    #   with:
+    #     python-version: '3.11'
+    #     config: ${{ inputs.config }}
+    #     platform: ${{ inputs.platform }}
 
     - name: Build wheels for macOS
       if: runner.os == 'macOS'

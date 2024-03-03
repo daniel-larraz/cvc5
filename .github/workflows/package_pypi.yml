@@ -20,7 +20,7 @@ jobs:
             os: macos-14
             config: production --auto-download
             cache-key: cvc5-pypi-arm64
-            platform: macosx_14_0_arm64
+            platform: macosx_11_0_arm64
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}

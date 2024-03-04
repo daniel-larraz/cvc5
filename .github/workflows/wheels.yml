@@ -23,6 +23,9 @@ jobs:
           - name: windows-x86_64
             os: windows-latest
             shell: 'msys2 {0}'
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
 
     steps:
     - uses: actions/checkout@v4
@@ -41,15 +44,6 @@ jobs:
           mingw-w64-x86_64-gmp
 
     - name: Create pyproject.toml
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        mkdir -p build/src/api/python
-        cp src/api/python/pyproject.toml build/src/api/python/
-
-    - name: Create pyproject.toml
-      if: runner.os == 'Windows'
-      shell: msys2 {0}
       run: |
         mkdir -p build/src/api/python
         cp src/api/python/pyproject.toml build/src/api/python/
@@ -64,7 +58,6 @@ jobs:
       uses: pypa/cibuildwheel@v2.16.5
       with:
         package-dir: ./build/src/api/python/
-        config-file: ./build/src/api/python/pyproject.toml
       env:
         CIBW_SKIP: "cp36-* pp*-win* *-win32 *-manylinux_i686 *-musllinux_*"
         CIBW_BEFORE_ALL_LINUX: bash ./contrib/cibw/before_all_linux.sh
@@ -75,12 +68,8 @@ jobs:
         CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
           delvewheel repair -w {dest_dir} {wheel} --add-path "${{ github.workspace }}\install\lib;${{ steps.mingw64-path.outputs.bin }}"
         CIBW_ENVIRONMENT_LINUX: >
-          CPLUS_INCLUDE_PATH="$(pwd)/install/include"
-          LIBRARY_PATH="$(pwd)/install/lib64"
           LD_LIBRARY_PATH="$(pwd)/install/lib64:$LD_LIBRARY_PATH"
         CIBW_ENVIRONMENT_MACOS: >
-          CPLUS_INCLUDE_PATH="$(pwd)/install/include"
-          LIBRARY_PATH="$(pwd)/install/lib"
           DYLD_LIBRARY_PATH="$(pwd)/install/lib:$DYLD_LIBRARY_PATH"
           MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos-target }}
 

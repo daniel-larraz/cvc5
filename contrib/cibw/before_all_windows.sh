@@ -6,11 +6,11 @@ python3 -m pip install --user -r contrib/requirements_python_dev.txt
 ./configure.sh production --auto-download --python-bindings --win64-native --prefix=./install
 
 SETUP_CFG = ./build/src/api/python/setup.cfg
-echo "[build]" > ${SETUP_CFG}
-echo "compiler = mingw32" >> ${SETUP_CFG}
-echo "[build_ext]" >> ${SETUP_CFG}
+echo "[build_ext]" > ${SETUP_CFG}
 echo "include_dirs=$(cygpath -m $(pwd)/install/include)" >> ${SETUP_CFG}
 echo "library_dirs=$(cygpath -m $(pwd)/install/lib)" >> ${SETUP_CFG}
+echo "[build]" >> ${SETUP_CFG}
+echo "compiler = mingw32" >> ${SETUP_CFG}
 cat ${SETUP_CFG}
 
 pushd build

@@ -68,15 +68,19 @@ else:
         'binding': False,
     }
 
+    extra_compile_args = ["-std=c++17", "-fno-var-tracking"]
+
     if sys.platform == 'win32':
+        # Compile argument '-DMS_WIN64' fixes a division by zero error
+        # See https://stackoverflow.com/q/64898146
         extra_compile_args += ["-DMS_WIN64"]
-        # Use default installation path for local development
+        # Add default MSYS2 installation path for local development
         os.environ['PATH'] += r';C:\msys64\mingw64\bin'
 
     ext_options = {
         "libraries" : ["cvc5", "cvc5parser"],
         "language" : "c++",
-        "extra_compile_args" : ["-std=c++17", "-fno-var-tracking"]
+        "extra_compile_args" : extra_compile_args
     }
 
     mod_name = "cvc5.cvc5_python_base"

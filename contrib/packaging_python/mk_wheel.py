@@ -94,8 +94,9 @@ class CMakeBuild(build_ext):
         return tag == "windows"
 
     def build_extension(self, ext):
+        num_cpus = len(os.sched_getaffinity(0))
         # build the python api
-        subprocess.check_call(['cmake', '--build', '.', '--target', 'cvc5_python_api'])
+        subprocess.check_call(['cmake', '--build', '.', '--target', 'cvc5_python_api', '--', '-j', str(num_cpus) ])
 
         # copy the library over. we need to consider other users that are not on linux
         # module is a directory called cvc5_python_base_module

@@ -94,7 +94,7 @@ class CMakeBuild(build_ext):
         return tag == "windows"
 
     def build_extension(self, ext):
-        num_cpus = len(os.sched_getaffinity(0))
+        num_cpus = os.cpu_count()
         # build the python api
         subprocess.check_call(['cmake', '--build', '.', '--target', 'cvc5_python_api', '--', '-j', str(num_cpus) ])
 

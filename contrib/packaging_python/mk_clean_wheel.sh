@@ -62,6 +62,7 @@ else
   python ../contrib/packaging_python/mk_wheel.py bdist_wheel -d dist --plat-name $PLATFORM
 fi
 
+export DYLD_LIBRARY_PATH=$(pwd)/src:$(pwd)/src/parser:$DYLD_LIBRARY_PATH
 cd dist
 
 # resolve the links and bundle the library with auditwheel
@@ -69,7 +70,6 @@ if [ "$(uname)" == "Linux" ]; then
     auditwheel show ./*.whl
     auditwheel repair ./*.whl
 elif [ "$(uname)" == "Darwin" ]; then
-    export DYLD_LIBRARY_PATH=$(pwd)/src:$(pwd)/src/parser:$DYLD_LIBRARY_PATH
     delocate-wheel -w wheelhouse ./*.whl
 else
     echo "Unhandled system $(uname) for packing libraries with wheel."

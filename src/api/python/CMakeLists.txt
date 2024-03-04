@@ -108,6 +108,14 @@ configure_file(__init__.py.in cvc5/__init__.py)
 set(CVC5_PYTHON_BASE_LIB
   "${CMAKE_CURRENT_BINARY_DIR}/cvc5/cvc5_python_base.${PYTHON_EXT}")
 
+set(PYTHON_EXT_SRC_FILES
+  cvc5kinds cvc5types cvc5proofrules
+  ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
+  ${CMAKE_CURRENT_BINARY_DIR}/setup.py
+  ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxi
+  ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxd
+)
+
 add_custom_command(
   OUTPUT
     ${CVC5_PYTHON_BASE_LIB}
@@ -117,16 +125,11 @@ add_custom_command(
     ${CMAKE_COMMAND} -E remove cvc5/cvc5_python_base.${PYTHON_EXT}
   COMMAND
     "${Python_EXECUTABLE}" setup.py build_ext --inplace
-  MAIN_DEPENDENCY
-    ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
   DEPENDS
     cvc5 cvc5parser
     ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml
     ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
-    ${CMAKE_CURRENT_BINARY_DIR}/setup.py
-    cvc5kinds cvc5types cvc5proofrules
-    ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxi
-    ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxd
+    ${PYTHON_EXT_SRC_FILES}
   COMMENT "Generating cvc5_python_base.${PYTHON_EXT}"
 )
 
@@ -186,6 +189,13 @@ add_custom_command(
 add_custom_target(
   cvc5_python_api ALL DEPENDS
     ${CVC5_PYTHON_BASE_LIB}
+    ${COPIED_PYTHONIC_FILES}
+    ${LICENSE_FILES}
+)
+
+add_custom_target(
+  cvc5_python_cibw DEPENDS
+    ${PYTHON_EXT_SRC_FILES}
     ${COPIED_PYTHONIC_FILES}
     ${LICENSE_FILES}
 )

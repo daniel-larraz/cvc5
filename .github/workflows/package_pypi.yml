@@ -1,4 +1,9 @@
-on: push
+on:
+  release:
+    types: [published]
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 name: PyPi packaging
 

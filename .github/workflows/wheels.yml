@@ -48,7 +48,7 @@ jobs:
         cp src/api/python/pyproject.toml build/src/api/python/
 
     - name: Create pyproject.toml
-      if: runner.os != 'Windows'
+      if: runner.os == 'Windows'
       shell: msys2 {0}
       run: |
         mkdir -p build/src/api/python

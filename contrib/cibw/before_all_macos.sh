@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 python3 -m pip install --user -r contrib/requirements_build.txt
-python3 -m pip install --user -r contrib/requirements_python_dev.txt
 
 ./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install
 

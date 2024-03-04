@@ -109,6 +109,7 @@ configure_file(__init__.py.in cvc5/__init__.py)
 
 set(PYTHON_EXT_SRC_FILES
   cvc5kinds cvc5types cvc5proofrules
+  ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml
   ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
   ${CMAKE_CURRENT_BINARY_DIR}/setup.py
   ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxi
@@ -130,7 +131,6 @@ if(NOT DEFINED ONLY_PYTHON_EXT_SRC)
       "${Python_EXECUTABLE}" setup.py build_ext --inplace
     DEPENDS
       cvc5 cvc5parser
-      ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml
       ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
       ${PYTHON_EXT_SRC_FILES}
     COMMENT "Generating cvc5_python_base.${PYTHON_EXT}"

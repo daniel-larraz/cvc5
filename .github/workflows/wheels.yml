@@ -41,7 +41,15 @@ jobs:
           mingw-w64-x86_64-gmp
 
     - name: Create pyproject.toml
-      shell: ${{ matrix.shell }}
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        mkdir -p build/src/api/python
+        cp src/api/python/pyproject.toml build/src/api/python/
+
+    - name: Create pyproject.toml
+      if: runner.os != 'Windows'
+      shell: msys2 {0}
       run: |
         mkdir -p build/src/api/python
         cp src/api/python/pyproject.toml build/src/api/python/

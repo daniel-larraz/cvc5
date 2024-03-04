@@ -45,6 +45,7 @@ The following flags enable optional features (disable with --no-<option name>).
   --profiling              support for gprof profiling
   --unit-testing           support for unit testing
   --python-bindings        build Python bindings based on new C++ API
+  --python-only-src        create only Python bindings source files
   --java-bindings          build Java bindings based on new C++ API
   --all-bindings           build bindings for all supported languages
   --asan                   build with ASan instrumentation

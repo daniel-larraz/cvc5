@@ -25,7 +25,7 @@ jobs:
 
           - name: ubuntu:production-arm64-cross
             os: ubuntu-latest
-            config: production --auto-download --editline --arm64
+            config: production --auto-download --arm64
             cache-key: production-arm64-cross
             strip-bin: strip
             package-name: cvc5-Linux-arm64

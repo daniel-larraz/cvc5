@@ -43,8 +43,7 @@ runs:
     - name: install pyGithub
       shell: bash
       run: |
-        python3 -m pip install --user -U pyGithub
-        python3 -m pip install --user -U urllib3 requests pyopenssl
+        python3 -m pip install pyGithub
 
     - name: Store to latest
       #if: github.ref == 'refs/heads/main'

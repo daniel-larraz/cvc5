@@ -15,11 +15,10 @@
 # Use: cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-aarch64.cmake
 ##
 
+set(CMAKE_SYSTEM_NAME ${CMAKE_HOST_SYSTEM_NAME})
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
-  set(CMAKE_SYSTEM_NAME Linux)
-  set(CMAKE_CROSSCOMPILING_LINUX TRUE)
-  
   set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
   set(TOOLCHAIN_PREFIX aarch64-linux-gnu)
@@ -39,7 +38,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
-  set(CMAKE_SYSTEM_NAME Darwin)
   set(CMAKE_SYSTEM_PROCESSOR arm64)
 
   set(TOOLCHAIN_PREFIX arm64-apple-darwin)

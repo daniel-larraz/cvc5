@@ -130,7 +130,7 @@ runs:
         echo "::group::Install software for Python packaging"
         python3 -m pip install -q --upgrade pip
         python3 -m pip install --user twine
-        python3 -m pip install --user -U urllib3 requests pyopenssl
+        python3 -m pip install --user -U urllib3 requests
         echo "::endgroup::"
     
     - name: Install software for documentation

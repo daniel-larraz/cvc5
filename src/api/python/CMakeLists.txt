@@ -15,7 +15,7 @@
 
 find_package(Python ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Development)
 
-if(NOT DEFINED ONLY_PYTHON_EXT_SRC)
+if(NOT ONLY_PYTHON_EXT_SRC)
   # Python modules for building and installing
   check_python_module("setuptools")
   check_python_module("Cython")
@@ -116,11 +116,10 @@ set(PYTHON_EXT_SRC_FILES
   ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxd
   ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
   ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml
-  ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
   ${CMAKE_CURRENT_BINARY_DIR}/setup.py
 )
 
-if(NOT DEFINED ONLY_PYTHON_EXT_SRC)
+if(NOT ONLY_PYTHON_EXT_SRC)
   set(CVC5_PYTHON_BASE_LIB
     "${CMAKE_CURRENT_BINARY_DIR}/cvc5/cvc5_python_base.${PYTHON_EXT}")
 
@@ -189,7 +188,7 @@ add_custom_command(
   DEPENDS CVC5PythonicAPI
 )
 
-if(DEFINED ONLY_PYTHON_EXT_SRC)
+if(ONLY_PYTHON_EXT_SRC)
 
   add_custom_target(
     cvc5_python_api ALL DEPENDS
@@ -212,8 +211,8 @@ else()
     COMMAND
     "${Python_EXECUTABLE}"
     -c
-    "from __future__ import print_function; import os;
-  print('YES' if 'VIRTUAL_ENV' in os.environ else 'NO', end='')")
+    "from __future__ import print_function; import os; \
+     print('YES' if 'VIRTUAL_ENV' in os.environ else 'NO', end='')")
 
   set(INSTALL_CMD
       "${Python_EXECUTABLE} -m pip install ${CMAKE_CURRENT_BINARY_DIR}")

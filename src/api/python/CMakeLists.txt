@@ -114,8 +114,9 @@ set(PYTHON_EXT_SRC_FILES
   cvc5kinds cvc5types cvc5proofrules
   ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxi
   ${CMAKE_CURRENT_BINARY_DIR}/cvc5.pxd
-  ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.py
+  ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
   ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml
+  ${CMAKE_CURRENT_BINARY_DIR}/setup.cfg
   ${CMAKE_CURRENT_BINARY_DIR}/setup.py
 )
 
@@ -131,8 +132,6 @@ if(NOT DEFINED ONLY_PYTHON_EXT_SRC)
       ${CMAKE_COMMAND} -E remove cvc5_python_base.cpp cvc5/cvc5_python_base.${PYTHON_EXT}
     COMMAND
       "${Python_EXECUTABLE}" setup.py build_ext --inplace
-    MAIN_DEPENDENCY
-      ${CMAKE_CURRENT_BINARY_DIR}/cvc5_python_base.pyx
     DEPENDS
       cvc5 cvc5parser
       ${PYTHON_EXT_SRC_FILES}

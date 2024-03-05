@@ -117,7 +117,7 @@ InteractiveShell::InteractiveShell(main::CommandExecutor* cexec,
 #if EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP
     ::rl_completion_entry_function = commandGenerator;
 #else /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
-    ::rl_completion_entry_function = (int (*)(const char*, int)) commandGenerator;
+    ::rl_completion_entry_function = (char (*)(const char*, int)) commandGenerator;
 #endif /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
     ::using_history();
 

@@ -24,10 +24,10 @@ jobs:
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
           - name: ubuntu:production-arm64-cross
-            os: ubuntu-latest
+            os: ubuntu-20.04
             config: production --auto-download --arm64
             cache-key: production-arm64-cross
-            strip-bin: strip
+            strip-bin: aarch64-linux-gnu-strip
             package-name: cvc5-Linux-arm64
 
           - name: macos:production

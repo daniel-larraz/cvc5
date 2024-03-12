@@ -70,6 +70,7 @@ runs:
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
           mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-python
 
     - name: Set up environment variables for Windows
       if: runner.os == 'Windows' && inputs.windows-build == 'true'

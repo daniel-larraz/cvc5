@@ -106,6 +106,7 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install Python modules for building and testing"
+        python3 -m ensurepip --upgrade
         python3 -m pip install --user -r contrib/requirements_build.txt
         python3 -m pip install --user pexpect # For interactive shell tests
         echo "::endgroup::"

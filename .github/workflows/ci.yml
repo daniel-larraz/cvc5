@@ -130,10 +130,6 @@ jobs:
         strip-bin: ${{ matrix.strip-bin }}
         shell: ${{ matrix.shell }}
 
-    - name: ccache Statistics
-      if: runner.os != 'Windows'
-      run: ccache -s
-
     - name: Run tests
       if: matrix.run_regression_args
       uses: ./.github/actions/run-tests

@@ -61,11 +61,15 @@ runs:
         msystem: MINGW64
         path-type: inherit
         install: |
+          autoconf
+          automake
+          m4
           make
           mingw-w64-x86_64-ccache
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
+          mingw-w64-x86_64-ninja
 
     - name: Set up environment variables for Windows
       if: runner.os == 'Windows' && inputs.windows-build == 'true'

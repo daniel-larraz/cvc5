@@ -72,11 +72,12 @@ runs:
           mingw-w64-x86_64-ninja
           mingw-w64-x86_64-python
 
-    - name: Set up environment variables for Windows
+    - name: Set up environment for Windows
       if: runner.os == 'Windows' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
-        echo "::group::Set up environment variables for Windows"
+        echo "::group::Set up environment for Windows"
+        python3 -m ensurepip --upgrade
         echo "PATH=${MSYSTEM_PREFIX}/lib/ccache/bin:\$PATH" >> ~/.bash_profile
         echo "num_proc=$(( $(nproc) + 1 ))" >> $GITHUB_ENV
         echo "::endgroup::"
@@ -106,7 +107,6 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install Python modules for building and testing"
-        python3 -m ensurepip --upgrade
         python3 -m pip install --user -r contrib/requirements_build.txt
         python3 -m pip install --user pexpect # For interactive shell tests
         echo "::endgroup::"

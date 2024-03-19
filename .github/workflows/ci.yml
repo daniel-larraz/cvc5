@@ -31,13 +31,14 @@ jobs:
             package-name: cvc5-Linux-arm64
 
           - name: macos:production
-            os: macos-11
+            os: macos-13
             config: production --auto-download --all-bindings --editline
             cache-key: production
             strip-bin: strip
             python-bindings: true
             check-examples: true
             package-name: cvc5-macOS
+            macos-target: 10.13
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
  
@@ -48,16 +49,17 @@ jobs:
             strip-bin: strip
             python-bindings: true
             check-examples: true
+            package-name: cvc5-macOS-arm64
+            macos-target: 11.0
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
           - name: macos:production-arm64-cross
-            os: macos-11
+            os: macos-13
             config: production --auto-download --all-bindings --editline --arm64
             cache-key: production-arm64-cross
             strip-bin: strip
             python-bindings: true
-            package-name: cvc5-macOS-arm64
 
           - name: win64:production
             os: windows-latest
@@ -111,6 +113,10 @@ jobs:
     steps:
 
     - uses: actions/checkout@v4
+
+    - name: Set MACOSX_DEPLOYMENT_TARGET
+      if: runner.os == 'macOS' && matrix.macos-target
+      run: echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos-target }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       uses: ./.github/actions/install-dependencies

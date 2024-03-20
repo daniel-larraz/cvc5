@@ -93,6 +93,7 @@ runs:
         brew untap homebrew/core homebrew/cask
         brew config
 
+        brew uninstall gmp
         brew install \
           ccache \
           pkgconfig \

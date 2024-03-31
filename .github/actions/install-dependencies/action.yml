@@ -105,7 +105,7 @@ runs:
 
     # Required by PEP-668
     - name: Set up Python virtual environment
-      if: runner.os == 'macOS' || runner.os == 'Linux'
+      if: runner.os == 'macOS'
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Set up Python virtual environment"

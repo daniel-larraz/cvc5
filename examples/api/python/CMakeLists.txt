@@ -43,9 +43,9 @@ find_package(Python ${CVC5_BINDINGS_PYTHON_VERSION} EXACT REQUIRED)
 # Lookup Python module directory and store path in PYTHON_MODULE_PATH.
 execute_process(COMMAND
                   ${Python_EXECUTABLE} -c
-                    "import os,sys;\
-                     os.path.join('${CMAKE_PREFIX_PATH}/../..', 'lib',\
-                     'python{}.{}'.format(*sys.version_info[:2]), 'site-packages')"
+                    "from distutils.sysconfig import get_python_lib;\
+                     print(get_python_lib(plat_specific=True,\
+                             prefix='${CMAKE_PREFIX_PATH}/../..'))"
                 OUTPUT_VARIABLE PYTHON_MODULE_PATH
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 

@@ -103,6 +103,16 @@ runs:
         echo "num_proc=$(( $(sysctl -n hw.logicalcpu) + 1 ))" >> $GITHUB_ENV
         echo "::endgroup::"
 
+    # Required by PEP-668
+    - name: Set up Python virtual environment
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      shell: ${{ inputs.shell }}
+      run: |
+        echo "::group::Set up Python virtual environment"
+        python3 -m venv ~/.venv
+        echo "$HOME/.venv/bin" >> $GITHUB_PATH
+        echo "::endgroup::"
+
     - name: Install Python modules for building and testing
       shell: ${{ inputs.shell }}
       run: |

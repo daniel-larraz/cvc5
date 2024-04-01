@@ -103,6 +103,21 @@ if(NOT GMP_FOUND_SYSTEM)
         env "CFLAGS=--target=${TOOLCHAIN_PREFIX}"
         env "LDFLAGS=-arch ${CMAKE_OSX_ARCHITECTURES}")
     endif()
+  else()
+     # GMP yields the following message at the end of the build process.
+     #     WARNING: `makeinfo' is missing on your system.
+
+     # This is a specific issue to Github CI on linux environments:
+     #     https://github.com/ps2dev/ps2toolchain/issues/64
+     #     https://github.com/spack/spack/issues/34906
+     #     https://github.com/periscop/candl/issues/16
+     #     https://github.com/microsoft/vcpkg/issues/22671
+     # Many solution attempts have been tried, but none worked.
+
+     # Since makeinfo just builds the documentation for GMP,
+     # it is possible to get around this issue by just disabling it
+     # except when cross-compiling:
+     set(CONFIGURE_ENV env "MAKEINFO=true")
   endif()
 
   # `CC_FOR_BUILD`, `--host`, and `--build` are passed to `configure` to ensure

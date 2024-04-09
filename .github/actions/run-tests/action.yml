@@ -19,6 +19,7 @@ runs:
     - name: Run CTest
       shell: bash
       run: |
+        cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} build-tests
         if ! ctest -j${{ env.num_proc }} --output-on-failure -LE regress[${{ inputs.regressions-exclude }}]
         then
@@ -27,16 +28,15 @@ runs:
       env:
         CVC5_REGRESSION_ARGS: --no-early-exit
         RUN_REGRESSION_ARGS: ${{ inputs.regressions-args }}
-      working-directory: ${{ inputs.build-dir }}
 
     - name: Install Check
       shell: bash
       run: |
         if [[ "${{ inputs.check-install }}" != "true" ]]; then exit 0; fi
+        cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} install
         echo -e "#include <cvc5/cvc5.h>\nint main() { cvc5::Solver s; return 0; }" > /tmp/test.cpp
         g++ -std=c++17 /tmp/test.cpp -I install/include -L install/lib -lcvc5
-      working-directory: ${{ inputs.build-dir }}
 
     - name: Python Install Check
       shell: bash
@@ -49,9 +49,9 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.check-examples }}" != "true" ]]; then exit 0; fi
+        cd examples
         mkdir -p build && cd build
         cmake .. -DCMAKE_PREFIX_PATH=${{ inputs.build-dir }}/install/lib/cmake \
           -DPython_EXECUTABLE=$(command -v python3)
         make -j${{ env.num_proc }}
         ctest -j${{ env.num_proc }} --output-on-failure
-      working-directory: examples

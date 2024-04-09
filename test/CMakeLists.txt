@@ -18,6 +18,17 @@
 # > regression tests of levels 0 and 1
 # > api tests
 
+set(ENV_PATH )
+if(WIN32)
+  list(APPEND ENV_PATH ${CMAKE_BINARY_DIR}\\src)
+  list(APPEND ENV_PATH ${CMAKE_BINARY_DIR}\\src\\parser)
+  list(APPEND ENV_PATH ${DEPS_BASE}\\bin)
+  list(APPEND ENV_PATH $ENV{PATH})
+  string(REPLACE "\\" "\\\\" ENV_PATH "${ENV_PATH}")
+else()
+  set(ENV_PATH "${ENV_PATH}")
+endif()
+
 add_custom_target(build-tests)
 
 # Note: Do not add custom targets for running tests (regress, apitests,

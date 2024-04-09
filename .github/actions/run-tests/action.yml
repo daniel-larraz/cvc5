@@ -13,11 +13,13 @@ inputs:
     default: ""
   regressions-exclude:
     default: "3-4"
+  shell:
+    default: bash
 runs:
   using: composite
   steps:
     - name: Run CTest
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} build-tests
@@ -30,25 +32,25 @@ runs:
         RUN_REGRESSION_ARGS: ${{ inputs.regressions-args }}
 
     - name: Install Check
-      shell: bash
+      if: inputs.check-install == 'true'
+      shell: ${{ inputs.shell }}
       run: |
-        if [[ "${{ inputs.check-install }}" != "true" ]]; then exit 0; fi
         cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} install
         echo -e "#include <cvc5/cvc5.h>\nint main() { cvc5::Solver s; return 0; }" > /tmp/test.cpp
         g++ -std=c++17 /tmp/test.cpp -I install/include -L install/lib -lcvc5
 
     - name: Python Install Check
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: |
         if [[ "${{ inputs.check-python-bindings }}" != "true" ]]; then exit 0; fi
         export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/install -name 'cvc5_python_base*')))"
         python3 -c "import cvc5"
 
     - name: Check Examples
-      shell: bash
+      if: inputs.check-examples == 'true'
+      shell: ${{ inputs.shell }}
       run: |
-        if [[ "${{ inputs.check-examples }}" != "true" ]]; then exit 0; fi
         cd examples
         mkdir -p build && cd build
         cmake .. -DCMAKE_PREFIX_PATH=${{ inputs.build-dir }}/install/lib/cmake \

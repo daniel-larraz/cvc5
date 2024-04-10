@@ -8,8 +8,10 @@ inputs:
   macos-target:
     default: ""
   build-shared:
+    required: false
     default: 'true'
   build-static:
+    required: false
     default: 'true'
   strip-bin:
     default: ""

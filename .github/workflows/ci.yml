@@ -69,7 +69,6 @@ jobs:
             windows-build: true
             shell: 'msys2 {0}'
             check-examples: false
-            check-install: false
             exclude_regress: 1-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
@@ -150,6 +149,7 @@ jobs:
       with:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
         check-examples: ${{ matrix.check-examples }}
+        check-install: ${{ matrix.check-install }}
         check-python-bindings: ${{ matrix.python-bindings }}
         regressions-args: ${{ matrix.run_regression_args }}
         regressions-exclude: ${{ matrix.exclude_regress }}

@@ -37,13 +37,15 @@ runs:
       run: |
         cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} install
-        echo -e "#include <cvc5/cvc5.h>\nint main() { cvc5::Solver s; return 0; }" > /tmp/test.cpp
+        echo "#include <cvc5/cvc5.h>" > /tmp/test.cpp
+        echo "using namespace cvc5;" >> /tmp/test.cpp
+        echo "int main() { Solver s(TermManager()); return 0; }" >> /tmp/test.cpp
         g++ -std=c++17 /tmp/test.cpp -I install/include -L install/lib -lcvc5
 
     - name: Python Install Check
+      if: inputs.check-python-bindings == 'true'
       shell: ${{ inputs.shell }}
       run: |
-        if [[ "${{ inputs.check-python-bindings }}" != "true" ]]; then exit 0; fi
         export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/install -name 'cvc5_python_base*')))"
         python3 -c "import cvc5"
 

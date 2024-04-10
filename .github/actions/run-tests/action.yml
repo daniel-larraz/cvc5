@@ -4,11 +4,11 @@ inputs:
   build-dir:
     default: build/
   check-examples:
-    default: true
+    default: 'true'
   check-install:
-    default: true
+    default: 'true'
   check-python-bindings:
-    default: false
+    default: 'false'
   regressions-args:
     default: ""
   regressions-exclude:

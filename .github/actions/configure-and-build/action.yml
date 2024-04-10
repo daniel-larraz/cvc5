@@ -8,11 +8,9 @@ inputs:
   macos-target:
     default: ""
   build-shared:
-    default: true
-    type: boolean
+    default: 'true'
   build-static:
-    default: true
-    type: boolean
+    default: 'true'
   strip-bin:
     default: ""
   shell:
@@ -36,7 +34,7 @@ runs:
       id: shared-build
       # Boolean inputs are actually strings:
       # https://github.com/actions/runner/issues/1483
-      if: inputs.build-shared == '' || inputs.build-shared == 'true'
+      if: inputs.build-shared == 'true'
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Shared build"
@@ -61,7 +59,7 @@ runs:
       id: static-build
       # Boolean inputs are actually strings:
       # https://github.com/actions/runner/issues/1483
-      if: inputs.build-static == '' || inputs.build-static == 'true'
+      if: inputs.build-static == 'true'
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Static build"

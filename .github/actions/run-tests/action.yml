@@ -35,7 +35,7 @@ runs:
         RUN_REGRESSION_ARGS: ${{ inputs.regressions-args }}
 
     - name: Install Check
-      if: inputs.check-install == 'true'
+      if: ${{ inputs.check-install == 'true' }}
       shell: ${{ inputs.shell }}
       run: |
         cd ${{ inputs.build-dir }}
@@ -46,14 +46,14 @@ runs:
         g++ -std=c++17 /tmp/test.cpp -I install/include -L install/lib -lcvc5
 
     - name: Python Install Check
-      if: inputs.check-python-bindings == 'true'
+      if: ${{ inputs.check-python-bindings == 'true' }}
       shell: ${{ inputs.shell }}
       run: |
         export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/install -name 'cvc5_python_base*')))"
         python3 -c "import cvc5"
 
     - name: Check Examples
-      if: inputs.check-examples == 'true'
+      if: ${{ inputs.check-examples == 'true' }}
       shell: ${{ inputs.shell }}
       run: |
         cd examples

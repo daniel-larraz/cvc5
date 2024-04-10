@@ -3863,7 +3863,7 @@ macro(cvc5_add_regression_test level file)
   endif()
 
   add_test(${file}
-    ${CMAKE_COMMAND} -E env "PATH=${ENV_PATH}"
+    ${ENV_PATH_CMD}
     ${Python_EXECUTABLE}
     ${run_regress_script}
     ${RUN_REGRESSION_ARGS}

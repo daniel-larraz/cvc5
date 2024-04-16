@@ -82,9 +82,7 @@ endif()
 set_target_properties(cvc5parser PROPERTIES OUTPUT_NAME cvc5parser)
 target_link_libraries(cvc5parser PRIVATE cvc5)
 
-install(TARGETS cvc5parser
-  EXPORT cvc5-targets
-  DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS cvc5parser EXPORT cvc5-targets)
 
 # The generated lexer/parser files define some functions as
 # __declspec(dllexport) via the ANTLR3_API macro, which leads to lots of

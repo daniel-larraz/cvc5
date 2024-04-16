@@ -237,8 +237,13 @@ else()
 
   ExternalProject_Get_Property(Poly-EP BUILD_BYPRODUCTS INSTALL_DIR)
   string(REPLACE "<INSTALL_DIR>" "${INSTALL_DIR}" BUILD_BYPRODUCTS "${BUILD_BYPRODUCTS}")
+  if(WIN32)
+    set(LIB_BUILD_TYPE BIN)
+  else()
+    set(LIB_BUILD_TYPE LIB)
+  endif()
   install(FILES
     ${BUILD_BYPRODUCTS}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    TYPE ${LIB_BUILD_TYPE}
   )
 endif()

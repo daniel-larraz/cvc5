@@ -70,7 +70,7 @@ runs:
         path-type: inherit
         install: |
           make
-          mingw-w64-x86_64-boost # Required by examples
+          mingw-w64-x86_64-boost
           mingw-w64-x86_64-ccache
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc

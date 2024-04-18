@@ -107,4 +107,8 @@ if(CLN_FOUND_SYSTEM)
 else()
   message(STATUS "Building CLN ${CLN_VERSION}: ${CLN_LIBRARIES}")
   add_dependencies(CLN CLN-EP)
+  # Only install shared libraries
+  if (BUILD_SHARED_LIBS)
+    install(FILES ${CLN_LIBRARIES} TYPE ${LIB_BUILD_TYPE})
+  endif()
 endif()

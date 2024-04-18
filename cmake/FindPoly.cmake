@@ -237,13 +237,8 @@ else()
 
   ExternalProject_Get_Property(Poly-EP BUILD_BYPRODUCTS INSTALL_DIR)
   string(REPLACE "<INSTALL_DIR>" "${INSTALL_DIR}" BUILD_BYPRODUCTS "${BUILD_BYPRODUCTS}")
-  if(BUILD_SHARED_LIBS AND WIN32)
-    set(LIB_BUILD_TYPE BIN)
-  else()
-    set(LIB_BUILD_TYPE LIB)
+  # Only install shared libraries
+  if (BUILD_SHARED_LIBS)
+    install(FILES ${BUILD_BYPRODUCTS} TYPE ${LIB_BUILD_TYPE})
   endif()
-  install(FILES
-    ${BUILD_BYPRODUCTS}
-    TYPE ${LIB_BUILD_TYPE}
-  )
 endif()

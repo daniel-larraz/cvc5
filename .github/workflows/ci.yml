@@ -13,7 +13,7 @@ jobs:
         include:
           - name: ubuntu:production
             os: ubuntu-20.04
-            config: production --auto-download --all-bindings --editline --docs
+            config: production --auto-download --all-bindings --editline --docs --cln --gpl
             cache-key: production
             strip-bin: strip
             python-bindings: true

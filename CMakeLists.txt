@@ -60,10 +60,6 @@ if(POLICY CMP0079)
   cmake_policy(SET CMP0079 NEW)
 endif()
 
-if(CMP0094)
-  cmake_policy(SET CMP0094 NEW)
-endif()
-
 #-----------------------------------------------------------------------------#
 # Tell CMake where to find our dependencies
 
@@ -367,12 +363,13 @@ else()
   endif()
 endif()
 
-
+set(Python3_FIND_REGISTRY LAST)
+set(Python3_FIND_FRAMEWORK LAST)
 
 if(DEFINED BUILD_BINDINGS_PYTHON_VERSION) 
-  find_package(Python ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Interpreter REQUIRED)
+  find_package(Python3 ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Interpreter REQUIRED)
 else()
-  find_package(Python COMPONENTS Interpreter REQUIRED)
+  find_package(Python3 COMPONENTS Interpreter REQUIRED)
 endif()
 
 find_package(GMP 6.3 REQUIRED)

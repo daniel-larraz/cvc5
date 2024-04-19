@@ -37,7 +37,10 @@ set(EXAMPLES_API_PYTHON
   transcendentals
 )
 
-find_package(Python ${CVC5_BINDINGS_PYTHON_VERSION} EXACT REQUIRED)
+set(Python3_FIND_REGISTRY LAST)
+set(Python3_FIND_FRAMEWORK LAST)
+
+find_package(Python3 ${CVC5_BINDINGS_PYTHON_VERSION} EXACT REQUIRED)
 
 # Find Python bindings in the corresponding python-*/site-packages directory.
 # Lookup Python module directory and store path in PYTHON_MODULE_PATH.

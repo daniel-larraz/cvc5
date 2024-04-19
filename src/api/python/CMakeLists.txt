@@ -13,7 +13,7 @@
 # The build system configuration.
 ##
 
-find_package(Python ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Development)
+find_package(Python3 ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Development)
 
 if(NOT ONLY_PYTHON_EXT_SRC)
   # Python modules for building and installing

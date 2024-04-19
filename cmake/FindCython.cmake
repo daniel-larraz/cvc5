@@ -15,7 +15,7 @@
 ##
 
 execute_process(
-    COMMAND "${Python_EXECUTABLE}" -c "import Cython; print(Cython.__version__)"
+    COMMAND "${Python3_EXECUTABLE}" -c "import Cython; print(Cython.__version__)"
     RESULT_VARIABLE Cython_VERSION_CHECK_RESULT
     OUTPUT_VARIABLE Cython_VERSION
     ERROR_QUIET
@@ -50,8 +50,8 @@ else()
     set(Cython_FOUND FALSE)
     message(${Cython_FIND_MODE}
         "Could not find module Cython for Python "
-        "version ${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}. "
+        "version ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}. "
         "Make sure to install Cython for this Python version "
-        "via \n`${Python_EXECUTABLE} -m pip install Cython'.\n"
+        "via \n`${Python3_EXECUTABLE} -m pip install Cython'.\n"
         "Note: You need to have pip installed for this Python version.")
 endif()

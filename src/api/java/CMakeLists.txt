@@ -28,7 +28,7 @@ add_custom_command(
   OUTPUT
     ${JAVA_KIND_FILE}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_kind.h"
     --java-api-path "${CMAKE_CURRENT_BINARY_DIR}/io/github/"
@@ -47,7 +47,7 @@ add_custom_command(
   OUTPUT
     ${JAVA_PROOF_RULE_FILE}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_proof_rule.h"
     --java-api-path "${CMAKE_CURRENT_BINARY_DIR}/io/github/"
@@ -66,7 +66,7 @@ add_custom_command(
   OUTPUT
     ${JAVA_SKOLEM_FUN_ID_FILE}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_skolem_id.h"
     --java-api-path "${CMAKE_CURRENT_BINARY_DIR}/io/github/"
@@ -90,7 +90,7 @@ add_custom_command(
   OUTPUT
   ${JAVA_TYPES_FILES}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_types.h"
     --java-api-path "${CMAKE_CURRENT_BINARY_DIR}/io/github/"

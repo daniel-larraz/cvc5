@@ -61,7 +61,7 @@ add_custom_command(
     OUTPUT
       ${REWRITE_OUTPUT_FILES}
     COMMAND
-      ${Python_EXECUTABLE}
+      ${Python3_EXECUTABLE}
       ${mkrewrites_script}
       rewrite-db
       ${CMAKE_SOURCE_DIR}

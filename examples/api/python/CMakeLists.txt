@@ -45,7 +45,7 @@ find_package(Python3 ${CVC5_BINDINGS_PYTHON_VERSION} EXACT REQUIRED)
 # Find Python bindings in the corresponding python-*/site-packages directory.
 # Lookup Python module directory and store path in PYTHON_MODULE_PATH.
 execute_process(COMMAND
-                  ${Python_EXECUTABLE} -c
+                  ${Python3_EXECUTABLE} -c
                     "from distutils.sysconfig import get_python_lib;\
                      print(get_python_lib(plat_specific=True,\
                              prefix='${CMAKE_PREFIX_PATH}/../..'))"
@@ -57,7 +57,7 @@ function(create_python_example example)
   add_test(
     NAME ${example_test}
     COMMAND
-      "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/api/python/${example}.py"
+      "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/api/python/${example}.py"
   )
   set_tests_properties(${example_test} PROPERTIES
     LABELS "example"

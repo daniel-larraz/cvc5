@@ -22,7 +22,7 @@ if (USE_EDITLINE)
 
   # Check for pexpect -- zero return code is success
   execute_process(
-    COMMAND ${Python_EXECUTABLE} -c "import pexpect"
+    COMMAND ${Python3_EXECUTABLE} -c "import pexpect"
     RESULT_VARIABLE PEXPECT_RC
     ERROR_QUIET
   )
@@ -34,14 +34,14 @@ if (USE_EDITLINE)
     add_test(
       NAME interactive_shell
       COMMAND
-      "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell.py"
+      "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell.py"
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
     set_tests_properties(interactive_shell PROPERTIES LABELS "binary")
     add_test(
       NAME interactive_shell_parser_inc
       COMMAND
-      "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell_parser_inc.py"
+      "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell_parser_inc.py"
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
     set_tests_properties(interactive_shell_parser_inc PROPERTIES LABELS "binary")
@@ -50,7 +50,7 @@ if (NOT APPLE)
     add_test(
       NAME interactive_shell_define_fun_rec_multiline
       COMMAND
-      "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell_define_fun_rec_multiline.py"
+      "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/interactive_shell_define_fun_rec_multiline.py"
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
     set_tests_properties(interactive_shell_define_fun_rec_multiline PROPERTIES LABELS "binary")
@@ -58,7 +58,7 @@ endif()
     add_test(
       NAME issue_10258
       COMMAND
-      "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/issue_10258.py"
+      "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/test/binary/issue_10258.py"
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
     set_tests_properties(issue_10258 PROPERTIES LABELS "binary")

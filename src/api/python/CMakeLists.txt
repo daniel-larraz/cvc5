@@ -32,7 +32,7 @@ add_custom_command(
   OUTPUT
     ${GENERATED_KINDS_FILES}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_kind.h"
     --enums-file-prefix "${CMAKE_CURRENT_BINARY_DIR}/cvc5kinds"
@@ -52,7 +52,7 @@ add_custom_command(
   OUTPUT
     ${GENERATED_PROOF_RULES_FILES}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_proof_rule.h"
     --enums-file-prefix "${CMAKE_CURRENT_BINARY_DIR}/cvc5proofrules"
@@ -72,7 +72,7 @@ add_custom_command(
   OUTPUT
     ${GENERATED_SKOLEM_ID_FILES}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_skolem_id.h"
     --enums-file-prefix "${CMAKE_CURRENT_BINARY_DIR}/cvc5skolemids"
@@ -91,7 +91,7 @@ add_custom_command(
   OUTPUT
     ${GENERATED_TYPES_FILES}
   COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_BINARY_DIR}/genenums.py"
     --enums-header "${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_types.h"
     --enums-file-prefix "${CMAKE_CURRENT_BINARY_DIR}/cvc5types"
@@ -150,7 +150,7 @@ if(NOT ONLY_PYTHON_EXT_SRC)
       # Force a new build if any dependency has changed
       ${CMAKE_COMMAND} -E remove cvc5_python_base.cpp cvc5/cvc5_python_base.${PYTHON_EXT}
     COMMAND
-      "${Python_EXECUTABLE}" setup.py build_ext --inplace
+      "${Python3_EXECUTABLE}" setup.py build_ext --inplace
     DEPENDS
       cvc5 cvc5parser
       ${PYTHON_EXT_SRC_FILES}
@@ -229,12 +229,12 @@ else()
   # figure out if we're in a virtualenv
   execute_process(OUTPUT_VARIABLE IN_VIRTUALENV
     COMMAND
-    "${Python_EXECUTABLE}"
+    "${Python3_EXECUTABLE}"
     -c
     "import os; print('YES' if 'VIRTUAL_ENV' in os.environ else 'NO', end='')")
 
   set(INSTALL_CMD
-      "${Python_EXECUTABLE} -m pip install ${CMAKE_CURRENT_BINARY_DIR}")
+      "${Python3_EXECUTABLE} -m pip install ${CMAKE_CURRENT_BINARY_DIR}")
   # if we're in a virtualenv, we install it in the virtualenv lib location
   # otherwise install in prefix
   if ("${IN_VIRTUALENV}" STREQUAL "NO")

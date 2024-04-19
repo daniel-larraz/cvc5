@@ -1298,7 +1298,7 @@ include_directories(. ${CMAKE_CURRENT_BINARY_DIR})
 #-----------------------------------------------------------------------------#
 # Take care of options
 
-if (Python_VERSION VERSION_LESS "3.11.0")
+if (Python3_VERSION VERSION_LESS "3.11.0")
   check_python_module("tomli")
 endif()
 
@@ -1362,7 +1362,7 @@ add_custom_command(
   COMMAND
     ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/options
   COMMAND
-    ${Python_EXECUTABLE}
+    ${Python3_EXECUTABLE}
     ${CMAKE_CURRENT_LIST_DIR}/options/mkoptions.py
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_BINARY_DIR}

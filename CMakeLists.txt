@@ -60,6 +60,10 @@ if(POLICY CMP0079)
   cmake_policy(SET CMP0079 NEW)
 endif()
 
+if(CMP0094)
+  cmake_policy(SET CMP0094 NEW)
+endif()
+
 #-----------------------------------------------------------------------------#
 # Tell CMake where to find our dependencies
 
@@ -362,6 +366,8 @@ else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
   endif()
 endif()
+
+
 
 if(DEFINED BUILD_BINDINGS_PYTHON_VERSION) 
   find_package(Python ${BUILD_BINDINGS_PYTHON_VERSION} EXACT COMPONENTS Interpreter REQUIRED)

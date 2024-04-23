@@ -181,6 +181,7 @@ jobs:
         # when using GITHUB_TOKEN, no further workflows are triggered
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+        shell: ${{ matrix.shell }}
 
     - name: Create and add static package to latest and release
       if: matrix.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
@@ -191,6 +192,7 @@ jobs:
         # when using GITHUB_TOKEN, no further workflows are triggered
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+        shell: ${{ matrix.shell }}
 
   update-pr:
     runs-on: ubuntu-latest

@@ -148,6 +148,7 @@ jobs:
             windows-build: true
             shell: 'msys2 {0}'
             package-name: cvc5-Win64-gpl
+            gpl-build: true
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}

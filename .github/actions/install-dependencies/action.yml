@@ -69,12 +69,14 @@ runs:
         msystem: MINGW64
         path-type: inherit
         install: |
+          base-devel
           make
           mingw-w64-x86_64-autotools
           mingw-w64-x86_64-ccache
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
+          mingw-w64-x86_64-toolchain
           zip
 
     - name: Set up num_proc variable for Linux and Windows

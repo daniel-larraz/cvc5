@@ -57,6 +57,8 @@ if(NOT CLN_FOUND_SYSTEM)
     message(SEND_ERROR "Can not build CLN, missing binary for autoreconf")
   endif()
 
+  set(CONFIGURE_ENV env "MAKEINFO=true")
+
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
@@ -67,7 +69,7 @@ if(NOT CLN_FOUND_SYSTEM)
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh
     COMMAND
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> autoreconf -iv
-    COMMAND ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared
+    COMMAND ${CONFIGURE_ENV} ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared
             --enable-static --with-pic
     BUILD_BYPRODUCTS <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.a
                      <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}

@@ -50,7 +50,7 @@ if(NOT CLN_FOUND_SYSTEM)
   fail_if_cross_compiling("" "arm" "CLN" "syntax error in configure")
 
   set(CLN_VERSION "1.3.7")
-  string(REPLACE "." "-" CLN_TAG ${CLN_VERSION})
+  #string(REPLACE "." "-" CLN_TAG ${CLN_VERSION})
 
   find_program(AUTORECONF autoreconf)
   if(NOT AUTORECONF)

@@ -122,33 +122,33 @@ jobs:
           #   package-name: cvc5-Linux-arm64-gpl
           #   gpl-build: true
 
-          # - name: macos:production-gpl
-          #   os: macos-13
-          #   config: production --auto-download --editline --gpl --cln --glpk --cocoa
-          #   cache-key: production-gpl
-          #   strip-bin: strip
-          #   package-name: cvc5-macOS-gpl
-          #   macos-target: 10.13
-          #   gpl-build: true
-
-          # - name: macos:production-arm64-gpl
-          #   os: macos-14
-          #   config: production --auto-download --editline --gpl --cln --glpk --cocoa
-          #   cache-key: production-arm64-gpl
-          #   strip-bin: strip
-          #   package-name: cvc5-macOS-arm64-gpl
-          #   macos-target: 11.0
-          #   gpl-build: true
-
-          - name: win64:production-gpl
-            os: windows-latest
-            config: production --auto-download --gpl --cln --cocoa
-            cache-key: production-win64-native-gpl
+          - name: macos:production-gpl
+            os: macos-13
+            config: production --auto-download --editline --gpl --cln --glpk
+            cache-key: production-gpl
             strip-bin: strip
-            windows-build: true
-            shell: 'msys2 {0}'
-            package-name: cvc5-Win64-gpl
+            package-name: cvc5-macOS-gpl
+            macos-target: 10.13
             gpl-build: true
+
+          - name: macos:production-arm64-gpl
+            os: macos-14
+            config: production --auto-download --editline --gpl --cln --glpk
+            cache-key: production-arm64-gpl
+            strip-bin: strip
+            package-name: cvc5-macOS-arm64-gpl
+            macos-target: 11.0
+            gpl-build: true
+
+          # - name: win64:production-gpl
+          #   os: windows-latest
+          #   config: production --auto-download --gpl --cln --cocoa
+          #   cache-key: production-win64-native-gpl
+          #   strip-bin: strip
+          #   windows-build: true
+          #   shell: 'msys2 {0}'
+          #   package-name: cvc5-Win64-gpl
+          #   gpl-build: true
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}

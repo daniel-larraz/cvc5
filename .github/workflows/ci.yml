@@ -154,7 +154,7 @@ jobs:
 
     - name: Set MACOSX_DEPLOYMENT_TARGET
       if: runner.os == 'macOS' && matrix.macos-target
-      run: echo "MACOSX_DEPLOYMENT_TARGET=${{ inputs.macos-target }}" >> $GITHUB_ENV
+      run: echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos-target }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       uses: ./.github/actions/install-dependencies

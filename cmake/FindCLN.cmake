@@ -50,7 +50,7 @@ if(NOT CLN_FOUND_SYSTEM)
   fail_if_cross_compiling("" "arm" "CLN" "syntax error in configure")
 
   set(CLN_VERSION "1.3.7")
-  #string(REPLACE "." "-" CLN_TAG ${CLN_VERSION})
+  string(REPLACE "." "-" CLN_TAG ${CLN_VERSION})
 
   find_program(AUTORECONF autoreconf)
   if(NOT AUTORECONF)
@@ -60,9 +60,13 @@ if(NOT CLN_FOUND_SYSTEM)
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    URL "https://www.ginac.de/CLN/cln-${CLN_VERSION}.tar.bz2"
-    URL_HASH SHA1=17cf2c60e262e30f57caae39692fce7917e11d95
+    URL "https://www.ginac.de/CLN/cln.git/?p=cln.git;a=snapshot;h=cln_${CLN_TAG};sf=tgz"
+    URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
     DOWNLOAD_NAME cln.tgz
+    CONFIGURE_COMMAND
+      ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh
+    COMMAND
+      ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> autoreconf -iv
     COMMAND ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared
             --enable-static --with-pic
     BUILD_BYPRODUCTS <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.a

@@ -60,7 +60,7 @@ if(NOT CLN_FOUND_SYSTEM)
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    URL "https://www.ginac.de/CLN/cln-${CLN_TAG}.tar.bz2"
+    URL "https://www.ginac.de/CLN/cln-${CLN_VERSION}.tar.bz2"
     URL_HASH SHA1=17cf2c60e262e30f57caae39692fce7917e11d95
     DOWNLOAD_NAME cln.tgz
     CONFIGURE_COMMAND

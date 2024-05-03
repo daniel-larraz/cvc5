@@ -124,7 +124,7 @@ jobs:
 
           # - name: macos:production-gpl
           #   os: macos-13
-          #   config: production --auto-download --editline -DBUILD_GMP=1 --gpl --cln --glpk --cocoa
+          #   config: production --auto-download --editline --gpl --cln --glpk --cocoa
           #   cache-key: production-gpl
           #   strip-bin: strip
           #   package-name: cvc5-macOS-gpl
@@ -133,12 +133,21 @@ jobs:
 
           # - name: macos:production-arm64-gpl
           #   os: macos-14
-          #   config: production --auto-download --editline -DBUILD_GMP=1 --gpl --cln --glpk --cocoa
+          #   config: production --auto-download --editline --gpl --cln --glpk --cocoa
           #   cache-key: production-arm64-gpl
           #   strip-bin: strip
           #   package-name: cvc5-macOS-arm64-gpl
           #   macos-target: 11.0
           #   gpl-build: true
+
+          - name: win64:production-gpl
+            os: windows-latest
+            config: production --auto-download --gpl --cln --glpk --cocoa
+            cache-key: production-win64-native-gpl
+            strip-bin: strip
+            windows-build: true
+            shell: 'msys2 {0}'
+            package-name: cvc5-Win64-gpl
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}

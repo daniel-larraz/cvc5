@@ -114,13 +114,13 @@ jobs:
             package-name: cvc5-Linux-gpl
             gpl-build: true
 
-          - name: ubuntu:production-arm64-cross-gpl
-            os: ubuntu-latest
-            config: production --auto-download --arm64 --gpl --cln --glpk --cocoa
-            cache-key: production-arm64-cross-gpl
-            strip-bin: aarch64-linux-gnu-strip
-            package-name: cvc5-Linux-arm64-gpl
-            gpl-build: true
+          # - name: ubuntu:production-arm64-cross-gpl
+          #   os: ubuntu-latest
+          #   config: production --auto-download --arm64 --gpl --cln --glpk --cocoa
+          #   cache-key: production-arm64-cross-gpl
+          #   strip-bin: aarch64-linux-gnu-strip
+          #   package-name: cvc5-Linux-arm64-gpl
+          #   gpl-build: true
 
           - name: macos:production-gpl
             os: macos-13
@@ -151,6 +151,10 @@ jobs:
     steps:
 
     - uses: actions/checkout@v4
+
+    - name: Set MACOSX_DEPLOYMENT_TARGET
+      if: runner.os == 'macOS' && matrix.macos-target
+      run: echo "MACOSX_DEPLOYMENT_TARGET=${{ inputs.macos-target }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       uses: ./.github/actions/install-dependencies

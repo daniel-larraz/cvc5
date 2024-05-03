@@ -63,10 +63,6 @@ if(NOT CLN_FOUND_SYSTEM)
     URL "https://www.ginac.de/CLN/cln-${CLN_VERSION}.tar.bz2"
     URL_HASH SHA1=17cf2c60e262e30f57caae39692fce7917e11d95
     DOWNLOAD_NAME cln.tgz
-    CONFIGURE_COMMAND
-      ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh
-    COMMAND
-      ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> autoreconf -iv
     COMMAND ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared
             --enable-static --with-pic
     BUILD_BYPRODUCTS <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.a

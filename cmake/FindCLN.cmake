@@ -60,8 +60,8 @@ if(NOT CLN_FOUND_SYSTEM)
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    URL "https://www.ginac.de/CLN/cln.git/?p=cln.git\\\;a=snapshot\\\;h=cln_${CLN_TAG}\\\;sf=tgz"
-    URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
+    URL "https://www.ginac.de/CLN/cln-${CLN_TAG}.tar.bz2"
+    URL_HASH SHA1=17cf2c60e262e30f57caae39692fce7917e11d95
     DOWNLOAD_NAME cln.tgz
     CONFIGURE_COMMAND
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh

@@ -5,6 +5,9 @@ inputs:
     default: "none"
   shell:
     default: bash
+  gpl-build:
+    default: false
+    type: boolean
 
 # The GitHub action for caching currently does not support modifying an
 # already existing cache. We thus have a few different possibilities:
@@ -60,7 +63,10 @@ runs:
     - name: Install contrib dependencies
       if: steps.contrib-cache.outputs.cache-hit != 'true'
       shell: ${{ inputs.shell }}
-      run: ./contrib/get-alf-checker
+      run: |
+        ./contrib/get-alf-checker
+        if [[ "${{ inputs.gpl-build }}" != "true" ]]; then exit 0; fi
+        ./contrib/get-glpk-cut-log
 
     - name: Setup dependencies cache
       uses: actions/cache@v4

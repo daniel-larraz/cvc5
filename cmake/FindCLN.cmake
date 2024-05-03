@@ -60,7 +60,7 @@ if(NOT CLN_FOUND_SYSTEM)
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    URL "https://www.ginac.de/CLN/cln.git/?p=cln.git;a=snapshot;h=cln_${CLN_TAG};sf=tgz"
+    URL "https://shorturl.at/sHNQR"
     URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
     DOWNLOAD_NAME cln.tgz
     CONFIGURE_COMMAND

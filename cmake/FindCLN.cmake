@@ -61,9 +61,22 @@ if(NOT CLN_FOUND_SYSTEM)
   if(BUILD_SHARED_LIBS)
     set(LINK_OPTS --enable-shared --disable-static)
     set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+      set(CLN_BYPRODUCTS
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.6${CMAKE_SHARED_LIBRARY_SUFFIX}
+      )
+    else()
+      set(CLN_BYPRODUCTS
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}.6
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}.6.0.7
+      )
+    endif()
   else()
     set(LINK_OPTS --enable-static --disable-shared)
-    set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln.a")
+    set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln.${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    set(CLN_BYPRODUCTS <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.${CMAKE_STATIC_LIBRARY_SUFFIX})
   endif()
 
   # CLN yields the following message at the end of the build process.
@@ -84,7 +97,7 @@ if(NOT CLN_FOUND_SYSTEM)
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> autoreconf -iv
     COMMAND ${CONFIGURE_ENV} ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
             ${LINK_OPTS} --with-pic
-    BUILD_BYPRODUCTS ${CLN_LIBRARIES}
+    BUILD_BYPRODUCTS ${CLN_BYPRODUCTS}
   )
 
   add_dependencies(CLN-EP GMP)
@@ -115,4 +128,12 @@ if(CLN_FOUND_SYSTEM)
 else()
   message(STATUS "Building CLN ${CLN_VERSION}: ${CLN_LIBRARIES}")
   add_dependencies(CLN CLN-EP)
+
+  ExternalProject_Get_Property(CLN-EP BUILD_BYPRODUCTS INSTALL_DIR)
+  string(REPLACE "<INSTALL_DIR>" "${INSTALL_DIR}" BUILD_BYPRODUCTS "${BUILD_BYPRODUCTS}")
+
+  # Static builds install the CLN static libraries.
+  # These libraries are required to compile a program that
+  # uses the cvc5 static library.
+  install(FILES ${BUILD_BYPRODUCTS} TYPE ${LIB_BUILD_TYPE})
 endif()

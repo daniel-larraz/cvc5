@@ -106,13 +106,13 @@ jobs:
             run_regression_args: --tester alf --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
 
           # GPL versions
-          # - name: ubuntu:production-gpl
-          #   os: ubuntu-20.04
-          #   config: production --auto-download --editline --gpl --cln --glpk --cocoa
-          #   cache-key: production-gpl
-          #   strip-bin: strip
-          #   package-name: cvc5-Linux-gpl
-          #   gpl-build: true
+          - name: ubuntu:production-gpl
+            os: ubuntu-20.04
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa
+            cache-key: production-gpl
+            strip-bin: strip
+            package-name: cvc5-Linux-gpl
+            gpl-build: true
 
           # - name: ubuntu:production-arm64-cross-gpl
           #   os: ubuntu-latest

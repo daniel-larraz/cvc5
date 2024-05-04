@@ -57,34 +57,38 @@ if(NOT CLN_FOUND_SYSTEM)
     message(SEND_ERROR "Can not build CLN, missing binary for autoreconf")
   endif()
 
+  set(CLN_INCLUDE_DIR "${DEPS_BASE}/include/")
+  if(BUILD_SHARED_LIBS)
+    set(LINK_OPTS --enable-shared --disable-static)
+    set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  else()
+    set(LINK_OPTS --enable-static --disable-shared)
+    set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln.a")
+  endif()
+
+  # CLN yields the following message at the end of the build process.
+  #     WARNING: `makeinfo' is missing on your system.
+  # This is a specific issue to Github CI on linux environments.
+  # Since makeinfo just builds the documentation for CLN,
+  # it is possible to get around this issue by just disabling it:
   set(CONFIGURE_ENV env "MAKEINFO=true")
 
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    #URL "https://www.ginac.de/CLN/cln.git/?p=cln.git%3Ba=snapshot%3Bh=cln_${CLN_TAG}%3Bsf=tgz"
-    #URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
-    #DOWNLOAD_NAME cln.tgz
     GIT_REPOSITORY "git://www.ginac.de/cln.git"
     GIT_TAG "cln_${CLN_TAG}"
     CONFIGURE_COMMAND
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh
     COMMAND
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> autoreconf -iv
-    COMMAND ${CONFIGURE_ENV} ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared
-            --enable-static --with-pic
-    BUILD_BYPRODUCTS <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.a
-                     <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}
+    COMMAND ${CONFIGURE_ENV} ${SHELL} <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
+            ${LINK_OPTS} --with-pic
+    BUILD_BYPRODUCTS ${CLN_LIBRARIES}
   )
 
   add_dependencies(CLN-EP GMP)
 
-  set(CLN_INCLUDE_DIR "${DEPS_BASE}/include/")
-  if(BUILD_SHARED_LIBS)
-    set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}")
-  else()
-    set(CLN_LIBRARIES "${DEPS_BASE}/${CMAKE_INSTALL_LIBDIR}/libcln.a")
-  endif()
 endif()
 
 set(CLN_FOUND TRUE)

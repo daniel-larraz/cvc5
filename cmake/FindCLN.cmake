@@ -65,7 +65,7 @@ if(NOT CLN_FOUND_SYSTEM)
     #URL "https://www.ginac.de/CLN/cln.git/?p=cln.git%3Ba=snapshot%3Bh=cln_${CLN_TAG}%3Bsf=tgz"
     #URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
     #DOWNLOAD_NAME cln.tgz
-    GIT_REPOSITORY "https://www.ginac.de/CLN/cln.git"
+    GIT_REPOSITORY "git://www.ginac.de/cln.git"
     GIT_TAG "cln_${CLN_TAG}"
     CONFIGURE_COMMAND
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh

@@ -66,9 +66,6 @@ runs:
       run: |
         ./contrib/get-alf-checker
         if [[ "${{ inputs.gpl-build }}" != "true" ]]; then exit 0; fi
-        if [[ "$RUNNER_OS" == "macOS" ]]; then
-          brew install autoconf automake libtool
-        fi
         if [[ "$RUNNER_OS" != "Windows" ]]; then
           ./contrib/get-glpk-cut-log
         fi

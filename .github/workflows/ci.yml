@@ -124,7 +124,7 @@ jobs:
 
           - name: macos:production-gpl
             os: macos-13
-            config: production --auto-download --editline --gpl --cln --glpk
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-macOS-gpl
@@ -133,7 +133,7 @@ jobs:
 
           - name: macos:production-arm64-gpl
             os: macos-14
-            config: production --auto-download --editline --gpl --cln --glpk
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
             cache-key: production-arm64-gpl
             strip-bin: strip
             package-name: cvc5-macOS-arm64-gpl

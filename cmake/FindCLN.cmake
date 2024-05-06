@@ -49,12 +49,24 @@ if(NOT CLN_FOUND_SYSTEM)
   fail_if_cross_compiling("Windows" "" "CLN" "autoconf fails")
   fail_if_cross_compiling("" "arm" "CLN" "syntax error in configure")
 
+  if(WIN32)
+    message(FATAL_ERROR
+      "Compilation of CLN in the MSYS2 environment is not supported."
+    )
+  endif()
+
   set(CLN_VERSION "1.3.7")
+  set(CLN_SO_MAJOR_VER "6")
+  set(CLN_SO_MINOR_VER "0")
+  set(CLN_SO_PATCH_VER "7")
+  set(CLN_SO_VERSION
+    "${CLN_SO_MAJOR_VER}.${CLN_SO_MINOR_VER}.${CLN_SO_PATCH_VER}"
+  )
   string(REPLACE "." "-" CLN_TAG ${CLN_VERSION})
 
   find_program(AUTORECONF autoreconf)
   if(NOT AUTORECONF)
-    message(SEND_ERROR "Can not build CLN, missing binary for autoreconf")
+    message(FATAL_ERROR "Can not build CLN, missing binary for autoreconf")
   endif()
 
   set(CLN_INCLUDE_DIR "${DEPS_BASE}/include/")
@@ -64,13 +76,13 @@ if(NOT CLN_FOUND_SYSTEM)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       set(CLN_BYPRODUCTS
         <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}
-        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.6${CMAKE_SHARED_LIBRARY_SUFFIX}
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln.${CLN_SO_MAJOR_VER}${CMAKE_SHARED_LIBRARY_SUFFIX}
       )
     else()
       set(CLN_BYPRODUCTS
         <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}
-        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}.6
-        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}.6.0.7
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}.${CLN_SO_MAJOR_VER}
+        <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}.${CLN_SO_VERSION}
       )
     endif()
   else()
@@ -89,8 +101,9 @@ if(NOT CLN_FOUND_SYSTEM)
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    GIT_REPOSITORY "git://www.ginac.de/cln.git"
-    GIT_TAG "cln_${CLN_TAG}"
+    URL "https://www.ginac.de/CLN/cln.git/?p=cln.git\\\;a=snapshot\\\;h=cln_${CLN_TAG}\\\;sf=tgz"
+    URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
+    DOWNLOAD_NAME cln.tgz
     CONFIGURE_COMMAND
       ${CMAKE_COMMAND} -E chdir <SOURCE_DIR> ./autogen.sh
     COMMAND

@@ -98,10 +98,16 @@ if(NOT CLN_FOUND_SYSTEM)
   # it is possible to get around this issue by just disabling it:
   set(CONFIGURE_ENV env "MAKEINFO=true")
 
+  if(${CMAKE_VERSION} VERSION_LESS "3.29")
+    set(CLN_URL "https://www.ginac.de/CLN/cln.git/?p=cln.git\\\;a=snapshot\\\;h=cln_${CLN_TAG}\\\;sf=tgz")
+  else()
+    set(CLN_URL "https://www.ginac.de/CLN/cln.git/?p=cln.git\;a=snapshot\;h=cln_${CLN_TAG}\;sf=tgz")
+  endif()
+
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
-    URL "https://www.ginac.de/CLN/cln.git/?p=cln.git\\\;a=snapshot\\\;h=cln_${CLN_TAG}\\\;sf=tgz"
+    URL ${CLN_URL}
     URL_HASH SHA1=bd6dec17cf1088bdd592794d9239d47c752cf3da
     DOWNLOAD_NAME cln.tgz
     CONFIGURE_COMMAND

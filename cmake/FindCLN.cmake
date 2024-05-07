@@ -123,6 +123,7 @@ if(NOT CLN_FOUND_SYSTEM)
     CONFIGURE_COMMAND
       ${CONFIGURE_ENV} ${SHELL} <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR> ${LINK_OPTS} --with-pic
+        ${CONFIGURE_OPTS}
     BUILD_BYPRODUCTS ${CLN_BYPRODUCTS}
   )
 

@@ -47,7 +47,6 @@ if(NOT CLN_FOUND_SYSTEM)
   include(ExternalProject)
 
   fail_if_cross_compiling("Windows" "" "CLN" "autoconf fails")
-  fail_if_cross_compiling("" "arm" "CLN" "syntax error in configure")
 
   if(WIN32)
     message(FATAL_ERROR

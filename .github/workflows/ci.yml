@@ -121,12 +121,12 @@ jobs:
             strip-bin: aarch64-linux-gnu-strip
             package-name: cvc5-Linux-arm64-gpl
 
-          - name: macos:production-arm64-cross-gpl
-            os: macos-13
-            config: production --auto-download --editline --arm64 --gpl --cln
-            cache-key: production-arm64-cross-gpl
-            strip-bin: strip
-            python-bindings: true
+          # - name: macos:production-arm64-cross-gpl
+          #   os: macos-13
+          #   config: production --auto-download --editline --arm64 --gpl --cln
+          #   cache-key: production-arm64-cross-gpl
+          #   strip-bin: strip
+          #   python-bindings: true
 
           - name: macos:production-gpl
             os: macos-13

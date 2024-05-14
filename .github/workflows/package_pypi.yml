@@ -11,7 +11,7 @@ jobs:
   build_wheels:
     name: Build wheels for ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')
+    #if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')
     strategy:
       matrix:
         include:

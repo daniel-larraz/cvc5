@@ -58,6 +58,23 @@ if(NOT CoCoA_FOUND_SYSTEM)
     message(FATAL_ERROR "Can not build CoCoA, missing binary for patch")
   endif()
 
+  set(CONFIGURE_ENV "")
+  set(CONFIGURE_OPTS "")
+  if(CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_MACOS)
+    set(CONFIGURE_OPTS
+      --host=${TOOLCHAIN_PREFIX}
+      --build=${CMAKE_HOST_SYSTEM_PROCESSOR})
+
+    set(CONFIGURE_ENV ${CONFIGURE_ENV} ${CMAKE_COMMAND} -E
+      env "CC_FOR_BUILD=cc")
+    if (CMAKE_CROSSCOMPILING_MACOS)
+      set(CONFIGURE_ENV
+        ${CONFIGURE_ENV}
+        env "CFLAGS=--target=${TOOLCHAIN_PREFIX}"
+        env "LDFLAGS=-arch ${CMAKE_OSX_ARCHITECTURES}")
+    endif()
+  endif()
+
   ExternalProject_Add(
     CoCoA-EP
     ${COMMON_EP_CONFIG}
@@ -68,7 +85,8 @@ if(NOT CoCoA_FOUND_SYSTEM)
     PATCH_COMMAND patch -p1 -d <SOURCE_DIR>
         -i ${CMAKE_CURRENT_LIST_DIR}/deps-utils/CoCoALib-0.99800-trace.patch
     BUILD_IN_SOURCE YES
-    CONFIGURE_COMMAND ${SHELL} ./configure --prefix=<INSTALL_DIR> --with-libgmp=${GMP_LIBRARY}
+    CONFIGURE_COMMAND ${CONFIGURE_ENV} ${SHELL} ./configure
+        --prefix=<INSTALL_DIR> --with-libgmp=${GMP_LIBRARY} ${CONFIGURE_OPTS}
     BUILD_COMMAND ${make_cmd} library
     BUILD_BYPRODUCTS <INSTALL_DIR>/lib/libcocoa.a
   )

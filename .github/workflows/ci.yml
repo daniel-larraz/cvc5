@@ -113,12 +113,12 @@ jobs:
             strip-bin: strip
             package-name: cvc5-Linux-gpl
 
-          # - name: ubuntu:production-arm64-cross-gpl
-          #   os: ubuntu-latest
-          #   config: production --auto-download --arm64 --gpl --cln
-          #   cache-key: production-arm64-cross-gpl
-          #   strip-bin: aarch64-linux-gnu-strip
-          #   package-name: cvc5-Linux-arm64-gpl
+          - name: ubuntu:production-arm64-cross-gpl
+            os: ubuntu-latest
+            config: production --auto-download --arm64 --gpl --cln
+            cache-key: production-arm64-cross-gpl
+            strip-bin: aarch64-linux-gnu-strip
+            package-name: cvc5-Linux-arm64-gpl
 
           - name: macos:production-gpl
             os: macos-13

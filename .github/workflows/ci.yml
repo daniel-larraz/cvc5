@@ -105,6 +105,47 @@ jobs:
             exclude_regress: 3-4
             run_regression_args: --tester alf --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
 
+          # GPL versions
+          - name: ubuntu:production-gpl
+            os: ubuntu-20.04
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa
+            cache-key: production-gpl
+            strip-bin: strip
+            package-name: cvc5-Linux-gpl
+
+          # - name: ubuntu:production-arm64-cross-gpl
+          #   os: ubuntu-latest
+          #   config: production --auto-download --arm64 --gpl --cln
+          #   cache-key: production-arm64-cross-gpl
+          #   strip-bin: aarch64-linux-gnu-strip
+          #   package-name: cvc5-Linux-arm64-gpl
+
+          - name: macos:production-gpl
+            os: macos-13
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
+            cache-key: production-gpl
+            strip-bin: strip
+            package-name: cvc5-macOS-gpl
+            macos-target: 10.13
+
+          - name: macos:production-arm64-gpl
+            os: macos-14
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
+            cache-key: production-arm64-gpl
+            strip-bin: strip
+            package-name: cvc5-macOS-arm64-gpl
+            macos-target: 11.0
+
+          # - name: win64:production-gpl
+          #   os: windows-latest
+          #   config: production --auto-download --gpl --cln --cocoa
+          #   cache-key: production-win64-native-gpl
+          #   strip-bin: strip
+          #   windows-build: true
+          #   shell: 'msys2 {0}'
+          #   package-name: cvc5-Win64-gpl
+          #   gpl-build: true
+
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 

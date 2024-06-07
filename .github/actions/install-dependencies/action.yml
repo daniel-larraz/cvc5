@@ -66,6 +66,7 @@ runs:
         path-type: inherit
         install: |
           make
+          mingw-w64-x86_64-autotools
           mingw-w64-x86_64-ccache
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
@@ -91,6 +92,9 @@ runs:
         brew config
 
         brew install \
+          autoconf \
+          automake \
+          libtool \
           ccache \
           pkgconfig \
           gnu-sed

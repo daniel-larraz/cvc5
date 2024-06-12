@@ -232,7 +232,7 @@ else()
 
   set(BUILD_WHEEL_CMD
       "${Python_EXECUTABLE} -m pip wheel ${CMAKE_CURRENT_BINARY_DIR} "
-      "${BUILD_WHEEL_CMD} --wheel-dir=${CMAKE_BINARY_DIR}/unrepaired-wheel")
+      "--wheel-dir=${CMAKE_BINARY_DIR}/unrepaired-wheel")
 
   set(REPAIR_WHEEL_CMD
       "${Repairwheel_EXECUTABLE} -o ${CMAKE_BINARY_DIR}/repaired-wheel "
@@ -260,6 +260,14 @@ else()
   # Build wheel
   install(CODE "execute_process(COMMAND ${BUILD_WHEEL_CMD})"
           FILE_PERMISSIONS OWNER_WRITE OWNER_READ)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    install(CODE
+            "file(GLOB WHL_FILE ${UNREPAIRED_WHEEL_DIR}/cvc5*.whl)
+             string(REPLACE \"universal2.whl\" \"${CMAKE_SYSTEM_PROCESSOR}.whl\" NEW_WHL_FILE \${WHL_FILE})
+             file(RENAME \"\${WHL_FILE}\" \"\${NEW_WHL_FILE}\")"
+             FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
+  endif()
 
   # Repair wheel (include required libraries)
   install(CODE

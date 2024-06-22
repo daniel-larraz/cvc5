@@ -36,6 +36,7 @@ if(WIN32)
         -DDEPS_BASE=${DEPS_BASE}
         -DINSTALL_CMD="${WHEEL_INSTALL_CMD}"
         -P ${CMAKE_SOURCE_DIR}/cmake/install_python_wheel.cmake
+    COMMAND ls -R ${CVC5_PYAPI_TEST_DIR}
     DEPENDS cvc5_python_api
   )
 

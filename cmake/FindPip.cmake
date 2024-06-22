@@ -20,7 +20,6 @@ macro(get_pip_version)
     COMMAND "${Python_EXECUTABLE}" -c "import pip; print(pip.__version__)"
     RESULT_VARIABLE Pip_VERSION_CHECK_RESULT
     OUTPUT_VARIABLE Pip_VERSION
-    ERROR_QUIET
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 endmacro()
@@ -60,6 +59,10 @@ else()
     )
     if (ENSUREPIP_RESULT EQUAL 0)
       set(Pip_FOUND TRUE)
+      get_pip_version()
+      execute_process (
+        COMMAND "${Python_EXECUTABLE}" -m pip install -U setuptools
+      )
     else()
       message(${Pip_FIND_MODE} "Could NOT install pip for Python version "
         "${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}")

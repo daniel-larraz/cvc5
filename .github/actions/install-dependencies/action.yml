@@ -109,13 +109,12 @@ runs:
         echo "$HOME/.venv/bin" >> $GITHUB_PATH
         echo "::endgroup::"
     
-    # Required for building and installing the Python bindings
-    - name: Upgrade Python pip and setuptools
+    # Required for the installation of Python bindings
+    - name: Upgrade Python pip
       shell: ${{ inputs.shell }}
       run: |
-        echo "::group::Upgrade Python pip and setuptools"
+        echo "::group::Upgrade Python pip"
         python3 -m pip install --upgrade pip
-        python3 -m pip install --upgrade setuptools
         echo "::endgroup::"
 
     - name: Install software for documentation

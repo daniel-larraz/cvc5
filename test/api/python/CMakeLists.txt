@@ -34,9 +34,8 @@ if(WIN32)
         -DRepairwheel_EXECUTABLE=${Repairwheel_EXECUTABLE}
         -DBUILD_DIR=${CMAKE_BINARY_DIR}
         -DDEPS_BASE=${DEPS_BASE}
-        -DINSTALL_CMD="${WHEEL_INSTALL_CMD}"
+        -DINSTALL_CMD=\"${WHEEL_INSTALL_CMD}\"
         -P ${CMAKE_SOURCE_DIR}/cmake/install_python_wheel.cmake
-    COMMAND ls -R ${CVC5_PYAPI_TEST_DIR}
     DEPENDS cvc5_python_api
   )
 
@@ -64,8 +63,12 @@ macro(cvc5_add_python_api_test name filename)
 # 'ctest -R "api/python/myapitest"'.
   set(test_name api/python/${name})
   add_test (NAME ${test_name}
-    COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=${PYTHON_MODULE_PATH}"
-            ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${filename})
+    COMMAND ${Python_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/${filename})
+    # directory for importing the python bindings
+    set_tests_properties(${test_name}
+      PROPERTIES LABELS "api"
+      ENVIRONMENT PYTHONPATH=${PYTHON_MODULE_PATH})
 endmacro()
 
 # add specific test files

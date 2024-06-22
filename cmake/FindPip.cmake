@@ -35,11 +35,12 @@ endif()
 
 if(Pip_VERSION_CHECK_RESULT EQUAL 0)
   set(Pip_FOUND TRUE)
+  message(STATUS "Found Pip version: ${Pip_VERSION}")
   if(DEFINED Pip_FIND_VERSION)
     if(Pip_VERSION VERSION_LESS ${Pip_FIND_VERSION})
       if(ENABLE_AUTO_DOWNLOAD)
         execute_process (
-          COMMAND "${Python_EXECUTABLE}" -m pip install -U pip
+          COMMAND "${Python_EXECUTABLE}" -m pip install -U pip setuptools
         )
         get_pip_version()
       else()
@@ -52,6 +53,7 @@ if(Pip_VERSION_CHECK_RESULT EQUAL 0)
 else()
   set(Pip_FOUND FALSE)
   if(ENABLE_AUTO_DOWNLOAD)
+    message(STATUS "Installing Pip")
     execute_process (
       COMMAND "${Python_EXECUTABLE}" -m ensurepip --upgrade
       RESULT_VARIABLE ENSUREPIP_RESULT

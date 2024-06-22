@@ -34,7 +34,7 @@ if(WIN32)
         -DRepairwheel_EXECUTABLE=${Repairwheel_EXECUTABLE}
         -DBUILD_DIR=${CMAKE_BINARY_DIR}
         -DDEPS_BASE=${DEPS_BASE}
-        -DINSTALL_CMD=\"${WHEEL_INSTALL_CMD}\"
+        -DINSTALL_CMD="${WHEEL_INSTALL_CMD}"
         -P ${CMAKE_SOURCE_DIR}/cmake/install_python_wheel.cmake
     DEPENDS cvc5_python_api
   )
@@ -47,10 +47,12 @@ if(WIN32)
   execute_process(COMMAND
     ${Python_EXECUTABLE} -c
       "import os.path;import sysconfig;\
-      print('${CVC5_PYAPI_TEST_DIR}'+\
-      sysconfig.get_paths()['platlib'].split(sysconfig.get_config_var('platbase'))[1])"
-    OUTPUT_VARIABLE PYTHON_MODULE_PATH
+      print(sysconfig.get_paths()['platlib'].split(sysconfig.get_config_var('platbase'))[1])"
+    OUTPUT_VARIABLE PYTHON_PREFIX
     OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  string(REPLACE "\\" "/" PYTHON_PREFIX ${PYTHON_PREFIX})
+  set(PYTHON_MODULE_PATH "${CVC5_PYAPI_TEST_DIR}${PYTHON_PREFIX}")
 
   message(STATUS "PYTHON_MODULE_PATH = ${PYTHON_MODULE_PATH}")
 else()

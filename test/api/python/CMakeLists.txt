@@ -55,7 +55,7 @@ if(WIN32)
   set(PYTHON_MODULE_PATH "${CVC5_PYAPI_TEST_DIR}${PYTHON_PREFIX}")
 
   file(GLOB MY_DIRECTORY_FILES "${PYTHON_MODULE_PATH}/*")
-  message(STATUS "Files in directory: ${PYTHON_MODULE_PATH}")
+  message(STATUS "Files in directory: ${MY_DIRECTORY_FILES}")
 
   message(STATUS "PYTHON_MODULE_PATH = ${PYTHON_MODULE_PATH}")
 else()

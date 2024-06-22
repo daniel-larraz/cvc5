@@ -51,6 +51,8 @@ if(WIN32)
       sysconfig.get_paths()['platlib'].split(sysconfig.get_config_var('platbase'))[1])"
     OUTPUT_VARIABLE PYTHON_MODULE_PATH
     OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  message(STATUS "PYTHON_MODULE_PATH = ${PYTHON_MODULE_PATH}")
 else()
   set(PYTHON_MODULE_PATH ${CMAKE_BINARY_DIR}/src/api/python)
 endif()

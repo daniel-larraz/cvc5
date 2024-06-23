@@ -23,13 +23,6 @@ runs:
       run: |
         cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} build-tests
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          ls
-          ls -R cvc5-pyapi-test
-          export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/cvc5-pyapi-test -name 'cvc5_python_base*')))"
-          echo PYTHONPATH=$PYTHONPATH
-          python3 -c "import cvc5"
-        fi
         if ! ctest -j${{ env.num_proc }} --output-on-failure -LE regress[${{ inputs.regressions-exclude }}]
         then
           ctest --output-on-failure --rerun-failed
@@ -53,7 +46,12 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         if [[ "${{ inputs.check-python-bindings }}" != "true" ]]; then exit 0; fi
-        export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/install -name 'cvc5_python_base*')))"
+        PYTHON_MODULE_PATH=$(dirname $(dirname $(find ${{ inputs.build-dir }}/install -name 'cvc5_python_base*')))
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          export PYTHONPATH="$PYTHONPATH:$(cygpath -m $PYTHON_MODULE_PATH)
+        else
+          export PYTHONPATH="$PYTHONPATH:$PYTHON_MODULE_PATH"
+        fi
         python3 -c "import cvc5"
 
     - name: Check Examples

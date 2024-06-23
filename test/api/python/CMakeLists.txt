@@ -17,7 +17,7 @@ if(WIN32)
   set(CVC5_PYAPI_TEST_DIR ${CMAKE_BINARY_DIR}/cvc5-pyapi-test)
 
   set(WHEEL_INSTALL_CMD
-       "${Python_EXECUTABLE} -m pip install --prefix ${CVC5_PYAPI_TEST_DIR}")
+       "${Python_EXECUTABLE} -m pip -vvv install --prefix ${CVC5_PYAPI_TEST_DIR}")
 
   # Install the cvc5 Python bindings in the build directory to run tests.
   # On Windows, adding the directory with the Python bindings to PYTHONPATH

@@ -24,6 +24,7 @@ runs:
         cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} build-tests
         if [[ "$RUNNER_OS" == "Windows" ]]; then
+          ls
           ls -R cvc5-pyapi-test
           export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/cvc5-pyapi-test -name 'cvc5_python_base*')))"
           echo PYTHONPATH=$PYTHONPATH

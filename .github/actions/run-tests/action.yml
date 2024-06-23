@@ -47,11 +47,10 @@ runs:
       run: |
         if [[ "${{ inputs.check-python-bindings }}" != "true" ]]; then exit 0; fi
         PYTHON_MODULE_PATH="$(dirname $(dirname $(find ${{ inputs.build-dir }}/install -name 'cvc5_python_base*')))"
-        echo "PYTHON_MODULE_PATH=${PYTHON_MODULE_PATH}"
         if [[ "$RUNNER_OS" == "Windows" ]]; then
-          export PYTHONPATH="$(cygpath -m $PYTHON_MODULE_PATH):$PYTHON_MODULE_PATH"
+          export PYTHONPATH="$PYTHONPATH;$(cygpath -m $PYTHON_MODULE_PATH)"
         else
-          export PYTHONPATH="$PYTHON_MODULE_PATH"
+          export PYTHONPATH="$PYTHONPATH:$PYTHON_MODULE_PATH"
         fi
         echo "PYTHONPATH=$PYTHONPATH"
         python3 -c "import cvc5"

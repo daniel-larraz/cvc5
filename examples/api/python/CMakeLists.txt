@@ -53,7 +53,7 @@ if(NOT (PYTHON_CVC5_RC EQUAL 0))
   execute_process(COMMAND
   ${Python_EXECUTABLE} -c
     "import os.path; import sysconfig;\
-     print('os.path.dirname(os.path.dirname('${CMAKE_PREFIX_PATH}'))+\
+     print(os.path.dirname(os.path.dirname('${CMAKE_PREFIX_PATH}'))+\
      sysconfig.get_paths()['platlib'].split(sysconfig.get_config_var('platbase'))[1])"
   OUTPUT_VARIABLE PYTHON_MODULE_PATH
   OUTPUT_STRIP_TRAILING_WHITESPACE)

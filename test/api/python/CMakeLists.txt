@@ -46,7 +46,7 @@ if(WIN32)
   # Get path to the python bindings installed in the build directory
   execute_process(COMMAND
     ${Python_EXECUTABLE} -c
-      "import os.path;import sysconfig;\
+      "import sysconfig;\
       print('${CVC5_PYAPI_TEST_DIR}'+\
       sysconfig.get_paths()['platlib'].split(sysconfig.get_config_var('platbase'))[1])"
     OUTPUT_VARIABLE PYTHON_MODULE_PATH

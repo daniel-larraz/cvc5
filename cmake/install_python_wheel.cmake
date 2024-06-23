@@ -21,5 +21,6 @@ string(REPLACE "\"" "" INSTALL_CMD "${INSTALL_CMD}")
 string(REPLACE "/" "\\" INSTALL_CMD "${INSTALL_CMD}")
 set(INSTALL_CMD "${INSTALL_CMD} ${WHL_FILE}")
 separate_arguments(INSTALL_CMD)
+message(STATUS "INSTALL_CMD: " ${INSTALL_CMD})
 
 execute_process(COMMAND ${INSTALL_CMD})

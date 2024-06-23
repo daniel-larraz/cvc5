@@ -23,10 +23,12 @@ runs:
       run: |
         cd ${{ inputs.build-dir }}
         make -j${{ env.num_proc }} build-tests
-        ls -R cvc5-pyapi-test
-        export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/cvc5-pyapi-test -name 'cvc5_python_base*')))"
-        echo PYTHONPATH=$PYTHONPATH
-        python3 -c "import cvc5"
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          ls -R cvc5-pyapi-test
+          export PYTHONPATH="$PYTHONPATH:$(dirname $(dirname $(find ${{ inputs.build-dir }}/cvc5-pyapi-test -name 'cvc5_python_base*')))"
+          echo PYTHONPATH=$PYTHONPATH
+          python3 -c "import cvc5"
+        fi
         if ! ctest -j${{ env.num_proc }} --output-on-failure -LE regress[${{ inputs.regressions-exclude }}]
         then
           ctest --output-on-failure --rerun-failed

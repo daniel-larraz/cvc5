@@ -9,7 +9,7 @@ name: PyPi packaging
 
 jobs:
   build_wheels:
-    name: Build wheels for ${{ matrix.name }}${{ matrix.gpl && ' (GPL)' || '' }}
+    name: ${{ matrix.name }}${{ matrix.gpl && ' (GPL)' || '' }}
     runs-on: ${{ matrix.os }}
     if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')
     strategy:
@@ -20,7 +20,7 @@ jobs:
           - macos-x86_64
           - macos-arm64
           - windows-x86_64
-        gpl: [true, false]
+        gpl: [false, true]
         include:
           - name: manylinux-x86_64
             os: ubuntu-latest
@@ -113,9 +113,9 @@ jobs:
       env:
         CIBW_SKIP: "cp36-* pp*-win* *-win32 *-manylinux_i686 *-musllinux_*"
         CIBW_ARCHS_LINUX: "${{ matrix.arch }}"
-        CIBW_BEFORE_ALL_LINUX: bash ./contrib/cibw/before_all_linux.sh ${{ steps.gpl.outputs.opts }}
-        CIBW_BEFORE_ALL_MACOS: bash ./contrib/cibw/before_all_macos.sh ${{ steps.gpl.outputs.opts }}
-        CIBW_BEFORE_ALL_WINDOWS: msys2 -c ./contrib/cibw/before_all_windows.sh ${{ steps.gpl.outputs.opts }}
+        CIBW_BEFORE_ALL_LINUX: bash ./contrib/cibw/before_all_linux.sh "${{ steps.gpl.outputs.opts }}"
+        CIBW_BEFORE_ALL_MACOS: bash ./contrib/cibw/before_all_macos.sh "${{ steps.gpl.outputs.opts }}"
+        CIBW_BEFORE_ALL_WINDOWS: msys2 -c ./contrib/cibw/before_all_windows.sh "${{ steps.gpl.outputs.opts }}"
         # Use delvewheel on windows
         CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
         CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >

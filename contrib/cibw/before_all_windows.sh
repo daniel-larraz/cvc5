@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install "$1"
+
+if [ "$1" = "true" ]; then
+  ./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install --gpl --cln --glpk --cocoa
+else
+  ./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install
+fi
 
 SETUP_CFG=./build/src/api/python/setup.cfg
 echo "[build_ext]" > ${SETUP_CFG}

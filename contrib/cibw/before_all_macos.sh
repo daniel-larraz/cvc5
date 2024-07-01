@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-./configure.sh production --auto-download "$1" \
-  --python-bindings --python-only-src --prefix=./install -DBUILD_GMP=1
+if [ "$1" = "true" ]; then
+  ./configure.sh production --auto-download --gpl --cln --glpk --cocoa \
+    --python-bindings --python-only-src --prefix=./install -DBUILD_GMP=1
+else
+  ./configure.sh production --auto-download \
+    --python-bindings --python-only-src --prefix=./install -DBUILD_GMP=1
+fi
 
 SETUP_CFG=./build/src/api/python/setup.cfg
 echo "[build_ext]" > ${SETUP_CFG}

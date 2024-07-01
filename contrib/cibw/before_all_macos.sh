@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$1" = "true" ]; then
-  brew install autoconf
+  brew install autoconf libtool
 
   ./configure.sh production --auto-download --gpl --cln --glpk --cocoa \
     --python-bindings --python-only-src --prefix=./install -DBUILD_GMP=1

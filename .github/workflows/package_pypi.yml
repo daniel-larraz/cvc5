@@ -85,18 +85,10 @@ jobs:
       run: |
         echo "::group::Create pyproject.toml"
         mkdir -p build/src/api/python
-        cp src/api/python/pyproject.toml build/src/api/python/
-        echo "::endgroup::"
-
-    - name: Set up GPL values
-      id: gpl
-      run: |
-        echo "::group::Set up GPL values"
         if [ "${{ matrix.gpl }}" == "true" ]; then
           sed 's/^name="cvc5"$/name="cvc5-gpl"/' ./src/api/python/pyproject.toml > ./build/src/api/python/pyproject.toml
-          echo opts="--gpl --cln --glpk --cocoa" >> $GITHUB_OUTPUT
         else
-          echo opts="" >> $GITHUB_OUTPUT
+          cp src/api/python/pyproject.toml build/src/api/python/
         fi
         echo "::endgroup::"
 

@@ -9,11 +9,12 @@ name: PyPi packaging
 
 jobs:
   build_wheels:
-    name: Build wheels for ${{ matrix.name }}
+    name: Build wheels for ${{ matrix.name }}${{ matrix.gpl && ' (GPL)' || '' }}
     runs-on: ${{ matrix.os }}
     if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')
     strategy:
       matrix:
+        gpl: [true, false]
         include:
           - name: manylinux-x86_64
             os: ubuntu-latest
@@ -34,6 +35,9 @@ jobs:
           - name: windows-x86_64
             os: windows-latest
             shell: 'msys2 {0}'
+        exclude:
+          - name: windows-x86_64
+            gpl: true
     defaults:
       run:
         shell: ${{ matrix.shell }}
@@ -78,6 +82,18 @@ jobs:
         cp src/api/python/pyproject.toml build/src/api/python/
         echo "::endgroup::"
 
+    - name: Set up GPL values
+      id: gpl
+      run: |
+        echo "::group::Set up GPL values"
+        if [ "${{ matrix.gpl }}" == "true" ]; then
+          sed -i 's/^name="cvc5"$/name="cvc5-gpl"/' ./build/src/api/python/pyproject.toml
+          echo opts="--gpl --cln --glpk --cocoa" >> $GITHUB_OUTPUT
+        else
+          echo opts="" >> $GITHUB_OUTPUT
+        fi
+        echo "::endgroup::"
+
     - name: Store MinGW64 path
       if: runner.os == 'Windows'
       id: mingw64-path
@@ -91,9 +107,9 @@ jobs:
       env:
         CIBW_SKIP: "cp36-* pp*-win* *-win32 *-manylinux_i686 *-musllinux_*"
         CIBW_ARCHS_LINUX: "${{ matrix.arch }}"
-        CIBW_BEFORE_ALL_LINUX: bash ./contrib/cibw/before_all_linux.sh
-        CIBW_BEFORE_ALL_MACOS: bash ./contrib/cibw/before_all_macos.sh
-        CIBW_BEFORE_ALL_WINDOWS: msys2 -c ./contrib/cibw/before_all_windows.sh
+        CIBW_BEFORE_ALL_LINUX: bash ./contrib/cibw/before_all_linux.sh ${{ steps.gpl.outputs.opts }}
+        CIBW_BEFORE_ALL_MACOS: bash ./contrib/cibw/before_all_macos.sh ${{ steps.gpl.outputs.opts }}
+        CIBW_BEFORE_ALL_WINDOWS: msys2 -c ./contrib/cibw/before_all_windows.sh ${{ steps.gpl.outputs.opts }}
         # Use delvewheel on windows
         CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
         CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./configure.sh production --auto-download \
+./configure.sh production --auto-download "$1" \
   --python-bindings --python-only-src --prefix=./install -DBUILD_GMP=1
 
 SETUP_CFG=./build/src/api/python/setup.cfg

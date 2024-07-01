@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install
+./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install "$1"
 
 SETUP_CFG=./build/src/api/python/setup.cfg
 echo "[build_ext]" > ${SETUP_CFG}

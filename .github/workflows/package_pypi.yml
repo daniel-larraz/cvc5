@@ -14,6 +14,12 @@ jobs:
     if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')
     strategy:
       matrix:
+        name:
+          - manylinux-x86_64
+          - manylinux-aarch64
+          - macos-x86_64
+          - macos-arm64
+          - windows-x86_64
         gpl: [true, false]
         include:
           - name: manylinux-x86_64

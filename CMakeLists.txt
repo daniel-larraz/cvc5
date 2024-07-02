@@ -332,8 +332,14 @@ endif()
 # of Clang have issues with the required flag).
 set(ENABLE_WHITEBOX_UNIT_TESTING OFF)
 if(ENABLE_UNIT_TESTING)
-  set(CMAKE_CXX_VISIBILITY_PRESET default)
-  set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
+  # Do not change visibility on Windows. This is a workaround for
+  # resolving some undefined references on Windows.
+  if (WIN32)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--export-all-symbols")
+  else()
+    set(CMAKE_CXX_VISIBILITY_PRESET default)
+    set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
+  endif()
 
   # Check if Clang version has the bug that was fixed in
   # https://reviews.llvm.org/D93104

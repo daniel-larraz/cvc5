@@ -328,7 +328,9 @@ set(ENABLE_WHITEBOX_UNIT_TESTING OFF)
 if(ENABLE_UNIT_TESTING)
   # Do not change visibility on Windows. This is a workaround for
   # resolving some undefined references on Windows.
-  if (NOT WIN32)
+  if (WIN32)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--export-all-symbols")
+  else()
     set(CMAKE_CXX_VISIBILITY_PRESET default)
     set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
   endif()

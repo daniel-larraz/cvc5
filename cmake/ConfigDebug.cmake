@@ -31,7 +31,9 @@ cvc5_set_option(ENABLE_UNIT_TESTING ON)
 
 # Do not change visibility on Windows. This is a workaround for
 # resolving some undefined references on Windows.
-if (NOT WIN32)
+if (WIN32)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--export-all-symbols")
+else()
   # Reset visibility for debug builds (https://github.com/cvc5/cvc5/issues/324)
   set(CMAKE_CXX_VISIBILITY_PRESET default)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)

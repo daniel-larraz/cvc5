@@ -63,7 +63,7 @@ jobs:
 
           - name: win64:production
             os: windows-latest
-            config: production --auto-download --assertions --tracing --unit-testing --all-bindings
+            config: production --auto-download --assertions --tracing --unit-testing
             cache-key: production-win64-native
             strip-bin: strip
             python-bindings: true

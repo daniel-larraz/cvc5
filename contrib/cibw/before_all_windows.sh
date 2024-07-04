@@ -4,7 +4,7 @@ GPL="$1"
 
 COMMON_CMD="./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install"
 
-if [ $GPL = "true" ]; then
+if [ "$GPL" = "true" ]; then
   GPL_FLAGS="--gpl --cln --glpk --cocoa"
 else
   GPL_FLAGS=""

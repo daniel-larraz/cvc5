@@ -86,7 +86,9 @@ jobs:
         echo "::group::Create pyproject.toml"
         mkdir -p build/src/api/python
         if [ "${{ matrix.gpl }}" == "true" ]; then
-          sed 's/^name="cvc5"$/name="cvc5-gpl"/' ./src/api/python/pyproject.toml > ./build/src/api/python/pyproject.toml
+          sed -e 's/^name="cvc5"$/name="cvc5-gpl"/' \
+              -e 's/^license = {text = "/license = {text = "GPL-2.0-or-later AND GPL-3.0-or-later AND /' \
+              ./src/api/python/pyproject.toml > ./build/src/api/python/pyproject.toml
         else
           cp src/api/python/pyproject.toml build/src/api/python/
         fi

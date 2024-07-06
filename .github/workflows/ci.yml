@@ -114,6 +114,14 @@ jobs:
             exclude_regress: 3-4
             run_regression_args: --tester alf --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
 
+          - name: ubuntu:production-arm64-cross-gpl
+            os: ubuntu-latest
+            config: production --auto-download --arm64 --gpl --cln --glpk
+            cache-key: production-arm64-cross-gpl
+            strip-bin: aarch64-linux-gnu-strip
+            package-name: cvc5-Linux-arm64-gpl
+            aarch64-gpl: true
+
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
@@ -127,6 +135,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Install dependencies
+      if: matrix.aarch64-gpl != true
       uses: ./.github/actions/install-dependencies
       with:
         with-documentation: ${{ matrix.build-documentation }}
@@ -135,12 +144,14 @@ jobs:
         shell: ${{ matrix.shell }}
 
     - name: Setup caches
+      if: matrix.aarch64-gpl != true
       uses: ./.github/actions/setup-cache
       with:
         cache-key: ${{ matrix.cache-key }}
         shell: ${{ matrix.shell }}
 
     - name: Configure and build
+      if: matrix.aarch64-gpl != true
       id: configure-and-build
       uses: ./.github/actions/configure-and-build
       with:
@@ -151,6 +162,21 @@ jobs:
         build-static: ${{ matrix.build-static }}
         strip-bin: ${{ matrix.strip-bin }}
         shell: ${{ matrix.shell }}
+
+    - name: Set up QEMU for GPL arm64 Linux build
+      if: matrix.aarch64-gpl == true
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: "linux/arm64"
+
+    - name: Build GPL arm64 Linux build
+      if: matrix.aarch64-gpl == true
+      uses: docker/build-push-action@v5
+      with:
+        file: contrib/aarch64-gpl.Dockerfile
+        context: ./
+        load: true
+        tags: cvc5-aarch64-gpl:latest
 
     - name: Run tests
       if: matrix.run_regression_args

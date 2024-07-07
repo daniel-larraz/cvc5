@@ -3,7 +3,8 @@ FROM arm64v8/ubuntu:20.04
 ARG OTHER_OPTS
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8 \
+  apt-get update && apt-get install -y \
   automake \
   cmake \
   g++ \

@@ -1,0 +1,57 @@
+on: [push]
+name: GPL Linux ARM64 release
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - name: shared
+            docker-build-args: ["OTHER_OPTS=--java-bindings"]
+
+          - name: static
+            docker-build-args: ["OTHER_OPTS=--static"]
+    
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: "linux/arm64"
+
+    - name: Build GPL arm64 Linux build
+      uses: docker/build-push-action@v5
+      with:
+        file: contrib/arm64-gpl.Dockerfile
+        context: ./
+        load: true
+        tags: cvc5-arm64-${{ matrix.name }}-gpl:latest
+        build-args: ${{ matrix.docker-build-args }}
+
+    - name: Extract install.tar.gz
+      id: extract
+      uses: shrink/actions-docker-extract@v3
+      with:
+        image: cvc5-arm64-${{ matrix.name }}-gpl:latest
+        path: /cvc5/install
+        destination: ./
+
+    - name: Create ZIP file
+      id: create_zip
+      run: |
+        PACKAGE_NAME=cvc5-Linux-arm64-${{ matrix.name }}-gpl
+        mv install $PACKAGE_NAME
+        zip -r $PACKAGE_NAME $PACKAGE_NAME
+        echo "filepath=./$PACKAGE_NAME.zip" >> $GITHUB_OUTPUT
+
+    - name: Upload release asset
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload latest \
+          ${{ steps.create_zip.outputs.filepath }} \
+          --repo $GITHUB_REPOSITORY

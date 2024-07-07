@@ -23,7 +23,7 @@ jobs:
       with:
         platforms: "linux/arm64"
 
-    - name: Build GPL arm64 Linux build
+    - name: Build cvc5
       uses: docker/build-push-action@v5
       with:
         file: contrib/arm64-gpl.Dockerfile
@@ -33,7 +33,7 @@ jobs:
         build-args: |
           OTHER_OPTS=${{ matrix.build-opts }}
 
-    - name: Extract install.tar.gz
+    - name: Extract install directory
       id: extract
       uses: shrink/actions-docker-extract@v3
       with:
@@ -48,11 +48,14 @@ jobs:
         mv install $PACKAGE_NAME
         zip -r $PACKAGE_NAME $PACKAGE_NAME
         echo "filepath=./$PACKAGE_NAME.zip" >> $GITHUB_OUTPUT
+        echo "release=latest" >> $GITHUB_OUTPUT
+        #echo "release=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 
-    - name: Upload release asset
+    - name: Upload ZIP file
+      #if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release upload latest \
+        gh release upload ${{ steps.create_zip.outputs.release }} \
           ${{ steps.create_zip.outputs.filepath }} \
           --repo $GITHUB_REPOSITORY

@@ -20,6 +20,7 @@ COPY . /cvc5
 WORKDIR /cvc5
 
 RUN ./configure.sh --auto-download --prefix=./build/install \
+    -DJAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64 \
     --gpl --cln --cocoa --glpk ${OTHER_OPTS}
 WORKDIR /cvc5/build
 

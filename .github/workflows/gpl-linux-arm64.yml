@@ -7,10 +7,10 @@ jobs:
       matrix:
         include:
           - name: shared
-            docker-build-args: ["OTHER_OPTS=--java-bindings"]
+            build-opts: --java-bindings
 
           - name: static
-            docker-build-args: ["OTHER_OPTS=--static"]
+            build-opts: --static
     
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
@@ -30,7 +30,8 @@ jobs:
         context: ./
         load: true
         tags: cvc5-arm64-${{ matrix.name }}-gpl:latest
-        build-args: ${{ matrix.docker-build-args }}
+        build-args: |
+          OTHER_OPTS=${{ matrix.build-opts }}
 
     - name: Extract install.tar.gz
       id: extract

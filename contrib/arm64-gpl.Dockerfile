@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
   libcln-dev \
   libgmp-dev \
   libtool \
-  openjdk-8-jdk \
+  openjdk-11-jdk \
   python3 \
   python3-pip \
   python3-venv \
@@ -20,7 +20,7 @@ COPY . /cvc5
 WORKDIR /cvc5
 
 RUN ./configure.sh --auto-download --prefix=./build/install \
-    -DJAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64 \
+    -DJAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64 \
     --gpl --cln --cocoa --glpk ${OTHER_OPTS}
 WORKDIR /cvc5/build
 

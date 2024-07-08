@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 COPY . /cvc5
 WORKDIR /cvc5
 
-RUN ./configure.sh --auto-download --prefix=./build/install \
+RUN ./configure.sh --auto-download --prefix=./install \
     -DJAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64 \
     --gpl --cln --cocoa --glpk ${OTHER_OPTS}
 WORKDIR /cvc5/build

@@ -10,153 +10,138 @@ jobs:
   build:
     strategy:
       matrix:
-        name:
-          - ubuntu:production
-          - ubuntu:production-arm64-cross
-          - macos:production
-          - macos:production-arm64
-          - macos:production-arm64-cross
-          - win64:production
-          - win64:production-cross
-          - wasm:production
-          - ubuntu:production-clang
-          - ubuntu:production-dbg
-          - ubuntu:production-dbg-clang
-          - ubuntu:production-gpl
-          - macos:production-gpl
-          - macos:production-arm64-gpl
         has-tag:
           - ${{ startsWith(github.ref, 'refs/tags/') }}
-        include:
-          - name: ubuntu:production
-            os: ubuntu-20.04
-            config: production --auto-download --all-bindings --editline --docs
-            cache-key: production
-            strip-bin: strip
-            python-bindings: true
-            build-documentation: true
-            check-examples: true
-            package-name: cvc5-Linux-x86_64
-            exclude_regress: 3-4
-            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+        name:
+        - ubuntu:production
+          os: ubuntu-20.04
+          config: production --auto-download --all-bindings --editline --docs
+          cache-key: production
+          strip-bin: strip
+          python-bindings: true
+          build-documentation: true
+          check-examples: true
+          package-name: cvc5-Linux-x86_64
+          exclude_regress: 3-4
+          run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
-          - name: ubuntu:production-arm64-cross
-            os: ubuntu-latest
-            config: production --auto-download --arm64
-            cache-key: production-arm64-cross
-            strip-bin: aarch64-linux-gnu-strip
-            package-name: cvc5-Linux-arm64
+        - ubuntu:production-arm64-cross
+          os: ubuntu-latest
+          config: production --auto-download --arm64
+          cache-key: production-arm64-cross
+          strip-bin: aarch64-linux-gnu-strip
+          package-name: cvc5-Linux-arm64
 
-          - name: macos:production
-            os: macos-13
-            config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
-            cache-key: production
-            strip-bin: strip
-            python-bindings: true
-            check-examples: true
-            package-name: cvc5-macOS-x86_64
-            macos-target: 10.13
-            exclude_regress: 3-4
-            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
- 
-          - name: macos:production-arm64
-            os: macos-14
-            config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
-            cache-key: production-arm64
-            strip-bin: strip
-            python-bindings: true
-            check-examples: true
-            package-name: cvc5-macOS-arm64
-            macos-target: 11.0
-            exclude_regress: 3-4
-            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+        - macos:production
+          os: macos-13
+          config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
+          cache-key: production
+          strip-bin: strip
+          python-bindings: true
+          check-examples: true
+          package-name: cvc5-macOS-x86_64
+          macos-target: 10.13
+          exclude_regress: 3-4
+          run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
-          - name: macos:production-arm64-cross
-            os: macos-13
-            config: production --auto-download --all-bindings --editline --arm64
-            cache-key: production-arm64-cross
-            strip-bin: strip
-            python-bindings: true
+        - macos:production-arm64
+          os: macos-14
+          config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
+          cache-key: production-arm64
+          strip-bin: strip
+          python-bindings: true
+          check-examples: true
+          package-name: cvc5-macOS-arm64
+          macos-target: 11.0
+          exclude_regress: 3-4
+          run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
-          - name: win64:production
-            os: windows-latest
-            config: production --auto-download --all-bindings
-            cache-key: production-win64-native
-            strip-bin: strip
-            python-bindings: true
-            windows-build: true
-            shell: 'msys2 {0}'
-            check-examples: true
-            package-name: cvc5-Win64-x86_64
-            exclude_regress: 1-4
-            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+        - macos:production-arm64-cross
+          os: macos-13
+          config: production --auto-download --all-bindings --editline --arm64
+          cache-key: production-arm64-cross
+          strip-bin: strip
+          python-bindings: true
 
-          - name: win64:production-cross
-            os: ubuntu-latest
-            config: production --auto-download --win64
-            cache-key: production-win64-cross
-            strip-bin: x86_64-w64-mingw32-strip
-            windows-build: true
+        - win64:production
+          os: windows-latest
+          config: production --auto-download --all-bindings
+          cache-key: production-win64-native
+          strip-bin: strip
+          python-bindings: true
+          windows-build: true
+          shell: 'msys2 {0}'
+          check-examples: true
+          package-name: cvc5-Win64-x86_64
+          exclude_regress: 1-4
+          run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
-          - name: wasm:production
-            os: ubuntu-20.04
-            config: production --static --static-binary --auto-download --wasm=JS --wasm-flags='-s MODULARIZE'
-            cache-key: productionwasm
-            wasm-build: true
-            build-shared: false
-            build-static: true
+        - win64:production-cross
+          os: ubuntu-latest
+          config: production --auto-download --win64
+          cache-key: production-win64-cross
+          strip-bin: x86_64-w64-mingw32-strip
+          windows-build: true
 
-          - name: ubuntu:production-clang
-            os: ubuntu-20.04
-            env: CC=clang CXX=clang++
-            config: production --auto-download --no-poly
-            cache-key: productionclang
-            check-examples: true
-            exclude_regress: 3-4
-            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+        - wasm:production
+          os: ubuntu-20.04
+          config: production --static --static-binary --auto-download --wasm=JS --wasm-flags='-s MODULARIZE'
+          cache-key: productionwasm
+          wasm-build: true
+          build-shared: false
+          build-static: true
 
-          - name: ubuntu:production-dbg
-            os: ubuntu-20.04
-            config: production --auto-download --assertions --tracing --unit-testing --all-bindings --editline --cocoa --gpl
-            cache-key: dbg
-            exclude_regress: 3-4
-            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester proof --tester dump
-            python-bindings: true
+        - ubuntu:production-clang
+          os: ubuntu-20.04
+          env: CC=clang CXX=clang++
+          config: production --auto-download --no-poly
+          cache-key: productionclang
+          check-examples: true
+          exclude_regress: 3-4
+          run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
-          - name: ubuntu:production-dbg-clang
-            os: ubuntu-20.04
-            env: CC=clang CXX=clang++
-            config: production --auto-download --assertions --tracing --cln --gpl
-            cache-key: dbgclang
-            exclude_regress: 3-4
-            run_regression_args: --tester alf --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
+        - ubuntu:production-dbg
+          os: ubuntu-20.04
+          config: production --auto-download --assertions --tracing --unit-testing --all-bindings --editline --cocoa --gpl
+          cache-key: dbg
+          exclude_regress: 3-4
+          run_regression_args: --tester base --tester model --tester synth --tester abduct --tester proof --tester dump
+          python-bindings: true
 
-          # GPL versions
-          - name: ubuntu:production-gpl
-            os: ubuntu-20.04
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa
-            cache-key: production-gpl
-            strip-bin: strip
-            package-name: cvc5-Linux-x86_64
-            gpl-tag: -gpl
+        - ubuntu:production-dbg-clang
+          os: ubuntu-20.04
+          env: CC=clang CXX=clang++
+          config: production --auto-download --assertions --tracing --cln --gpl
+          cache-key: dbgclang
+          exclude_regress: 3-4
+          run_regression_args: --tester alf --tester base --tester model --tester synth --tester abduct --tester unsat-core --tester dump
 
-          - name: macos:production-gpl
-            os: macos-13
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
-            cache-key: production-gpl
-            strip-bin: strip
-            package-name: cvc5-macOS-x86_64
-            macos-target: 10.13
-            gpl-tag: -gpl
+        # GPL versions
+        - ubuntu:production-gpl
+          os: ubuntu-20.04
+          config: production --auto-download --editline --gpl --cln --glpk --cocoa
+          cache-key: production-gpl
+          strip-bin: strip
+          package-name: cvc5-Linux-x86_64
+          gpl-tag: -gpl
 
-          - name: macos:production-arm64-gpl
-            os: macos-14
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
-            cache-key: production-arm64-gpl
-            strip-bin: strip
-            package-name: cvc5-macOS-arm64
-            macos-target: 11.0
-            gpl-tag: -gpl
+        - macos:production-gpl
+          os: macos-13
+          config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
+          cache-key: production-gpl
+          strip-bin: strip
+          package-name: cvc5-macOS-x86_64
+          macos-target: 10.13
+          gpl-tag: -gpl
+
+        - macos:production-arm64-gpl
+          os: macos-14
+          config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
+          cache-key: production-arm64-gpl
+          strip-bin: strip
+          package-name: cvc5-macOS-arm64
+          macos-target: 11.0
+          gpl-tag: -gpl
 
         exclude:
           - name: ubuntu:production-gpl

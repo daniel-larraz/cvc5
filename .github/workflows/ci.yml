@@ -166,7 +166,7 @@ jobs:
           - name: macos:production-arm64-gpl
             has-tag: false
 
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }} (${{ matrix.has-tag }})
     runs-on: ${{ matrix.os }}
 
     # cancel already running jobs for the same branch/pr/tag

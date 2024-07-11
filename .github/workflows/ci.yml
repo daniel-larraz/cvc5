@@ -143,16 +143,16 @@ jobs:
             macos-target: 11.0
             gpl-tag: -gpl
 
-        exclude:
-          - has-tag: false
-            build:
-              name: ubuntu:production-gpl
-          - has-tag: false
-            build:
-              name: macos:production-gpl
-          - has-tag: false
-            build:
-              name: macos:production-arm64-gpl
+        # exclude:
+        #   - has-tag: false
+        #     build:
+        #       name: ubuntu:production-gpl
+        #   - has-tag: false
+        #     build:
+        #       name: macos:production-gpl
+        #   - has-tag: false
+        #     build:
+        #       name: macos:production-arm64-gpl
 
 
     name: ${{ matrix.build.name }}
@@ -223,7 +223,7 @@ jobs:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
 
     - name: Create and add shared package to latest and release
-      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
@@ -234,7 +234,7 @@ jobs:
         shell: ${{ matrix.build.shell }}
 
     - name: Create and add static package to latest and release
-      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}

@@ -43,6 +43,10 @@ runs:
             install_name_tool -change "${{ inputs.build-dir }}/deps/lib/libpolyxx.0.dylib" @rpath/libpolyxx.0.dylib ./install/lib/libcvc5.1.dylib
             install_name_tool -change "${{ inputs.build-dir }}/deps/lib/libgmp.10.dylib" @rpath/libgmp.10.dylib ./install/lib/libcvc5.dylib
             install_name_tool -change "${{ inputs.build-dir }}/deps/lib/libgmp.10.dylib" @rpath/libgmp.10.dylib ./install/lib/libcvc5.1.dylib
+            if [ -f ./install/lib/libcln.dylib ]; then
+              install_name_tool -change "${{ inputs.build-dir }}/deps/lib/libcln.6.dylib" @rpath/libcln.6.dylib ./install/lib/libcvc5.dylib
+              install_name_tool -change "${{ inputs.build-dir }}/deps/lib/libcln.6.dylib" @rpath/libcln.6.dylib ./install/lib/libcvc5.1.dylib
+            fi
           fi
         fi
         mv install ${{ inputs.package-name }}

@@ -15,7 +15,7 @@ jobs:
         build:
           - name: ubuntu:production
             os: ubuntu-20.04
-            config: production --auto-download --all-bindings --editline --docs
+            config: production --auto-download --all-bindings --editline --docs ${{ has-tag && ' -DBUILD_GMP=1' || '' }}
             cache-key: production
             strip-bin: strip
             python-bindings: true
@@ -119,7 +119,7 @@ jobs:
           # GPL versions
           - name: ubuntu:production-gpl
             os: ubuntu-20.04
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-Linux-x86_64

@@ -20,14 +20,18 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install Linux software"
+        if [ "${{ startsWith(github.ref, 'refs/tags/') }}" == "true" ]; then
+          LIBS=""
+        else
+          LIBS="libcln-dev libgmp-dev"
+        fi
         sudo apt-get update
         sudo apt-get install -y \
           build-essential \
           ccache \
           libbsd-dev \
-          libcln-dev \
+          $LIBS \
           libedit-dev \
-          libgmp-dev \
           libtinfo-dev \
           libfl-dev
         echo "SED=sed" >> $GITHUB_ENV

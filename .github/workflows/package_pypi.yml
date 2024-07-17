@@ -124,14 +124,16 @@ jobs:
     - name: Create ZIP file
       id: create_zip
       run: |
-        zip -r wheels-${{ matrix.name }} ./wheelhouse/
+        PACKAGE_NAME=wheels-${{ matrix.name }}${{ matrix.gpl && '-gpl' || '' }}
+        zip -r $PACKAGE_NAME ./wheelhouse/
+        echo "filepath=./$PACKAGE_NAME.zip" >> $GITHUB_OUTPUT
 
     - name: Upload ZIP file
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh release upload latest \
-          wheels-${{ matrix.name }}.zip \
+          ${{ steps.create_zip.outputs.filepath }} \
           --repo $GITHUB_REPOSITORY
 
     # - uses: actions/upload-artifact@v4

@@ -114,6 +114,9 @@ if(NOT CLN_FOUND_SYSTEM)
     endif()
   endif()
 
+  get_target_property(GMP_LIBRARY GMP IMPORTED_LOCATION)
+  get_filename_component(GMP_LIB_PATH "${GMP_LIBRARY}" DIRECTORY)
+
   ExternalProject_Add(
     CLN-EP
     ${COMMON_EP_CONFIG}
@@ -123,7 +126,7 @@ if(NOT CLN_FOUND_SYSTEM)
     CONFIGURE_COMMAND
       ${CONFIGURE_ENV} ${SHELL} <SOURCE_DIR>/configure
         --prefix=<INSTALL_DIR> ${LINK_OPTS} --with-pic
-        ${CONFIGURE_OPTS}
+        --with-gmp=${GMP_LIB_PATH} ${CONFIGURE_OPTS}
     BUILD_BYPRODUCTS ${CLN_BYPRODUCTS}
   )
 

@@ -79,6 +79,7 @@ jobs:
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gmp
+          zip
 
     # cibuildwheel requires pyproject.toml to be present from the beginning
     - name: Create pyproject.toml
@@ -119,6 +120,19 @@ jobs:
         CIBW_ENVIRONMENT_MACOS: >
           DYLD_LIBRARY_PATH="$(pwd)/install/lib:$DYLD_LIBRARY_PATH"
           MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos-target }}
+
+    - name: Create ZIP file
+      id: create_zip
+      run: |
+        zip -r wheels-${{ matrix.name }} ./wheelhouse/
+
+    - name: Upload ZIP file
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload latest \
+          wheels-${{ matrix.name }}.zip \
+          --repo $GITHUB_REPOSITORY
 
     # - uses: actions/upload-artifact@v4
     #   with:

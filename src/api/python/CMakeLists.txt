@@ -21,7 +21,7 @@ if(NOT ONLY_PYTHON_EXT_SRC)
   # As a workaround, install version 66.1.0, which is
   # the minimum version of setuptools required by cvc5 and
   # is supported by Python 3.7
-  find_package(Setuptools 71.0.2 REQUIRED)
+  find_package(Setuptools 71.0.3 REQUIRED)
   find_package(Cython 3.0.0 REQUIRED)
   # Python modules for installing:
   find_package(Pip 23.0 REQUIRED)

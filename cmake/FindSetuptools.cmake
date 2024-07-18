@@ -78,7 +78,7 @@ if(INSTALL_SETUPTOOLS)
   message(STATUS "Installing setuptools${INSTALL_SETUPTOOLS_MESSAGE}")
   execute_process(
     COMMAND
-    ${Python_EXECUTABLE} -m pip install setuptools${INSTALL_SETUPTOOLS_OPTION} importlib_metadata
+    ${Python_EXECUTABLE} -m pip install setuptools${INSTALL_SETUPTOOLS_OPTION}
     RESULT_VARIABLE SETUPTOOLS_INSTALL_CMD_EXIT_CODE
   )
   if(SETUPTOOLS_INSTALL_CMD_EXIT_CODE)

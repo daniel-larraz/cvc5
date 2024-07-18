@@ -15,11 +15,12 @@
 
 if(NOT ONLY_PYTHON_EXT_SRC)
   # Python modules for building:
-  # Version 70.2.0 is broken on Windows.
+  # Setuptools v70.2.0 is broken on Windows.
   #   See https://github.com/pypa/distutils/issues/268
-  # Version 71.0.1 is broken on all platforms.
-  # Install exact version 70.3.0 as a workaround.
-  find_package(Setuptools 70.3.0 EXACT REQUIRED)
+  # However, requiring a newer version would prevent cvc5 users from
+  # using Python 3.7 since v68.0.0 is the last version of setuptools
+  # that is compatible with Python 3.7.
+  find_package(Setuptools 66.1.0 REQUIRED)
   find_package(Cython 3.0.0 REQUIRED)
   # Python modules for installing:
   find_package(Pip 23.0 REQUIRED)

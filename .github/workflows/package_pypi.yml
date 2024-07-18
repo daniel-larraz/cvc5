@@ -121,20 +121,20 @@ jobs:
           DYLD_LIBRARY_PATH="$(pwd)/install/lib:$DYLD_LIBRARY_PATH"
           MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos-target }}
 
-    - name: Create ZIP file
-      id: create_zip
-      run: |
-        PACKAGE_NAME=wheels-${{ matrix.name }}${{ matrix.gpl && '-gpl' || '' }}
-        zip -r $PACKAGE_NAME ./wheelhouse/
-        echo "filepath=./$PACKAGE_NAME.zip" >> $GITHUB_OUTPUT
+    # - name: Create ZIP file
+    #   id: create_zip
+    #   run: |
+    #     PACKAGE_NAME=wheels-${{ matrix.name }}${{ matrix.gpl && '-gpl' || '' }}
+    #     zip -r $PACKAGE_NAME ./wheelhouse/
+    #     echo "filepath=./$PACKAGE_NAME.zip" >> $GITHUB_OUTPUT
 
-    - name: Upload ZIP file
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh release upload latest \
-          ${{ steps.create_zip.outputs.filepath }} \
-          --repo $GITHUB_REPOSITORY
+    # - name: Upload ZIP file
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     gh release upload latest \
+    #       ${{ steps.create_zip.outputs.filepath }} \
+    #       --repo $GITHUB_REPOSITORY
 
     # - uses: actions/upload-artifact@v4
     #   with:

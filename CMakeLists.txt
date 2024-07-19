@@ -394,10 +394,16 @@ set(Python_BASE_EXECUTABLE "${Python_EXECUTABLE}"
 
 macro(create_venv)
   message(STATUS "Creating Python virtual environment")
-  # Use packages installed in the base installation if they're already present
+  # Building the Python bindings currently requires a recent version of
+  # setuptools...
+  if(BUILD_BINDINGS_PYTHON AND NOT ONLY_PYTHON_EXT_SRC)
+    set(VENV_SYSTEM_PACKAGES_FLAG "")
+  else()
+    set(VENV_SYSTEM_PACKAGES_FLAG "--system-site-packages")
+  endif()
   execute_process (
     COMMAND
-      "${Python_EXECUTABLE}" -m venv --system-site-packages "${VENV_PATH}"
+      "${Python_EXECUTABLE}" -m venv ${VENV_SYSTEM_PACKAGES_FLAG} "${VENV_PATH}"
     RESULT_VARIABLE VENV_CMD_EXIT_CODE
   )
   if(VENV_CMD_EXIT_CODE)

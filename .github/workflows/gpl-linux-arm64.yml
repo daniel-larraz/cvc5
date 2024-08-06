@@ -1,12 +1,10 @@
 name: GPL Linux ARM64 release
 
-on:
-  release:
-    types: [published]
+on: [push]
 
 jobs:
   build:
-    if: (github.repository == 'cvc5/cvc5')
+    #if: (github.repository == 'cvc5/cvc5')
     strategy:
       matrix:
         include:
@@ -52,7 +50,7 @@ jobs:
         mv install $PACKAGE_NAME
         zip -r $PACKAGE_NAME $PACKAGE_NAME
         echo "filepath=./$PACKAGE_NAME.zip" >> $GITHUB_OUTPUT
-        echo "release=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+        echo "release=latest" >> $GITHUB_OUTPUT
 
     - name: Upload ZIP file
       env:

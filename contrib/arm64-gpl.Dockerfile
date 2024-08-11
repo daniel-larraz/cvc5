@@ -2,7 +2,6 @@ FROM arm64v8/ubuntu:20.04
 
 ARG OTHER_OPTS
 ARG DEBIAN_FRONTEND=noninteractive
-ARG JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 RUN apt-get update && apt-get install -y \
   automake \

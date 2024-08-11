@@ -105,6 +105,8 @@ add_custom_target(generate-java-types DEPENDS ${JAVA_TYPES_FILES})
 find_package(Java COMPONENTS Development REQUIRED)
 include(UseJava)
 
+set(CMAKE_JAVA_FLAGS "-Dfile.encoding=UTF-8")
+
 # specify java source files
 set(JAVA_FILES
   ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/AbstractPointer.java

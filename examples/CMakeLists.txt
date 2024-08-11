@@ -77,6 +77,8 @@ if(TARGET cvc5::cvc5jar)
   find_package(Java REQUIRED)
   include(UseJava)
 
+  set(CMAKE_JAVA_FLAGS "-Dfile.encoding=UTF-8")
+
   # get directory build/install/lib where libcvc5jni.so is installed
   get_target_property(CVC5_LIB_FILE cvc5::cvc5 LOCATION)
   get_filename_component(CVC5_JNI_PATH ${CVC5_LIB_FILE} DIRECTORY)

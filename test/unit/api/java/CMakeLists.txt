@@ -17,6 +17,8 @@ find_package(Java REQUIRED)
 include(UseJava)
 find_package(JUnit REQUIRED)
 
+set(CMAKE_JAVA_FLAGS "-Dfile.encoding=UTF-8")
+
 get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
 get_filename_component(CVC5_JNI_PATH ${CVC5_JAR_PATH} DIRECTORY)
 

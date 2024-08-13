@@ -200,6 +200,9 @@ if(NOT DEFINED JAVA_HOME)
   string(REGEX MATCH "java.home = [^\r\n]+" java_home_line "${java_settings}")
   # Extract the path from the line
   string(REPLACE "java.home = " "" JAVA_HOME "${java_home_line}")
+  if(WIN32)
+    string(REPLACE "\\" "/" JAVA_HOME ${JAVA_HOME})
+  endif()
 endif()
 message(STATUS "JAVA_HOME: ${JAVA_HOME}")
 

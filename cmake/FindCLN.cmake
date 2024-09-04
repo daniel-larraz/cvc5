@@ -169,29 +169,28 @@ else()
   # uses the cvc5 static library.
   install(FILES ${BUILD_BYPRODUCTS} TYPE ${LIB_BUILD_TYPE})
 
+
   if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
+    function(update_rpath dylib_path)
+      execute_process(
+        COMMAND otool -L ${dylib_path}
+        OUTPUT_VARIABLE OTOOL_OUTPUT
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+      string(REPLACE "\n" ";" OTOOL_LINES "${OTOOL_OUTPUT}")
+      foreach(LINE ${OTOOL_LINES})
+        if(LINE MATCHES "${DEPS_BASE}/lib")
+          string(REGEX REPLACE "^[ \t]*([^ \t]+).*" "\\1" LIB_PATH "${LINE}")
+          string(REPLACE "${DEPS_BASE}/lib" "@rpath" LIB_RPATH "${LIB_PATH}")
+          execute_process(
+            COMMAND ${CMAKE_INSTALL_NAME_TOOL} -change ${LIB_PATH} ${LIB_RPATH} ${dylib_path}
+          )
+        endif()
+      endforeach()
+    endfunction()
     foreach(CLN_DYLIB ${BUILD_BYPRODUCTS})
-      install(CODE [[ 
-      function(update_rpath dylib_path)
-        execute_process(
-          COMMAND otool -L ${dylib_path}
-          OUTPUT_VARIABLE OTOOL_OUTPUT
-          OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-        string(REPLACE "\n" ";" OTOOL_LINES "${OTOOL_OUTPUT}")
-        foreach(LINE ${OTOOL_LINES})
-          if(LINE MATCHES "${DEPS_BASE}/lib")
-            string(REGEX REPLACE "^[ \t]*([^ \t]+).*" "\\1" LIB_PATH "${LINE}")
-            string(REPLACE "${DEPS_BASE}/lib" "@rpath" LIB_RPATH "${LIB_PATH}")
-            execute_process(
-              COMMAND ${CMAKE_INSTALL_NAME_TOOL} -change ${LIB_PATH} ${LIB_RPATH} ${dylib_path}
-            )
-          endif()
-        endforeach()
-      endfunction()
       message(STATUS "Updating rpath for ${CLN_DYLIB}")
-      update_rpath(${CLN_DYLIB}) 
-      ]])
+      install(CODE [[ update_rpath(${CLN_DYLIB}) ]])
     endforeach()
   endif()
 endif()

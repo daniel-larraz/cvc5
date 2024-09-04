@@ -1471,27 +1471,14 @@ target_include_directories(cvc5
 install(TARGETS cvc5 EXPORT cvc5-targets)
 
 if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
-  function(update_rpath dylib_path)
-  execute_process(
-    COMMAND otool -L ${dylib_path}
-    OUTPUT_VARIABLE OTOOL_OUTPUT
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-  string(REPLACE "\n" ";" OTOOL_LINES "${OTOOL_OUTPUT}")
-  foreach(LINE ${OTOOL_LINES})
-    if(LINE MATCHES "${DEPS_BASE}/lib")
-      string(REGEX REPLACE "^[ \t]*([^ \t]+).*" "\\1" LIB_PATH "${LINE}")
-      string(REPLACE "${DEPS_BASE}/lib" "@rpath" LIB_RPATH "${LIB_PATH}")
-      execute_process(
-        COMMAND ${CMAKE_INSTALL_NAME_TOOL} -change ${LIB_PATH} ${LIB_RPATH} ${dylib_path}
-      )
-    endif()
-  endforeach()
-  endfunction()
-  install(CODE [[
-    update_rpath(${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.dylib)
-    update_rpath(${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.${CVC5_SOVERSION}.dylib)
-  ]])
+  install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
+    -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/\${CMAKE_INSTALL_LIBDIR}/libcvc5.dylib
+    -DDEPS_BASE=${DEPS_BASE}
+    -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
+  install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
+    -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/\${CMAKE_INSTALL_LIBDIR}/libcvc5.${CVC5_SOVERSION}.dylib
+    -DDEPS_BASE=${DEPS_BASE}
+    -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
 endif()
 
 if(BUILD_SHARED_LIBS)

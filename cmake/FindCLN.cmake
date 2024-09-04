@@ -173,6 +173,7 @@ else()
   if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
     foreach(CLN_DYLIB ${BUILD_BYPRODUCTS})
       install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
+        -DRPATH=@loader_path
         -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
         -DDYLIB_PATH=${CLN_DYLIB}
         -DDEPS_BASE=${DEPS_BASE}

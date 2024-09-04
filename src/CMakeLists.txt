@@ -1470,6 +1470,13 @@ target_include_directories(cvc5
 # DLLs into the runtime path (by default "bin")
 install(TARGETS cvc5 EXPORT cvc5-targets)
 
+if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
+  install(CODE [[
+    update_rpath(${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.dylib)
+    update_rpath(${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.${CVC5_SOVERSION}.dylib)
+  ]])
+endif()
+
 if(BUILD_SHARED_LIBS)
   set_target_properties(cvc5 PROPERTIES SOVERSION ${CVC5_SOVERSION})
 endif()

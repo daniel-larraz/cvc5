@@ -242,4 +242,10 @@ else()
   # These libraries are required to compile a program that
   # uses the cvc5 static library.
   install(FILES ${BUILD_BYPRODUCTS} TYPE ${LIB_BUILD_TYPE})
+
+  if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
+    foreach(POLY_DYLIB ${BUILD_BYPRODUCTS})
+      install(CODE [[ update_rpath(${POLY_DYLIB}) ]])
+    endforeach()
+  endif()
 endif()

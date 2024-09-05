@@ -171,11 +171,13 @@ else()
 
 
   if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
-    install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
-      -DRPATH=@loader_path
-      -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
-      -DDYLIB_PATH=${INSTALL_DIR}/lib/libcln${CMAKE_SHARED_LIBRARY_SUFFIX}
-      -DDEPS_BASE=${DEPS_BASE}
-      -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
+    foreach(CLN_DYLIB ${BUILD_BYPRODUCTS})
+      install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
+        -DRPATH=@loader_path
+        -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
+        -DDYLIB_PATH=${CLN_DYLIB}
+        -DDEPS_BASE=${DEPS_BASE}
+        -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
+    endforeach()
   endif()
 endif()

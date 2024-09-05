@@ -1,12 +1,15 @@
-# Add RPATH if any
+# If RPATH is provided, add it unless it already exists
 if(RPATH)
+   # otool -l output is in the format:
+   #      cmd LC_RPATH
+   # cmdsize XX
+   #      path <path> (offset YY)
   execute_process(
     COMMAND otool -l "${DYLIB_PATH}"
     COMMAND grep LC_RPATH -A2
     OUTPUT_VARIABLE RPATH_OUTPUT
   )
   if(NOT "${RPATH_OUTPUT}" MATCHES "${RPATH}")
-    message("COMMAND ${INSTALL_NAME_TOOL} -add_rpath ${RPATH} ${DYLIB_PATH}")
     execute_process(
       COMMAND ${INSTALL_NAME_TOOL} -add_rpath ${RPATH} ${DYLIB_PATH}
     )
@@ -29,12 +32,12 @@ list(GET INSTALL_NAME_LIST 1 INSTALL_NAME)
 if("${INSTALL_NAME}" MATCHES "${DEPS_BASE}/lib")
   # Replace ${DEPS_BASE}/lib with @rpath
   string(REPLACE "${DEPS_BASE}/lib" "@rpath" NEW_INSTALL_NAME "${INSTALL_NAME}")
-  message("COMMAND ${INSTALL_NAME_TOOL} -id ${NEW_INSTALL_NAME} ${DYLIB_PATH}")
   execute_process(
     COMMAND ${INSTALL_NAME_TOOL} -id ${NEW_INSTALL_NAME} ${DYLIB_PATH}
   )
 endif()
 
+# Get all dependencies and replace ${DEPS_BASE}/lib with @rpath
 execute_process(
   COMMAND otool -L ${DYLIB_PATH}
   OUTPUT_VARIABLE OTOOL_OUTPUT
@@ -42,12 +45,10 @@ execute_process(
 )
 string(REPLACE "\n" ";" OTOOL_LINES "${OTOOL_OUTPUT}")
 foreach(LINE ${OTOOL_LINES})
-  if(LINE MATCHES "${DEPS_BASE}/lib")
-    message("LINE: ${LINE}")
+  # (?!:) discards possible matching with first line
+  if(LINE MATCHES "${DEPS_BASE}/lib(?!:)")
     string(REGEX REPLACE "^[ \t]*([^ \t]+).*" "\\1" LIB_PATH "${LINE}")
     string(REPLACE "${DEPS_BASE}/lib" "@rpath" LIB_RPATH "${LIB_PATH}")
-    message("COMMAND ${INSTALL_NAME_TOOL} -change ${LIB_PATH} ${LIB_RPATH} ${DYLIB_PATH}")
-
     execute_process(
       COMMAND ${INSTALL_NAME_TOOL} -change ${LIB_PATH} ${LIB_RPATH} ${DYLIB_PATH}
     )

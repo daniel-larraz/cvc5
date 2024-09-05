@@ -1471,16 +1471,8 @@ target_include_directories(cvc5
 install(TARGETS cvc5 EXPORT cvc5-targets)
 
 if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
-  install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
-    -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
-    -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.dylib
-    -DDEPS_BASE=${DEPS_BASE}
-    -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
-  install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
-    -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
-    -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.${CVC5_SOVERSION}.dylib
-    -DDEPS_BASE=${DEPS_BASE}
-    -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
+  update_rpath_macos(libcvc5.dylib)
+  update_rpath_macos(libcvc5.${CVC5_SOVERSION}.dylib)
 endif()
 
 if(BUILD_SHARED_LIBS)

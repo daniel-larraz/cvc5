@@ -169,13 +169,13 @@ else()
   # uses the cvc5 static library.
   install(FILES ${BUILD_BYPRODUCTS} TYPE ${LIB_BUILD_TYPE})
 
-
   if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
     foreach(CLN_DYLIB ${BUILD_BYPRODUCTS})
+      get_filename_component(CLN_DYLIB_NAME ${CLN_DYLIB} NAME)
       install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
         -DRPATH=@loader_path
         -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
-        -DDYLIB_PATH=${CLN_DYLIB}
+        -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CLN_DYLIB_NAME}
         -DDEPS_BASE=${DEPS_BASE}
         -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
     endforeach()

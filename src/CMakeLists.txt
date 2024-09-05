@@ -1476,11 +1476,11 @@ if(NOT SKIP_SET_RPATH AND BUILD_SHARED_LIBS AND APPLE)
     -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.dylib
     -DDEPS_BASE=${DEPS_BASE}
     -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
-  install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
-    -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
-    -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.${CVC5_SOVERSION}.dylib
-    -DDEPS_BASE=${DEPS_BASE}
-    -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
+  # install(CODE "execute_process(COMMAND \${CMAKE_COMMAND}
+  #   -DINSTALL_NAME_TOOL=${CMAKE_INSTALL_NAME_TOOL}
+  #   -DDYLIB_PATH=\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libcvc5.${CVC5_SOVERSION}.dylib
+  #   -DDEPS_BASE=${DEPS_BASE}
+  #   -P ${CMAKE_SOURCE_DIR}/cmake/update_rpath_macos.cmake)")
 endif()
 
 if(BUILD_SHARED_LIBS)

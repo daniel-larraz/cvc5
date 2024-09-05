@@ -44,9 +44,10 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 string(REPLACE "\n" ";" OTOOL_LINES "${OTOOL_OUTPUT}")
+# Discard the first line which is the path to ${DYLIB_PATH}
+list(REMOVE_AT OTOOL_LINES 0)
 foreach(LINE ${OTOOL_LINES})
-  # (?!:) discards possible matching with first line
-  if(LINE MATCHES "${DEPS_BASE}/lib(?!:)")
+  if(LINE MATCHES "${DEPS_BASE}/lib/")
     string(REGEX REPLACE "^[ \t]*([^ \t]+).*" "\\1" LIB_PATH "${LINE}")
     string(REPLACE "${DEPS_BASE}/lib" "@rpath" LIB_RPATH "${LIB_PATH}")
     execute_process(

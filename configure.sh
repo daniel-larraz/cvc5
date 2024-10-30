@@ -151,12 +151,6 @@ wasm_flags=""
 
 #--------------------------------------------------------------------------#
 
-uname_output=$(uname)
-
-if [[ $uname_output =~ ^MSYS || $uname_output =~ ^MINGW ]]; then
-  win64_native=ON
-fi
-
 cmake_opts=""
 
 # Set python3 interpreter executable to make sure that CMake picks up the
@@ -342,6 +336,15 @@ do
   esac
   shift
 done
+
+uname_output=$(uname)
+
+if [[ $uname_output =~ ^MSYS || $uname_output =~ ^MINGW ]]; then
+  win64_native=ON
+  if [[ $ninja != default ]]; then
+    die "ninja option is currently not supported on Windows"
+  fi
+fi
 
 #--------------------------------------------------------------------------#
 

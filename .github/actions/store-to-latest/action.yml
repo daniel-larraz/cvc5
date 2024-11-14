@@ -14,7 +14,6 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         PACKAGE: ${{ inputs.asset-filename }}
-        MAX_NUM: 20
       run: |
         import datetime
         import os
@@ -53,7 +52,7 @@ runs:
 
         for cnt,asset in enumerate(assets):
           delete = False
-          if cnt >= os.getenv('MAX_NUM'):
+          if cnt >= 20:
             delete = True
           if asset.name.startswith(samedayprefix):
             delete = True

@@ -243,3 +243,14 @@ jobs:
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}
         github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
         shell: ${{ matrix.build.shell }}
+
+    - name: Create and add JAR to latest and release
+      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      uses: ./.github/actions/add-libs-jar
+      with:
+        install-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}/${{ matrix.build.package-name }}-shared${{ matrix.build.gpl-tag }}
+        jar-libs-dir: cvc5-libs
+        package-name: ${{ matrix.build.package-name }}-shared${{ matrix.build.gpl-tag }}
+        github-token-latest: ${{ secrets.GITHUB_TOKEN }}
+        github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+        shell: ${{ matrix.build.shell }}

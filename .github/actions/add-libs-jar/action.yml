@@ -76,7 +76,9 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Create JAR"
-        jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses ${{ inputs.jar-libs-dir }}
+        unzip ${{ inputs.install-path }}/share/java/cvc5.jar
+        mv ${{ inputs.install-path }}/share/java/io .
+        jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses io ${{ inputs.jar-libs-dir }}
         echo "::endgroup::"
 
     - name: Store to latest

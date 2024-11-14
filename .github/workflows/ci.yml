@@ -230,6 +230,7 @@ jobs:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
 
     - name: Create and add shared package to latest and release
+      id: create-shared-package
       if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
@@ -255,7 +256,7 @@ jobs:
       if: matrix.build.java-bindings && matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-libs-jar
       with:
-        install-path: ${{ steps.configure-and-build.outputs.shared-build-dir }}/${{ matrix.build.package-name }}-shared${{ matrix.build.gpl-tag }}
+        install-path: ${{ steps.create-shared-package.outputs.install-path }}
         jar-libs-dir: cvc5-libs
         jar-name: ${{ matrix.build.package-name }}${{ matrix.build.gpl-tag }}
         github-token-latest: ${{ secrets.GITHUB_TOKEN }}

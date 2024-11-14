@@ -52,7 +52,7 @@ runs:
 
         for cnt,asset in enumerate(assets):
           delete = False
-          if cnt >= 20:
+          if cnt >= 27:
             delete = True
           if asset.name.startswith(samedayprefix):
             delete = True

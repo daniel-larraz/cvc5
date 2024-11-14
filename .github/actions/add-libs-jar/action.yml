@@ -77,7 +77,6 @@ runs:
       run: |
         echo "::group::Create JAR"
         unzip ${{ inputs.install-path }}/share/java/cvc5.jar
-        mv ${{ inputs.install-path }}/share/java/io .
         jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses io ${{ inputs.jar-libs-dir }}
         echo "::endgroup::"
 

@@ -34,7 +34,7 @@ runs:
         libcvc5parser.so.1
         libcvc5jni.so
         EOF
-        xargs -a filenames.txt -I {} cp ${{ inputs.install-path }}/lib/{} .
+        cat filenames.txt | xargs -I {} cp ${{ inputs.install-path }}/lib/{} .
         echo "::endgroup::"
 
     - name: Create JAR contents (macOS)
@@ -52,7 +52,7 @@ runs:
         libcvc5parser.1.dylib
         libcvc5jni.dylib
         EOF
-        xargs -a filenames.txt -I {} cp ${{ inputs.install-path }}/lib/{} .
+        cat filenames.txt | xargs -I {} cp ${{ inputs.install-path }}/lib/{} .
         echo "::endgroup::"
 
     - name: Create JAR contents (Windows)
@@ -72,7 +72,7 @@ runs:
         libcvc5parser.dll
         cvc5jni.dll
         EOF
-        xargs -a filenames.txt -I {} cp ${{ inputs.install-path }}/bin/{} .
+        cat filenames.txt | xargs -I {} cp ${{ inputs.install-path }}/bin/{} .
         echo "::endgroup::"
 
     - name: Create JAR

@@ -71,8 +71,8 @@ runs:
         libcvc5.dll
         libcvc5parser.dll
         cvc5jni.dll
-        xargs -a filenames.txt -I {} cp ${{ inputs.install-path }}/bin/{} .
         EOF
+        xargs -a filenames.txt -I {} cp ${{ inputs.install-path }}/bin/{} .
         echo "::endgroup::"
 
     - name: Create JAR

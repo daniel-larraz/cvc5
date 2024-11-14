@@ -127,7 +127,6 @@ jobs:
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-Linux-x86_64
-            java-bindings: true
             gpl-tag: -gpl
 
           - name: macos:production-gpl
@@ -136,7 +135,6 @@ jobs:
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-macOS-x86_64
-            java-bindings: true
             macos-target: 10.13
             gpl-tag: -gpl
 
@@ -146,7 +144,6 @@ jobs:
             cache-key: production-arm64-gpl
             strip-bin: strip
             package-name: cvc5-macOS-arm64
-            java-bindings: true
             macos-target: 11.0
             gpl-tag: -gpl
 

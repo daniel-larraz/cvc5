@@ -7,9 +7,6 @@ inputs:
     description: name of the directory that will contain the libraries within the JAR
   jar-name:
     description: target name of the JAR
-  include-gpl:
-    default: false
-    type: boolean
   github-token-latest:
     description: token to upload JAR to latest
   github-token-release:

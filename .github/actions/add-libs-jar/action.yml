@@ -83,7 +83,7 @@ runs:
         echo "::endgroup::"
 
     - name: Store to latest
-      if: github.ref == 'refs/heads/main'
+      #if: github.ref == 'refs/heads/main'
       uses: ./.github/actions/store-to-latest
       with:
         asset-filename: ${{ inputs.package-name }}.jar

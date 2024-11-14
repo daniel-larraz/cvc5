@@ -79,7 +79,7 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Create JAR"
-        jar cf ${{ inputs.package-name }.jar AUTHORS COPYING licenses ${{ inputs.jar-libs-dir }}
+        jar cf ${{ inputs.package-name }}.jar AUTHORS COPYING licenses ${{ inputs.jar-libs-dir }}
         echo "::endgroup::"
 
     - name: Store to latest

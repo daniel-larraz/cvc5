@@ -81,7 +81,7 @@ TEST_F(TestNodeBlackNodeBuilder, ctors)
 
 TEST_F(TestNodeBlackNodeBuilder, dtor)
 {
-  std::unique_ptr<NodeBuilder> nb(new NodeBuilder());
+  std::unique_ptr<NodeBuilder> nb(new NodeBuilder(d_nodeManager));
 }
 
 TEST_F(TestNodeBlackNodeBuilder, getKind)

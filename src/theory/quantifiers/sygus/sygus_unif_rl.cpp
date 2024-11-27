@@ -515,8 +515,8 @@ void SygusUnifRl::DecisionTreeInfo::initialize(Node cond_enum,
   d_unif = unif;
   d_strategy = strategy;
   d_strategy_index = strategy_index;
-  d_true = NodeManager::currentNM()->mkConst(true);
-  d_false = NodeManager::currentNM()->mkConst(false);
+  d_true = cond_enum.getNodeManager()->mkConst(true);
+  d_false = cond_enum.getNodeManager()->mkConst(false);
   // Retrieve template
   EnumInfo& eiv = d_strategy->getEnumInfo(d_cond_enum);
   d_template = NodePair(eiv.d_template, eiv.d_template_arg);
@@ -643,7 +643,7 @@ Node SygusUnifRl::DecisionTreeInfo::buildSolAllCond(Node cons,
 Node SygusUnifRl::DecisionTreeInfo::buildSolMinCond(Node cons,
                                                     std::vector<Node>& lemmas)
 {
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = cons.getNodeManager();
   // model values for evaluation heads
   std::map<Node, Node> hd_mv;
   // the current explanation of why there has not yet been a separation conflict
@@ -934,7 +934,7 @@ Node SygusUnifRl::DecisionTreeInfo::PointSeparator::extractSol(
     Node cons, std::map<Node, Node>& hd_mv)
 {
   // Traverse trie and build ITE with cons
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = cons.getNodeManager();
   std::map<IndTriePair, Node> cache;
   std::map<IndTriePair, Node>::iterator it;
   std::vector<IndTriePair> visit;

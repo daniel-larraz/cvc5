@@ -60,7 +60,7 @@ TEST_F(TestNodeBlackNodeBuilder, ctors)
   ASSERT_EQ(spec.getKind(), d_specKind);
   ASSERT_EQ(spec.getNumChildren(), 0u);
 
-  NodeBuilder from_nm(d_nodeManager, d_nodeManager);
+  NodeBuilder from_nm(d_nodeManager);
   ASSERT_EQ(from_nm.getKind(), Kind::UNDEFINED_KIND);
 #ifdef CVC5_ASSERTIONS
   ASSERT_DEATH(from_nm.getNumChildren(),

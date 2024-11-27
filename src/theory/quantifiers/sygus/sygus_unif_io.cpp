@@ -276,7 +276,7 @@ Node SubsumeTrie::addTermInternal(Node t,
     }
     return d_term;
   }
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = t.getNodeManager();
   // the current value
   Assert(pol || (vals[index].isConst() && vals[index].getType().isBoolean()));
   Node cv = pol ? vals[index] : nm->mkConst(!vals[index].getConst<bool>());

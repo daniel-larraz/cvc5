@@ -204,7 +204,7 @@ void SygusUtils::setSygusType(Node f, const TypeNode& tn)
 {
   Assert(!tn.isNull());
   Assert(getSygusType(f).isNull());
-  Node sym = NodeManager::currentNM()->mkBoundVar("sfproxy", tn);
+  Node sym = f.getNodeManager()->mkBoundVar("sfproxy", tn);
   // use an attribute to mark its grammar
   SygusSynthGrammarAttribute ssfga;
   f.setAttribute(ssfga, sym);
@@ -222,7 +222,7 @@ TypeNode SygusUtils::getSygusType(const Node& f)
 
 Node SygusUtils::mkSygusTermFor(const Node& f)
 {
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = f.getNodeManager();
   TypeNode tn = getSygusType(f);
   Node bvl = getOrMkSygusArgumentList(f);
   if (tn.isNull())

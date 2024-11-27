@@ -72,7 +72,7 @@ TEST_F(TestNodeBlackNodeBuilder, ctors)
   ASSERT_EQ(from_nm_kind.getNumChildren(), 0u);
 
   /* Copy constructors */
-  NodeBuilder copy(d_nodeManager, def);
+  NodeBuilder copy(def);
   ASSERT_EQ(copy.getKind(), Kind::UNDEFINED_KIND);
 #ifdef CVC5_ASSERTIONS
   ASSERT_DEATH(copy.getNumChildren(), "getKind\\(\\) != Kind::UNDEFINED_KIND");

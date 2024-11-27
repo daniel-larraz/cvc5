@@ -137,7 +137,7 @@ Node SygusUnifRl::purifyLemma(Node n,
   // Travese to purify
   bool childChanged = false;
   std::vector<Node> children;
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = nodeManager();
   SkolemManager* sm = nm->getSkolemManager();
   for (unsigned i = 0; i < size; ++i)
   {
@@ -170,7 +170,7 @@ Node SygusUnifRl::purifyLemma(Node n,
         Trace("sygus-unif-rl-purify-debug") << "...... " << child << "\n";
       }
     }
-    nb = NodeManager::currentNM()->mkNode(k, children);
+    nb = nodeManager()->mkNode(k, children);
     Trace("sygus-unif-rl-purify")
         << "PurifyLemma : transformed " << n << " into " << nb << "\n";
   }
@@ -226,8 +226,7 @@ Node SygusUnifRl::purifyLemma(Node n,
   // Add equality between purified fapp and model value
   if (ensureConst && fapp)
   {
-    model_guards.push_back(
-        NodeManager::currentNM()->mkNode(Kind::EQUAL, nv, nb).negate());
+    model_guards.push_back(nodeManager()->mkNode(Kind::EQUAL, nv, nb).negate());
     nb = nv;
     Trace("sygus-unif-rl-purify")
         << "PurifyLemma : adding model eq " << model_guards.back() << "\n";
@@ -261,7 +260,7 @@ Node SygusUnifRl::addRefLemma(Node lemma,
   if (!model_guards.empty())
   {
     model_guards.push_back(plem);
-    plem = NodeManager::currentNM()->mkNode(Kind::OR, model_guards);
+    plem = nodeManager()->mkNode(Kind::OR, model_guards);
   }
   plem = rewrite(plem);
   Trace("sygus-unif-rl-purify") << "Purified lemma : " << plem << "\n";

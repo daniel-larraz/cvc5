@@ -123,7 +123,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ matrix.name }}
+        name: wheels-${{ matrix.name }}${{ matrix.gpl && '-gpl' || '' }}
         path: ./wheelhouse/*.whl
 
     - name: Install software for publishing the wheels

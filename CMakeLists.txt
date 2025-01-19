@@ -255,7 +255,9 @@ endif ()
 
 # Changing the default linker on MSYS prevents the build system from
 # using the GMP system library if available
-if (NOT ("${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles") AND NOT USE_DEFAULT_LINKER)
+if (NOT ("${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles") AND
+    NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" AND
+    NOT USE_DEFAULT_LINKER)
   #-----------------------------------------------------------------------------#
   # Use ld.mold if available, otherwise use ld.gold if available
 
@@ -273,7 +275,7 @@ if (NOT ("${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles") AND NOT USE_DEFAULT_LIN
                     -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_GOLD_VERSION)
     if ("${LD_GOLD_VERSION}" MATCHES "GNU gold")
       set(USE_EXPLICIT_LINKER_FLAG TRUE)
-      set(EXPLICIT_LINKER_FLAG " -fuse-ld=gold -Wl,--no-fix-cortex-a53-843419")
+      set(EXPLICIT_LINKER_FLAG " -fuse-ld=gold")
       message(STATUS "Using GNU gold linker.")
     endif ()
   endif ()

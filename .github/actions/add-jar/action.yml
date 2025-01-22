@@ -86,7 +86,11 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         javac -cp "${{ inputs.jar-name }}.jar" ./examples/api/java/QuickStart.java -d .
-        java -cp "${{ inputs.jar-name }}.jar:." QuickStart
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          java -cp "${{ inputs.jar-name }}.jar;." QuickStart
+        else
+          java -cp "${{ inputs.jar-name }}.jar:." QuickStart
+        fi
         rm QuickStart.class
 
     - name: Store to latest

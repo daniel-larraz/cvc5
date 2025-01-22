@@ -82,6 +82,13 @@ runs:
         jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses io ${{ inputs.jar-libs-dir }}
         echo "::endgroup::"
 
+    - name: Test JAR
+      shell: ${{ inputs.shell }}
+      run: |
+        javac -cp "${{ inputs.jar-name }}.jar" ./examples/api/java/QuickStart.java -d .
+        java -cp "${{ inputs.jar-name }}.jar:." QuickStart
+        rm QuickStart.class
+
     - name: Store to latest
       if: github.ref == 'refs/heads/main'
       uses: ./.github/actions/store-to-latest

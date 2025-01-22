@@ -53,8 +53,7 @@ public class Utils
     List<String> filenames = new ArrayList<>();
 
     // Load the input stream from the resource path within the JAR
-    try (InputStream inputStream = Utils.class.getResourceAsStream(pathInJar);
-         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream)))
+    try (InputStream inputStream = Utils.class.getResourceAsStream(pathInJar))
     {
       // Check if the input stream is null (resource not found)
       if (inputStream == null)
@@ -62,11 +61,14 @@ public class Utils
         throw new UnsatisfiedLinkError("Resource not found: " + pathInJar);
       }
 
-      String line;
-      // Read each line from the file and add it to the list
-      while ((line = reader.readLine()) != null)
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream)))
       {
-        filenames.add(line);
+        String line;
+        // Read each line from the file and add it to the list
+        while ((line = reader.readLine()) != null)
+        {
+          filenames.add(line);
+        }
       }
     }
 
@@ -139,25 +141,25 @@ public class Utils
     {
       try
       {
-        System.loadLibrary("cvc5jni");
+        // Try to extract the libraries from a JAR in the classpath
+        List<String> filenames = readLibraryFilenames(LIBPATH_IN_JAR + "/filenames.txt");
+
+        // Create a temporary directory to store the libraries
+        Path tempDir = Files.createTempDirectory("cvc5-libs");
+        tempDir.toFile().deleteOnExit(); // Mark the directory for deletion on exit
+
+        for (String filename : filenames)
+        {
+          loadLibraryFromJar(tempDir, LIBPATH_IN_JAR, filename);
+        }
       }
-      catch (UnsatisfiedLinkError jni_ex)
+      catch (Exception ex)
       {
         try
         {
-          // Try to extract the libraries from a JAR in the classpath
-          List<String> filenames = readLibraryFilenames(LIBPATH_IN_JAR + "/filenames.txt");
-
-          // Create a temporary directory to store the libraries
-          Path tempDir = Files.createTempDirectory("cvc5-libs");
-          tempDir.toFile().deleteOnExit(); // Mark the directory for deletion on exit
-
-          for (String filename : filenames)
-          {
-            loadLibraryFromJar(tempDir, LIBPATH_IN_JAR, filename);
-          }
+          System.loadLibrary("cvc5jni");
         }
-        catch (Exception ex)
+        catch (UnsatisfiedLinkError jni_ex)
         {
           throw new UnsatisfiedLinkError("Couldn't load cvc5 native libraries");
         }

@@ -15,6 +15,12 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Setup CMake
+      if: runner.os == 'Linux'
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.16.x'
+
     - name: Install Linux software
       if: runner.os == 'Linux'
       shell: ${{ inputs.shell }}

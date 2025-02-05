@@ -19,11 +19,13 @@ runs:
       if: runner.os == 'Linux'
       shell: ${{ inputs.shell }}
       run: |
+        echo "::group::Get CMake minimum required version"
         echo "cmake_version=$( \
           grep "cmake_minimum_required" CMakeLists.txt | \
           awk -F'[()]' '{print $2}' | \
           awk '{print $2}' \
         )" >> "$GITHUB_ENV"
+        echo "::endgroup::"
 
     - name: Setup CMake
       # Exclude Linux ARM64 runners, which are currently unsupported

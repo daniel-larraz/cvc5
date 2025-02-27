@@ -7,7 +7,7 @@ public class StrTest {
     Term str = tm.mkString("\\u{200cb}", true);
   
     String value = str.getStringValue();
-    String expected = Character.toString(0x200cb);
+    String expected = new String(Character.toChars(0x200CB));
 
     assert value.equals(expected);
     System.out.println("Value: " + value);

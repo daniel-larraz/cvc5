@@ -85,13 +85,13 @@ runs:
     - name: Test JAR
       shell: ${{ inputs.shell }}
       run: |
-        javac -cp "${{ inputs.jar-name }}.jar" ./examples/api/java/QuickStart.java -d .
+        javac -cp "${{ inputs.jar-name }}.jar" ./examples/api/java/StrTest.java -d .
         if [[ "$RUNNER_OS" == "Windows" ]]; then
-          java -cp "${{ inputs.jar-name }}.jar;." QuickStart
+          java -cp "${{ inputs.jar-name }}.jar;." StrTest
         else
-          java -cp "${{ inputs.jar-name }}.jar:." QuickStart
+          java -cp "${{ inputs.jar-name }}.jar:." StrTest
         fi
-        rm QuickStart.class
+        rm StrTest.class
 
     - name: Store to latest
       if: github.ref == 'refs/heads/main'

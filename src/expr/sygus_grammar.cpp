@@ -362,7 +362,7 @@ std::string SygusGrammar::toString() const
   std::stringstream ss;
   // clone this grammar before printing it to avoid freezing it.
   return printer::smt2::Smt2Printer::sygusGrammarString(
-      SygusGrammar(*this).resolve(d_datatype.getNodeManager()));
+      SygusGrammar(*this).resolve(NodeManager::currentNM()));
 }
 
 }  // namespace cvc5::internal

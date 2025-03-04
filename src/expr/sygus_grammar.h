@@ -84,7 +84,7 @@ class SygusGrammar
   /**
    * @return The resolved datatype of the Start symbol of the grammar.
    */
-  TypeNode resolve(bool allowAny = false);
+  TypeNode resolve(NodeManager* nm, bool allowAny = false);
 
   /**
    * @return whether or not this grammar is resolved.

@@ -473,7 +473,7 @@ Node CegisUnifEnumDecisionStrategy::mkLiteral(unsigned n)
           NodeManager::mkBoundVar("_virtual_enum_grammar", nm->integerType());
       SygusGrammar g({}, {a});
       g.addRules(a, {nm->mkConstInt(Rational(1)), nm->mkNode(Kind::ADD, a, a)});
-      d_virtual_enum = NodeManager::mkDummySkolem("_ve", g.resolve());
+      d_virtual_enum = NodeManager::mkDummySkolem("_ve", g.resolve(nm));
       d_tds->registerEnumerator(
           d_virtual_enum, Node::null(), d_parent, ROLE_ENUM_CONSTRAINED);
     }

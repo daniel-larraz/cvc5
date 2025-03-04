@@ -291,11 +291,10 @@ bool SygusGrammar::hasRules() const
   return false;
 }
 
-TypeNode SygusGrammar::resolve(bool allowAny)
+TypeNode SygusGrammar::resolve(NodeManager* nm, bool allowAny)
 {
   if (!isResolved())
   {
-    NodeManager* nm = d_datatype.getNodeManager();
     Node bvl;
     if (!d_sygusVars.empty())
     {
@@ -363,7 +362,7 @@ std::string SygusGrammar::toString() const
   std::stringstream ss;
   // clone this grammar before printing it to avoid freezing it.
   return printer::smt2::Smt2Printer::sygusGrammarString(
-      SygusGrammar(*this).resolve());
+      SygusGrammar(*this).resolve(d_datatype.getNodeManager()));
 }
 
 }  // namespace cvc5::internal

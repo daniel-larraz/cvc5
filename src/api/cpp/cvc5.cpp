@@ -4861,7 +4861,7 @@ Sort Grammar::resolve()
 {
   CVC5_API_TRY_CATCH_BEGIN;
   //////// all checks before this line
-  return Sort(d_tm, d_grammar->resolve());
+  return Sort(d_tm, d_grammar->resolve(d_tm->d_nm));
   ////////
   CVC5_API_TRY_CATCH_END;
 }

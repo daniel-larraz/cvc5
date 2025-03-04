@@ -42,7 +42,7 @@ TypeNode SygusGrammarCons::mkDefaultSygusType(const Env& env,
                                               const Node& bvl)
 {
   SygusGrammar g = mkDefaultGrammar(env, range, bvl);
-  return g.resolve(true);
+  return g.resolve(env.getNodeManager(), true);
 }
 
 TypeNode SygusGrammarCons::mkDefaultSygusType(const Env& env,
@@ -51,7 +51,7 @@ TypeNode SygusGrammarCons::mkDefaultSygusType(const Env& env,
                                               const std::vector<Node>& trules)
 {
   SygusGrammar g = mkDefaultGrammar(env, range, bvl, trules);
-  return g.resolve(true);
+  return g.resolve(env.getNodeManager(), true);
 }
 
 SygusGrammar SygusGrammarCons::mkDefaultGrammar(const Env& env,

@@ -217,7 +217,7 @@ TypeNode SygusInterpol::setSynthGrammar(const TypeNode& itpGType,
         }
       }
     }
-    itpGTypeS = g.resolve(true);
+    itpGTypeS = g.resolve(nodeManager(), true);
   }
   Trace("sygus-interpol-debug") << "...finish setting up grammar" << std::endl;
   return itpGTypeS;

@@ -41,8 +41,8 @@ void SygusDatatype::addConstructor(Node op,
 void SygusDatatype::addAnyConstantConstructor(TypeNode tn)
 {
   // add an "any constant" proxy variable
-  Node av =
-      SkolemManager::mkInternalSkolemFunction(InternalSkolemId::SYGUS_ANY_CONSTANT, tn);
+  Node av = SkolemManager::mkInternalSkolemFunction(
+      InternalSkolemId::SYGUS_ANY_CONSTANT, tn);
   std::stringstream ss;
   ss << getName() << "_any_constant";
   std::string cname(ss.str());
@@ -50,7 +50,8 @@ void SygusDatatype::addAnyConstantConstructor(TypeNode tn)
   builtinArg.push_back(tn);
   addConstructor(av, cname, builtinArg, 0);
 }
-void SygusDatatype::addConstructor(NodeManager* nm, Kind k,
+void SygusDatatype::addConstructor(NodeManager* nm,
+                                   Kind k,
                                    const std::vector<TypeNode>& argTypes,
                                    int weight)
 {

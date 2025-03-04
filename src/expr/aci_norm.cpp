@@ -213,10 +213,10 @@ Node getACINormalForm(Node a)
     // sort if commutative
     std::sort(children.begin(), children.end());
   }
-  an = children.empty() ? nt
-                        : (children.size() == 1
-                               ? children[0]
-                               : a.getNodeManager()->mkNode(k, children));
+  an = children.empty()
+           ? nt
+           : (children.size() == 1 ? children[0]
+                                   : a.getNodeManager()->mkNode(k, children));
   a.setAttribute(nfa, an);
   return an;
 }

@@ -79,11 +79,12 @@ Node SkolemManager::mkInternalSkolemFunction(InternalSkolemId id,
                                              TypeNode tn,
                                              const std::vector<Node>& cacheVals)
 {
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = tn.getNodeManager();
+  SkolemManager* skm = nm->getSkolemManager();
   std::vector<Node> cvals;
   cvals.push_back(nm->mkConstInt(Rational(static_cast<uint32_t>(id))));
   cvals.insert(cvals.end(), cacheVals.begin(), cacheVals.end());
-  return mkSkolemFunctionTyped(SkolemId::INTERNAL, tn, cvals);
+  return skm->mkSkolemFunctionTyped(SkolemId::INTERNAL, tn, cvals);
 }
 
 bool SkolemManager::isCommutativeSkolemId(SkolemId id)
@@ -156,7 +157,7 @@ Node SkolemManager::mkSkolemFunctionTyped(SkolemId id,
   {
     cacheVal = cacheVals.size() == 1
                    ? cacheVals[0]
-                   : NodeManager::currentNM()->mkNode(Kind::SEXPR, cacheVals);
+                   : tn.getNodeManager()->mkNode(Kind::SEXPR, cacheVals);
   }
   return mkSkolemFunctionTyped(id, tn, cacheVal);
 }
@@ -252,11 +253,12 @@ Node SkolemManager::getOriginalForm(Node n)
   {
     return n;
   }
+
   Trace("sk-manager-debug")
       << "SkolemManager::getOriginalForm " << n << std::endl;
   OriginalFormAttribute ofa;
   UnpurifiedFormAttribute ufa;
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = n.getNodeManager();
   std::unordered_set<TNode> visited;
   std::unordered_set<TNode>::iterator it;
   std::vector<TNode> visit;
@@ -351,7 +353,7 @@ Node SkolemManager::mkSkolemNode(Kind k,
                                  const TypeNode& type,
                                  SkolemFlags flags)
 {
-  NodeManager* nm = NodeManager::currentNM();
+  NodeManager* nm = type.getNodeManager();
   Node n = NodeBuilder(nm, k);
   if ((flags & SkolemFlags::SKOLEM_EXACT_NAME)
       == SkolemFlags::SKOLEM_EXACT_NAME)

@@ -212,8 +212,24 @@ if(NOT DEFINED JAVA_HOME AND NOT WIN32)
   message(STATUS "JAVA_HOME: ${JAVA_HOME}")
 endif()
 
-# find jni package
-find_package(JNI REQUIRED)
+if(BUILD_SHARED_LIBS)
+  # Find JNI package
+  find_package(JNI REQUIRED)
+else()
+  # Save the original suffixes
+  set(_original_suffixes "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+  # Temporarily add appropriate suffixes
+  if (WIN32)
+    list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
+  else()
+    list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .so .dylib)
+  endif()
+  # Find JNI package
+  find_package(JNI REQUIRED)
+  # Restore the original suffixes
+  set(CMAKE_FIND_LIBRARY_SUFFIXES "${_original_suffixes}")
+endif()
+
 message(STATUS "JNI_FOUND            : ${JNI_FOUND}")
 message(STATUS "JNI_INCLUDE_DIRS     : ${JNI_INCLUDE_DIRS}")
 message(STATUS "JNI_LIBRARIES        : ${JNI_LIBRARIES} ")
@@ -248,7 +264,7 @@ set(jni_files
   jni/term.cpp
   jni/term_manager.cpp)
 
-add_library(cvc5jni ${jni_files})
+add_library(cvc5jni SHARED ${jni_files})
 add_dependencies(cvc5jni generate-jni-headers)
 
 target_include_directories(cvc5jni PUBLIC ${JNI_INCLUDE_DIRS})

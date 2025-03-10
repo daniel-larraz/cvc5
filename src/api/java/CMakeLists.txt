@@ -267,6 +267,10 @@ set(jni_files
 add_library(cvc5jni SHARED ${jni_files})
 add_dependencies(cvc5jni generate-jni-headers)
 
+if(WIN32 AND NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(cvc5jni PRIVATE CVC5_STATIC_DEFINE)
+endif()
+
 target_include_directories(cvc5jni PUBLIC ${JNI_INCLUDE_DIRS})
 target_include_directories(cvc5jni PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(cvc5jni PUBLIC ${CMAKE_BINARY_DIR}/src/)

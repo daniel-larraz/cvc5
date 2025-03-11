@@ -13,13 +13,17 @@ inputs:
     description: token to upload JAR to latest
   github-token-release:
     description: token to upload JAR to release
+  windows-build:
+    type: boolean
+    default: false
+    description: whether the build is for Windows
   shell:
     default: bash
 runs:
   using: composite
   steps:
     - name: Create JAR contents (Linux)
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && !inputs.windows-build
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Create JAR contents (Linux)"
@@ -55,7 +59,7 @@ runs:
         echo "::endgroup::"
 
     - name: Create JAR contents (Windows)
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' || inputs.windows-build
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Create JAR contents (Windows)"

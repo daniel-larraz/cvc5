@@ -44,6 +44,8 @@ jobs:
             cache-key: production-arm64-cross
             strip-bin: aarch64-linux-gnu-strip
             arm64-build: true
+            package-name: cvc5-Linux-arm64-cross
+            java-bindings: true
 
           - name: macos:production
             os: macos-13
@@ -63,7 +65,6 @@ jobs:
             config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
             cache-key: production-arm64
             strip-bin: strip
-            arm64-build: true
             python-bindings: true
             java-bindings: true
             check-examples: true
@@ -78,6 +79,10 @@ jobs:
             cache-key: production-arm64-cross
             strip-bin: strip
             python-bindings: true
+            package-name: cvc5-macOS-arm64-cross
+            arm64-build: true
+            java-bindings: true
+
 
           - name: win64:production
             os: windows-latest
@@ -99,6 +104,8 @@ jobs:
             cache-key: production-win64-cross
             strip-bin: x86_64-w64-mingw32-strip
             windows-build: true
+            package-name: cvc5-Win64-x86_64-cross
+            java-bindings: true
 
           - name: wasm:production
             os: ubuntu-22.04
@@ -262,7 +269,7 @@ jobs:
 
     - name: Create and add shared package to latest and release
       id: create-shared-package
-      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
@@ -273,7 +280,7 @@ jobs:
         shell: ${{ matrix.build.shell }}
 
     - name: Create and add static package to latest and release
-      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
@@ -284,7 +291,7 @@ jobs:
         shell: ${{ matrix.build.shell }}
 
     - name: Create and add JAR to latest and release
-      if: matrix.build.java-bindings && matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.java-bindings #&& matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-jar
       with:
         install-path: ${{ steps.create-shared-package.outputs.install-path }}

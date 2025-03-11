@@ -40,9 +40,10 @@ jobs:
 
           - name: ubuntu:production-arm64-cross
             os: ubuntu-latest
-            config: production --auto-download --arm64
+            config: production --auto-download --arm64 --java-bindings
             cache-key: production-arm64-cross
             strip-bin: aarch64-linux-gnu-strip
+            arm64-build: true
 
           - name: macos:production
             os: macos-13
@@ -62,6 +63,7 @@ jobs:
             config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
             cache-key: production-arm64
             strip-bin: strip
+            arm64-build: true
             python-bindings: true
             java-bindings: true
             check-examples: true
@@ -93,7 +95,7 @@ jobs:
 
           - name: win64:production-cross
             os: ubuntu-latest
-            config: production --auto-download --win64
+            config: production --auto-download --win64 --java-bindings
             cache-key: production-win64-cross
             strip-bin: x86_64-w64-mingw32-strip
             windows-build: true
@@ -204,6 +206,7 @@ jobs:
       uses: ./.github/actions/install-dependencies
       with:
         with-documentation: ${{ matrix.build.build-documentation }}
+        arm64-build: ${{ matrix.build.arm64-build }}
         windows-build: ${{ matrix.build.windows-build }}
         wasm-build: ${{ matrix.build.wasm-build }}
         shell: ${{ matrix.build.shell }}

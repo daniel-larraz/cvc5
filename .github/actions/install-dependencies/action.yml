@@ -3,6 +3,9 @@ description: Install necessary dependencies on the target system
 inputs:
   with-documentation:
     default: false
+  arm64-build:
+    default: false
+    type: boolean
   windows-build:
     default: false
     type: boolean
@@ -34,13 +37,17 @@ runs:
         echo "::endgroup::"
 
     - name: Install software for cross-compiling for arm64 Linux
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && inputs.arm64-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Install software for cross-compiling for arm64 Linux"
         sudo apt-get install -y \
           gcc-aarch64-linux-gnu \
           g++-aarch64-linux-gnu
+
+        wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.26%2B4/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.26_4.tar.gz
+        tar -xzf OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.26_4.tar.gz
+        echo "JNI_HOME=$(pwd)/jdk-11.0.26+4" >> $GITHUB_ENV
         echo "::endgroup::"
 
     - name: Install software for cross-compiling for Windows
@@ -58,6 +65,10 @@ runs:
         # using threads
         sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
         sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+
+        wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.26%2B4/OpenJDK11U-jdk_x64_windows_hotspot_11.0.26_4.zip
+        unzip OpenJDK11U-jdk_x64_windows_hotspot_11.0.26_4.zip
+        echo "JNI_HOME=$(pwd)/jdk-11.0.26+4" >> $GITHUB_ENV
         echo "::endgroup::"
 
     - name: Install software for WebAssembly compilation
@@ -117,6 +128,11 @@ runs:
           gnu-sed
         echo "SED=gsed" >> $GITHUB_ENV
         echo "num_proc=$(( $(sysctl -n hw.logicalcpu) + 1 ))" >> $GITHUB_ENV
+        if [[ "${{ inputs.arm64-build }}" == 'true' ]]; then
+          wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14%2B7/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.14_7.tar.gz
+          tar -xzf OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.14_7.tar.gz
+          echo "JNI_HOME=$(pwd)/jdk-17.0.14+7" >> $GITHUB_ENV
+        fi
         echo "::endgroup::"
 
     # Required by PEP-668

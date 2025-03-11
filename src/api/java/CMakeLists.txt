@@ -191,6 +191,10 @@ add_custom_command(
 add_custom_target(generate-jni-headers DEPENDS ${JNI_HEADERS})
 add_dependencies(generate-jni-headers generate-java-kinds generate-java-types generate-java-proofrules generate-java-skolemfunids)
 
+if(NOT DEFINED JNI_HOME AND DEFINED ENV{JNI_HOME})
+  set(JNI_HOME $ENV{JNI_HOME})
+endif()
+
 if(NOT DEFINED JAVA_HOME AND NOT DEFINED JNI_HOME AND NOT WIN32)
   # If there are multiple versions of Java on the system,
   # CMake might find a version of JNI that differs from

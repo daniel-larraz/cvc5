@@ -131,7 +131,7 @@ runs:
         if [[ "${{ inputs.arm64-build }}" == 'true' ]]; then
           wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14%2B7/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.14_7.tar.gz
           tar -xzf OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.14_7.tar.gz
-          echo "JNI_HOME=$(pwd)/jdk-17.0.14+7" >> $GITHUB_ENV
+          echo "JNI_HOME=$(pwd)/jdk-17.0.14+7/Contents/Home" >> $GITHUB_ENV
         fi
         echo "::endgroup::"
 

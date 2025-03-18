@@ -163,7 +163,8 @@ VarList VarList::operator*(const VarList& other) const {
     std::merge(thisBegin, thisEnd, otherBegin, otherEnd, std::back_inserter(result), cmp);
 
     Assert(result.size() >= 2);
-    Node mult = NodeManager::currentNM()->mkNode(Kind::NONLINEAR_MULT, result);
+    NodeManager* nm = result[0].getNodeManager();
+    Node mult = nm->mkNode(Kind::NONLINEAR_MULT, result);
     return VarList::parseVarList(mult);
   }
 }

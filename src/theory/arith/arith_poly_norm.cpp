@@ -313,7 +313,7 @@ Node PolyNorm::multMonoVar(TNode m1, TNode m2)
   }
   // use default sorting
   std::sort(vars.begin(), vars.end());
-  return m1.getNodeManager()->mkNode(Kind::NONLINEAR_MULT, vars);
+  return m2.getNodeManager()->mkNode(Kind::NONLINEAR_MULT, vars);
 }
 
 std::vector<TNode> PolyNorm::getMonoVars(TNode m)

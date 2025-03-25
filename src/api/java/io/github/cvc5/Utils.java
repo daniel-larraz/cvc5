@@ -134,27 +134,24 @@ public class Utils
     {
       try
       {
-        List<String> filenames;
+        String filename;
         switch (OS.CURRENT)
         {
           case WINDOWS:
-            filenames = Arrays.asList("cvc5jni.dll");
-            break;
-          case MAC: filenames = Arrays.asList("libcvc5jni.dylib"); break;
+            filename = "cvc5jni.dll"; break;
+          case MAC:
+            filename = "libcvc5jni.dylib"; break;
           default:
             // We assume it is Linux or a Unix-based system.
             // If not, there's nothing more we can do anyway.
-            filenames = Arrays.asList("libcvc5jni.so");
+            filename = "libcvc5jni.so";
         }
 
         // Create a temporary directory to store the libraries
         Path tempDir = Files.createTempDirectory("cvc5-libs");
         tempDir.toFile().deleteOnExit(); // Mark the directory for deletion on exit
 
-        for (String filename : filenames)
-        {
-          loadLibraryFromJar(tempDir, LIBPATH_IN_JAR, filename);
-        }
+        loadLibraryFromJar(tempDir, LIBPATH_IN_JAR, filename);
       }
       catch (Exception ex)
       {

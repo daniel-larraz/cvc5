@@ -313,12 +313,12 @@ target_include_directories(cvc5jni PUBLIC ${JNI_INCLUDE_DIRS})
 target_include_directories(cvc5jni PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(cvc5jni PUBLIC ${CMAKE_BINARY_DIR}/src/)
 target_include_directories(cvc5jni PUBLIC ${JNI_DIR})
+target_link_libraries(cvc5jni PRIVATE cvc5 cvc5parser)
 
 if (WIN32 AND NOT BUILD_SHARED_LIBS)
-  # Statically link mingw runtime
-  target_link_libraries(cvc5jni PRIVATE -static gcc stdc++ winpthread cvc5 cvc5parser -dynamic)
-else()
-  target_link_libraries(cvc5jni PRIVATE cvc5 cvc5parser)
+  set_target_properties(cvc5jni PROPERTIES LINK_FLAGS -static)
+  set_target_properties(cvc5jni PROPERTIES LINK_SEARCH_START_STATIC ON)
+  set_target_properties(cvc5jni PROPERTIES LINK_SEARCH_END_STATIC ON)
 endif()
 
 # Java on Windows expects the JNI libraries without the prefix

@@ -138,8 +138,7 @@ public class Utils
         switch (OS.CURRENT)
         {
           case WINDOWS:
-            filenames = Arrays.asList(
-                "libwinpthread-1.dll", "libgcc_s_seh-1.dll", "libstdc++-6.dll", "cvc5jni.dll");
+            filenames = Arrays.asList("cvc5jni.dll");
             break;
           case MAC: filenames = Arrays.asList("libcvc5jni.dylib"); break;
           default:

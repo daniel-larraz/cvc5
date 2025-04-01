@@ -296,7 +296,8 @@ TypeNode SygusGrammar::resolve(bool allowAny)
 {
   if (!isResolved())
   {
-    NodeManager* nm = NodeManager::currentNM();
+    Assert(!d_ntSyms.empty());
+    NodeManager* nm = d_ntSyms[0].getNodeManager();
     Node bvl;
     if (!d_sygusVars.empty())
     {

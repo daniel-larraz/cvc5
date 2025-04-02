@@ -38,10 +38,9 @@ ${decl_individual_rewrites}$
         // clang-format on
     }
 
-Node mkRewriteRuleNode(ProofRewriteRule rule)
+Node mkRewriteRuleNode(NodeManager* nm, ProofRewriteRule rule)
 {
-  return NodeManager::currentNM()->mkConstInt(
-      Rational(static_cast<uint32_t>(rule)));
+  return nm->mkConstInt(Rational(static_cast<uint32_t>(rule)));
 }
 
 bool getRewriteRule(TNode n, ProofRewriteRule& rule)

@@ -766,6 +766,7 @@ Node FpWordBlaster::ufToNode(const fpt& format, const uf& u) const
 
 Node FpWordBlaster::rmToNode(const rm& r) const
 {
+  symfpuSymbolic::SymFpuNM snm(d_nm);
   Node transVar = r;
 
   Node RNE = traits::RNE();

@@ -85,6 +85,29 @@ class traits
 // Use the same type names as symfpu.
 typedef traits::bwt bwt;
 
+class SymFpuNM
+{
+ public:
+  static thread_local NodeManager *s_nm;
+
+  SymFpuNM(NodeManager* nm)
+  {
+    d_prev_nm = s_nm;
+    s_nm      = nm;
+  }
+
+  ~SymFpuNM() { s_nm = d_prev_nm; }
+
+  static NodeManager* get()
+  {
+    assert(s_nm != nullptr);
+    return s_nm;
+  }
+
+ private:
+  NodeManager *d_prev_nm = nullptr;
+};
+
 /**
  * Wrap the cvc5::internal::Node types so that we can debug issues with this back-end
  */

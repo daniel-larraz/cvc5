@@ -178,6 +178,8 @@ void traits::invariant(const prop& p) { return; }
 // symbolic back-end
 typedef traits t;
 
+thread_local NodeManager* SymFpuNM::s_nm = nullptr;
+
 bool symbolicProposition::checkNodeType(const TNode node)
 {
   TypeNode tn = node.getType(false);
@@ -190,7 +192,7 @@ symbolicProposition::symbolicProposition(const Node n) : nodeWrapper(n)
 }  // Only used within this header so could be friend'd
 symbolicProposition::symbolicProposition(bool v)
     : nodeWrapper(
-        NodeManager::currentNM()->mkConst(BitVector(1U, (v ? 1U : 0U))))
+        SymFpuNM::get()->mkConst(BitVector(1U, (v ? 1U : 0U))))
 {
   Assert(checkNodeType(*this));
 }
@@ -245,7 +247,7 @@ symbolicRoundingMode::symbolicRoundingMode(const Node n) : nodeWrapper(n)
 }
 
 symbolicRoundingMode::symbolicRoundingMode(const unsigned v)
-    : nodeWrapper(NodeManager::currentNM()->mkConst(
+    : nodeWrapper(SymFpuNM::get()->mkConst(
         BitVector(SYMFPU_NUMBER_OF_ROUNDING_MODES, v)))
 {
   Assert((v & (v - 1)) == 0 && v != 0);  // Exactly one bit set
@@ -331,7 +333,7 @@ bool symbolicBitVector<isSigned>::checkNodeType(const TNode n)
 
 template <bool isSigned>
 symbolicBitVector<isSigned>::symbolicBitVector(const bwt w, const unsigned v)
-    : nodeWrapper(NodeManager::currentNM()->mkConst(BitVector(w, v)))
+    : nodeWrapper(SymFpuNM::get()->mkConst(BitVector(w, v)))
 {
   Assert(checkNodeType(*this));
 }
@@ -349,7 +351,7 @@ symbolicBitVector<isSigned>::symbolicBitVector(
 }
 template <bool isSigned>
 symbolicBitVector<isSigned>::symbolicBitVector(const BitVector& old)
-    : nodeWrapper(NodeManager::currentNM()->mkConst(old))
+    : nodeWrapper(SymFpuNM::get()->mkConst(old))
 {
   Assert(checkNodeType(*this));
 }
@@ -749,6 +751,7 @@ FpWordBlaster::~FpWordBlaster() {}
 
 Node FpWordBlaster::ufToNode(const fpt& format, const uf& u) const
 {
+  symfpuSymbolic::SymFpuNM snm(d_nm);
   FloatingPointSize fps(format.getTypeNode(d_nm).getConst<FloatingPointSize>());
 
   // This is not entirely obvious but it builds a float from components
@@ -821,6 +824,8 @@ Node FpWordBlaster::wordBlast(TNode node)
 {
   std::vector<TNode> visit;
   std::unordered_map<TNode, bool> visited;
+
+  symfpuSymbolic::SymFpuNM snm(d_nm);
 
   visit.push_back(node);
 

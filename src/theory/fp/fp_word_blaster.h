@@ -255,7 +255,7 @@ class floatingPointTypeInfo : public FloatingPointSize
   floatingPointTypeInfo(unsigned exp, unsigned sig);
   floatingPointTypeInfo(const floatingPointTypeInfo& old);
 
-  TypeNode getTypeNode(void) const;
+  TypeNode getTypeNode(NodeManager* nm) const;
 };
 }  // namespace symfpuSymbolic
 
@@ -274,7 +274,7 @@ class FpWordBlaster
 {
  public:
   /** Constructor. */
-  FpWordBlaster(context::UserContext*);
+  FpWordBlaster(NodeManager* nm, context::UserContext*);
   /** Destructor. */
   ~FpWordBlaster();
 
@@ -304,6 +304,7 @@ class FpWordBlaster
   typedef context::CDHashMap<Node, ubv> ubvMap;
   typedef context::CDHashMap<Node, sbv> sbvMap;
 
+  NodeManager* d_nm;
   fpMap d_fpMap;
   rmMap d_rmMap;
   boolMap d_boolMap;

@@ -728,14 +728,15 @@ floatingPointTypeInfo::floatingPointTypeInfo(const floatingPointTypeInfo& old)
 {
 }
 
-TypeNode floatingPointTypeInfo::getTypeNode(void) const
+TypeNode floatingPointTypeInfo::getTypeNode(NodeManager* nm) const
 {
-  return NodeManager::currentNM()->mkFloatingPointType(*this);
+  return nm->mkFloatingPointType(*this);
 }
 }  // namespace symfpuSymbolic
 
-FpWordBlaster::FpWordBlaster(context::UserContext* user)
+FpWordBlaster::FpWordBlaster(NodeManager* nm, context::UserContext* user)
     : d_additionalAssertions(user),
+      d_nm(nm),
       d_fpMap(user),
       d_rmMap(user),
       d_boolMap(user),
@@ -748,9 +749,7 @@ FpWordBlaster::~FpWordBlaster() {}
 
 Node FpWordBlaster::ufToNode(const fpt& format, const uf& u) const
 {
-  NodeManager* nm = NodeManager::currentNM();
-
-  FloatingPointSize fps(format.getTypeNode().getConst<FloatingPointSize>());
+  FloatingPointSize fps(format.getTypeNode(d_nm).getConst<FloatingPointSize>());
 
   // This is not entirely obvious but it builds a float from components
   // Particularly, if the components can be constant folded, it should
@@ -758,14 +757,12 @@ Node FpWordBlaster::ufToNode(const fpt& format, const uf& u) const
 
   ubv packed(symfpu::pack<traits>(format, u));
   Node value =
-      nm->mkNode(nm->mkConst(FloatingPointToFPIEEEBitVector(fps)), packed);
+      d_nm->mkNode(d_nm->mkConst(FloatingPointToFPIEEEBitVector(fps)), packed);
   return value;
 }
 
 Node FpWordBlaster::rmToNode(const rm& r) const
 {
-  NodeManager* nm = NodeManager::currentNM();
-
   Node transVar = r;
 
   Node RNE = traits::RNE();
@@ -774,30 +771,29 @@ Node FpWordBlaster::rmToNode(const rm& r) const
   Node RTN = traits::RTN();
   Node RTZ = traits::RTZ();
 
-  Node value = nm->mkNode(
+  Node value = d_nm->mkNode(
       Kind::ITE,
-      nm->mkNode(Kind::EQUAL, transVar, RNE),
-      nm->mkConst(RoundingMode::ROUND_NEAREST_TIES_TO_EVEN),
-      nm->mkNode(
+      d_nm->mkNode(Kind::EQUAL, transVar, RNE),
+      d_nm->mkConst(RoundingMode::ROUND_NEAREST_TIES_TO_EVEN),
+      d_nm->mkNode(
           Kind::ITE,
-          nm->mkNode(Kind::EQUAL, transVar, RNA),
-          nm->mkConst(RoundingMode::ROUND_NEAREST_TIES_TO_AWAY),
-          nm->mkNode(
+          d_nm->mkNode(Kind::EQUAL, transVar, RNA),
+          d_nm->mkConst(RoundingMode::ROUND_NEAREST_TIES_TO_AWAY),
+          d_nm->mkNode(
               Kind::ITE,
-              nm->mkNode(Kind::EQUAL, transVar, RTP),
-              nm->mkConst(RoundingMode::ROUND_TOWARD_POSITIVE),
-              nm->mkNode(Kind::ITE,
-                         nm->mkNode(Kind::EQUAL, transVar, RTN),
-                         nm->mkConst(RoundingMode::ROUND_TOWARD_NEGATIVE),
-                         nm->mkConst(RoundingMode::ROUND_TOWARD_ZERO)))));
+              d_nm->mkNode(Kind::EQUAL, transVar, RTP),
+              d_nm->mkConst(RoundingMode::ROUND_TOWARD_POSITIVE),
+              d_nm->mkNode(Kind::ITE,
+                           d_nm->mkNode(Kind::EQUAL, transVar, RTN),
+                           d_nm->mkConst(RoundingMode::ROUND_TOWARD_NEGATIVE),
+                           d_nm->mkConst(RoundingMode::ROUND_TOWARD_ZERO)))));
   return value;
 }
 
 Node FpWordBlaster::propToNode(const prop& p) const
 {
-  NodeManager* nm = NodeManager::currentNM();
-  Node value = nm->mkNode(
-      Kind::EQUAL, p, nm->mkConst(cvc5::internal::BitVector(1U, 1U)));
+  Node value = d_nm->mkNode(
+      Kind::EQUAL, p, d_nm->mkConst(cvc5::internal::BitVector(1U, 1U)));
   return value;
 }
 Node FpWordBlaster::ubvToNode(const ubv& u) const { return u; }

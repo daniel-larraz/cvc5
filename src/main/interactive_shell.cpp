@@ -374,6 +374,7 @@ restart:
   }
   catch (ParserEndOfFileException& pe)
   {
+    std::cout << "TOP-lEVEL END-OF-FILE" << std::endl;
     // pop back to the scope we were at prior to reading the last command
     while (d_symman->scopeLevel() > lastScopeLevel)
     {
@@ -384,6 +385,7 @@ restart:
   }
   catch (ParserException& pe)
   {
+    std::cout << "TOP-lEVEL PARSE-EXCEPTION" << std::endl;
     if (d_solver->getOption("output-language") == "LANG_SMTLIB_V2_6")
     {
       d_out << "(error \"" << pe << "\")" << endl;

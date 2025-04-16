@@ -49,11 +49,13 @@ void Lexer::parseError(const std::string& msg, bool eofException)
 {
   if (eofException)
   {
+    std::cout << "END-OF-FILE" << std::endl;
     throw ParserEndOfFileException(
         msg, d_inputName, d_span.d_start.d_line, d_span.d_start.d_column);
   }
   else
   {
+    std::cout << "PARSE-EXCEPTION" << std::endl;
     throw ParserException(
         msg, d_inputName, d_span.d_start.d_line, d_span.d_start.d_column);
   }

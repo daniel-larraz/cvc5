@@ -13,7 +13,14 @@
 # The build system configuration.
 ##
 
-find_package(Java REQUIRED)
+find_package(Java 1.8 REQUIRED)
+if(Java_VERSION_MAJOR GREATER_EQUAL 9)
+  # Compile option --release is available from JDK 9 onwards.
+  # It ensures the compiled classes are compatible with
+  # the minimum required version. It expects a single number
+  # and does not support 1.X syntax used in JDK < 9.
+  set(CMAKE_JAVA_COMPILE_FLAGS "--release" "8")
+endif()
 include(UseJava)
 find_package(JUnit REQUIRED)
 

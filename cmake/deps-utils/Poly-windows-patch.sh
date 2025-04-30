@@ -12,3 +12,6 @@ find $1/ -type f ! -name "*.orig" -exec \
      sed -i.orig "s/#include <stdio.h>/#include <stdio.h>\\n#include <inttypes.h>/" {} +
 find $1/ -type f ! -name "*.orig" -exec \
      sed -i.orig "s/#include <cstdio>/#include <cstdio>\\n#include <inttypes.h>/" {} +
+
+find $1/ -type f ! -name "*.orig" -exec \
+     sed -i.orig 's/\<random\s*(\s*)\>/rand()/g' {} +

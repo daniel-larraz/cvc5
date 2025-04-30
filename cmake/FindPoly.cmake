@@ -167,7 +167,8 @@ if(NOT Poly_FOUND_SYSTEM)
     PATCH_COMMAND
       sed -i.orig
       "s,add_subdirectory(test/polyxx),add_subdirectory(test/polyxx EXCLUDE_FROM_ALL),g"
-      <SOURCE_DIR>/CMakeLists.txt &&
+      <SOURCE_DIR>/CMakeLists.txt
+    COMMAND
       sed -i.orig
       "s/random()/rand()/g"
       <SOURCE_DIR>/src/polynomial/feasibility_set_int.c

@@ -179,7 +179,7 @@ if(NOT Poly_FOUND_SYSTEM)
                -DGMP_LIBRARY=${GMP_LIBRARIES}
                -DCMAKE_SKIP_INSTALL_ALL_DEPENDENCY=TRUE
                -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-               -DCMAKE_C_FLAGS=-Wall\ -Wextra\ -std=gnu99
+               -DCMAKE_C_FLAGS=-Wall\ -Wextra\ -std=gnu99\ -Wno-error=implicit-function-declaration
     BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} ${POLY_TARGETS}
     ${POLY_INSTALL_CMD}
     BUILD_BYPRODUCTS ${POLY_BYPRODUCTS}

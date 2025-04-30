@@ -273,7 +273,7 @@ jobs:
 
     - name: Create and add shared package to latest and release
       id: create-shared-package
-      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.shared-build-dir }}
@@ -285,7 +285,7 @@ jobs:
 
     - name: Create and add static package to latest and release
       id: create-static-package
-      if: matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-package
       with:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
@@ -296,7 +296,7 @@ jobs:
         shell: ${{ matrix.build.shell }}
 
     - name: Create and add JAR to latest and release
-      if: matrix.build.java-bindings && matrix.build.package-name && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      if: matrix.build.java-bindings && matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
       uses: ./.github/actions/add-jar
       with:
         install-path: ${{ steps.create-static-package.outputs.install-path }}

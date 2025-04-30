@@ -168,6 +168,10 @@ if(NOT Poly_FOUND_SYSTEM)
       sed -i.orig
       "s,add_subdirectory(test/polyxx),add_subdirectory(test/polyxx EXCLUDE_FROM_ALL),g"
       <SOURCE_DIR>/CMakeLists.txt
+    PATCH_COMMAND
+      sed -i.orig
+      "s/random()/rand()/g"
+      <SOURCE_DIR>/src/polynomial/feasibility_set_int.c
     ${POLY_PATCH_CMD}
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
                -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
@@ -179,7 +183,6 @@ if(NOT Poly_FOUND_SYSTEM)
                -DGMP_LIBRARY=${GMP_LIBRARIES}
                -DCMAKE_SKIP_INSTALL_ALL_DEPENDENCY=TRUE
                -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-               -DCMAKE_C_FLAGS=-D_GNU_SOURCE\ -Wall\ -Wextra\ -std=gnu99\ -Wno-error=implicit-function-declaration
     BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} ${POLY_TARGETS}
     ${POLY_INSTALL_CMD}
     BUILD_BYPRODUCTS ${POLY_BYPRODUCTS}

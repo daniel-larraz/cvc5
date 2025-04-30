@@ -13,5 +13,4 @@ find $1/ -type f ! -name "*.orig" -exec \
 find $1/ -type f ! -name "*.orig" -exec \
      sed -i.orig "s/#include <cstdio>/#include <cstdio>\\n#include <inttypes.h>/" {} +
 
-find $1/ -type f ! -name "*.orig" -exec \
-     sed -i.orig 's/\<random\s*(\s*)\>/rand()/g' {} +
+sed -i.orig "s/random()/rand()/g" $1/src/polynomial/feasibility_set_int.c

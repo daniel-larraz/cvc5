@@ -137,32 +137,6 @@ inline void CheckArgument(bool cond, const T& arg CVC5_UNUSED)
   }
 }
 
-class CVC5_EXPORT LastExceptionBuffer
-{
- public:
-  LastExceptionBuffer();
-  ~LastExceptionBuffer();
-
-  void setContents(const char* string);
-  const char* getContents() const { return d_contents; }
-
-  static LastExceptionBuffer* getCurrent() { return s_currentBuffer; }
-  static void setCurrent(LastExceptionBuffer* buffer) { s_currentBuffer = buffer; }
-
-  static const char* currentContents() {
-    return (getCurrent() == nullptr) ? nullptr : getCurrent()->getContents();
-  }
-
-private:
-  /* Disallow copies */
-  LastExceptionBuffer(const LastExceptionBuffer&) = delete;
-  LastExceptionBuffer& operator=(const LastExceptionBuffer&) = delete;
-
-  char* d_contents;
-
-  static thread_local LastExceptionBuffer* s_currentBuffer;
-}; /* class LastExceptionBuffer */
-
 }  // namespace cvc5::internal
 
 #endif /* CVC5__EXCEPTION_H */

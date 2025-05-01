@@ -219,10 +219,6 @@ void cvc5terminate()
 {
   set_terminate(default_terminator);
 #ifdef CVC5_DEBUG
-  LastExceptionBuffer* current = LastExceptionBuffer::getCurrent();
-  LastExceptionBuffer::setCurrent(NULL);
-  delete current;
-
   safe_print(STDERR_FILENO,
              "\n"
              "cvc5 was terminated by the C++ runtime.\n"
@@ -241,10 +237,6 @@ void cvc5terminate()
 
 void install()
 {
-#ifdef CVC5_DEBUG
-  LastExceptionBuffer::setCurrent(new LastExceptionBuffer());
-#endif
-
 #ifndef __WIN32__
   struct rlimit limit;
   if (getrlimit(RLIMIT_STACK, &limit))

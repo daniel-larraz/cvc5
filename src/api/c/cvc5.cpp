@@ -4941,7 +4941,7 @@ void cvc5_get_option_info(Cvc5* cvc5, const char* option, Cvc5OptionInfo* info)
             info->info_mode.num_modes =
                 std::get<cvc5::OptionInfo::ModeInfo>(cpp_info.valueInfo)
                     .modes.size();
-            static thread_local std::vector<const char*> c_modes;
+            thread_local std::vector<const char*> c_modes;
             c_modes.clear();
             for (const auto& m :
                  std::get<cvc5::OptionInfo::ModeInfo>(cpp_info.valueInfo).modes)

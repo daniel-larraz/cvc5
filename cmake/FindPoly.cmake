@@ -61,6 +61,13 @@ if(NOT Poly_FOUND_SYSTEM)
     unset(POLY_PATCH_CMD)
   endif()
 
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(POLY_PATCH_CMD ${POLY_PATCH_CMD}
+      COMMAND
+        sed -i.orig "s/random()/rand()/g" <SOURCE_DIR>/src/polynomial/feasibility_set_int.c
+    )
+  endif()
+
   # On Windows, CMake's default install action places DLLs into the runtime
   # path (/bin) after doing the build with 'ExternalProject_Add'
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

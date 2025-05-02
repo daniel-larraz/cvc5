@@ -124,6 +124,9 @@ if(NOT GMP_FOUND_SYSTEM)
         env "CFLAGS=--target=${TOOLCHAIN_PREFIX}"
         env "LDFLAGS=-arch ${CMAKE_OSX_ARCHITECTURES}")
     endif()
+  else()
+    set(CONFIGURE_OPTS
+      --build=${BUILD_TRIPLET})
   endif()
 
   # `CC_FOR_BUILD`, `--host`, and `--build` are passed to `configure` to ensure

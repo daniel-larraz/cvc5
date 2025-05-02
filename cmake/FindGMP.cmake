@@ -102,13 +102,12 @@ if(NOT GMP_FOUND_SYSTEM)
   # it is possible to get around this issue by just disabling it:
   set(CONFIGURE_ENV env "MAKEINFO=true")
 
+  set(BUILD_TRIPLET "${CMAKE_HOST_SYSTEM_PROCESSOR}")
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
       set(BUILD_TRIPLET "x86_64-linux-gnu")
     elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
       set(BUILD_TRIPLET "aarch64-linux-gnu")
-    else()
-      set(BUILD_TRIPLET "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
   endif()
 

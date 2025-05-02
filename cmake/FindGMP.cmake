@@ -124,7 +124,7 @@ if(NOT GMP_FOUND_SYSTEM)
         env "CFLAGS=--target=${TOOLCHAIN_PREFIX}"
         env "LDFLAGS=-arch ${CMAKE_OSX_ARCHITECTURES}")
     endif()
-  else()
+  elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
     set(CONFIGURE_OPTS
       --build=${BUILD_TRIPLET})
   endif()

@@ -52,14 +52,14 @@ if(NOT Poly_FOUND_SYSTEM)
 
   set(Poly_VERSION "0.1.13")
 
-  check_if_cross_compiling(CCWIN "Windows" "")
-  if(CCWIN)
-    set(POLY_PATCH_CMD COMMAND
-      ${CMAKE_SOURCE_DIR}/cmake/deps-utils/Poly-windows-patch.sh <SOURCE_DIR>
-    )
-  else()
-    unset(POLY_PATCH_CMD)
-  endif()
+  # check_if_cross_compiling(CCWIN "Windows" "")
+  # if(CCWIN)
+  #   set(POLY_PATCH_CMD COMMAND
+  #     ${CMAKE_SOURCE_DIR}/cmake/deps-utils/Poly-windows-patch.sh <SOURCE_DIR>
+  #   )
+  # else()
+  #   unset(POLY_PATCH_CMD)
+  # endif()
 
   # On Windows, CMake's default install action places DLLs into the runtime
   # path (/bin) after doing the build with 'ExternalProject_Add'

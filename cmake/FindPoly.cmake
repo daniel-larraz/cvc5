@@ -126,16 +126,6 @@ if(NOT Poly_FOUND_SYSTEM)
           <INSTALL_DIR>/lib/libpicpolyxx${CMAKE_STATIC_LIBRARY_SUFFIX}
     )
 
-    # We only want to install the headers and the position-independent version
-    # of the static libraries, so remove the installation targets for the other
-    # versions of LibPoly
-    set(POLY_PATCH_CMD ${POLY_PATCH_CMD}
-      COMMAND
-        sed -ri.orig
-          "/TARGETS (poly|polyxx|static_poly|static_polyxx) /d"
-          <SOURCE_DIR>/src/CMakeLists.txt
-    )
-
     set(POLY_BYPRODUCTS
       <INSTALL_DIR>/lib/libpicpoly${CMAKE_STATIC_LIBRARY_SUFFIX}
       <INSTALL_DIR>/lib/libpicpolyxx${CMAKE_STATIC_LIBRARY_SUFFIX}
@@ -155,7 +145,13 @@ if(NOT Poly_FOUND_SYSTEM)
     ${COMMON_EP_CONFIG}
     URL https://github.com/SRI-CSL/libpoly/archive/refs/tags/v${Poly_VERSION}.tar.gz
     URL_HASH SHA256=146adc0d3f6fe8038adb6b8b69dd16114a4be12f520d5c1fb333f3746d233abe
-    ${POLY_PATCH_CMD}
+    # We only want to install the headers and the position-independent version
+    # of the static libraries, so remove the installation targets for the other
+    # versions of LibPoly
+    PATCH_COMMAND
+      sed -ri.orig
+      "/TARGETS (poly|polyxx|static_poly|static_polyxx) /d"
+      <SOURCE_DIR>/src/CMakeLists.txt
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
                -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
                -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}

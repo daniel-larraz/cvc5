@@ -52,6 +52,14 @@ if(NOT Poly_FOUND_SYSTEM)
 
   set(Poly_VERSION "0.2.0")
 
+  check_if_cross_compiling(CCWIN "Windows" "")
+  if(CCWIN)
+    set(POLY_PATCH_CMD
+      PATCH_COMMAND
+        ${CMAKE_SOURCE_DIR}/cmake/deps-utils/Poly-windows-patch.sh <SOURCE_DIR>
+    )
+  endif()
+
   # On Windows, CMake's default install action places DLLs into the runtime
   # path (/bin) after doing the build with 'ExternalProject_Add'
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -124,16 +132,6 @@ if(NOT Poly_FOUND_SYSTEM)
         ${CMAKE_COMMAND} -E copy
           src/libpicpolyxx${CMAKE_STATIC_LIBRARY_SUFFIX}
           <INSTALL_DIR>/lib/libpicpolyxx${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-
-    # We only want to install the headers and the position-independent version
-    # of the static libraries, so remove the installation targets for the other
-    # versions of LibPoly
-    set(POLY_PATCH_CMD
-      PATCH_COMMAND
-        sed -ri.orig
-          "/TARGETS (poly|polyxx|static_poly|static_polyxx) /d"
-          <SOURCE_DIR>/src/CMakeLists.txt
     )
 
     set(POLY_BYPRODUCTS

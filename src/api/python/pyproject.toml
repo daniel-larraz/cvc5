@@ -6,7 +6,7 @@ requires = [
     # Avoid issue #283: https://github.com/pypa/distutils/issues/283
     "setuptools<72.2.0; implementation_name == 'pypy'",
     "Cython>=3",
-    "Cython<3.1.0; implementation_name == 'pypy' and python_version < '3.8'"
+    "Cython<3.1.0; implementation_name == 'pypy' and python_version < '3.9'"
 ]
 build-backend = "setuptools.build_meta"
 

@@ -58,6 +58,8 @@ if(NOT Poly_FOUND_SYSTEM)
       PATCH_COMMAND
         ${CMAKE_SOURCE_DIR}/cmake/deps-utils/Poly-windows-patch.sh <SOURCE_DIR>
     )
+  else()
+    unset(POLY_PATCH_CMD)
   endif()
 
   # On Windows, CMake's default install action places DLLs into the runtime

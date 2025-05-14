@@ -13,6 +13,8 @@ inputs:
     default: ""
   regressions-exclude:
     default: "3-4"
+  cvc5-regressions-args:
+    default: "--no-early-exit"
   shell:
     default: bash
 runs:
@@ -28,7 +30,7 @@ runs:
           ctest --output-on-failure --rerun-failed
         fi
       env:
-        CVC5_REGRESSION_ARGS: --no-early-exit
+        CVC5_REGRESSION_ARGS: ${{ inputs.cvc5-regressions-args }}
         RUN_REGRESSION_ARGS: ${{ inputs.regressions-args }}
 
     - name: Install Check

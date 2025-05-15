@@ -96,6 +96,7 @@ jobs:
           sed -e 's/\${PYPROJECT_NAME}\$/cvc5/g; s/\${PYPROJECT_LICENSE\}/BSD/g' \
               ./src/api/python/pyproject.toml.in > ./build/src/api/python/pyproject.toml
         fi
+        cat ./build/src/api/python/pyproject.toml
         echo "::endgroup::"
 
     - name: Store MinGW64 path

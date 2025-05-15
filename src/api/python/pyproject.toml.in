@@ -12,11 +12,23 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name="cvc5"
-description="Python bindings for cvc5"
-readme = {text = "Python bindings for cvc5", content-type = "text/plain"}
+name="${PYPROJECT_NAME}"
+description="Python bindings for the cvc5 SMT solver (${PYPROJECT_LICENSE} version)"
+readme = "README.md"
 dynamic = ["version"]
-license = {text = "BSD-3-Clause AND LGPL-3.0-or-later AND MIT"}
+
+# The format of the following license attribute is deprecated
+# and will no longer be supported after 2026-02-18:
+# license = {text = "BSD-3-Clause AND LGPL-3.0-or-later AND MIT"}
+
+# The following license attribute uses the new format introduced by PEP 639,
+# which requires Setuptools >= 77.0.0 and Python >= 3.9:
+# license = "BSD-3-Clause AND LGPL-3.0-or-later AND MIT"
+
+# Until we adopt Python >= 3.9 and Setuptools >= 77.0.0, we omit this attribute
+# and instead provide license information only via files specified in setup.py
+
+# License description:
 # BSD-3-Clause      : cvc5 library and Python API
 # GPL-2.0-or-later  : CLN (only in GPL version)
 # GPL-3.0-or-later  : GLPK/glpk-cut-log and CoCoA (only in GPL version)

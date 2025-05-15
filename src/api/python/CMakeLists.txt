@@ -141,6 +141,18 @@ if (CMAKE_CROSSCOMPILING_MACOS)
   set(MACOS_ARCH "arm64")
 endif()
 
+# The following variables are used in:
+#  src/api/python/pyproject.toml.in
+#  .github/workflows/package_pypi.yml
+if(ENABLE_GPL)
+  set(PYPROJECT_NAME "cvc5-gpl")
+  set(PYPROJECT_LICENSE "GPL")
+else()
+  set(PYPROJECT_NAME "cvc5")
+  set(PYPROJECT_LICENSE "BSD")
+endif()
+
+configure_file(pyproject.toml.in pyproject.toml)
 configure_file(setup.py.in setup.py)
 configure_file(setup.cfg.in setup.cfg)
 configure_file(__init__.py.in cvc5/__init__.py)

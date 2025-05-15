@@ -91,5 +91,6 @@ else:
     setup(
         ext_modules=cythonize([ext_module], compiler_directives=compiler_directives),
         packages=packages,
+        license="${SETUP_LICENSE_SPDX}",
         license_files=license_files
     )

@@ -90,10 +90,10 @@ jobs:
         echo "::group::Create pyproject.toml"
         mkdir -p build/src/api/python
         if [ "${{ matrix.gpl }}" == "true" ]; then
-          sed -e 's/\${PYPROJECT_NAME}\$/cvc5-gpl/g; s/\${PYPROJECT_LICENSE\}/GPL/g' \
+          sed -e 's/\${PYPROJECT_NAME\}/cvc5-gpl/g; s/\${PYPROJECT_LICENSE\}/GPL/g' \
               ./src/api/python/pyproject.toml.in > ./build/src/api/python/pyproject.toml
         else
-          sed -e 's/\${PYPROJECT_NAME}\$/cvc5/g; s/\${PYPROJECT_LICENSE\}/BSD/g' \
+          sed -e 's/\${PYPROJECT_NAME\}/cvc5/g; s/\${PYPROJECT_LICENSE\}/BSD/g' \
               ./src/api/python/pyproject.toml.in > ./build/src/api/python/pyproject.toml
         fi
         cat ./build/src/api/python/pyproject.toml

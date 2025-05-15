@@ -114,6 +114,7 @@ copy_file_from_src(cvc5.pxd)
 copy_file_from_src(cvc5_python_base.pyx)
 copy_file_from_src(py_plugin.h)
 copy_file_from_src(py_plugin.cpp)
+copy_file_from_src(README.md)
 
 # Get python extension filename
 execute_process(COMMAND

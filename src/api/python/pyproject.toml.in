@@ -15,7 +15,7 @@ build-backend = "setuptools.build_meta"
 name="${PYPROJECT_NAME}"
 description="Python bindings for the cvc5 SMT solver (${PYPROJECT_LICENSE} version)"
 readme = "README.md"
-dynamic = ["version"]
+dynamic = ["version","license"]
 
 # The format of the following license attribute is deprecated
 # and will no longer be supported after 2026-02-18:

@@ -33,6 +33,7 @@ jobs:
             strip-bin: strip
             python-bindings: true
             java-bindings: true
+            java-version: 8 # Use this build to test minimum Java required version
             check-examples: true
             exclude_regress: 3-4
             run_regression_args: --tester base --tester proof --tester cpc --tester model --tester synth --tester abduct --tester dump
@@ -203,6 +204,12 @@ jobs:
     steps:
 
     - uses: actions/checkout@v4
+
+    - uses: actions/setup-java@v4
+      if: ${{ matrix.build.java-version != '' }}
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.build.java-version }}
 
     - name: Setup CMake
       uses: ./.github/actions/setup-cmake

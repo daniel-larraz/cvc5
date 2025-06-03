@@ -156,7 +156,9 @@ if(NOT Poly_FOUND_SYSTEM)
       "${DEPS_BASE}/lib/libpicpolyxx${CMAKE_STATIC_LIBRARY_SUFFIX}")
   endif()
 
+  set(POLY_CXX_FLAGS "")
   if(NOT(WASM STREQUAL "OFF"))
+    message(STATUS "WASM: ${WASM}")
     set(POLY_CXX_FLAGS -DCMAKE_CXX_FLAGS=-Wno-error=deprecated-literal-operator)
   endif()
   # We pass the full path of GMP to LibPoly, s.t. we can ensure that LibPoly is

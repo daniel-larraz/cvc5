@@ -158,7 +158,6 @@ if(NOT Poly_FOUND_SYSTEM)
 
   set(POLY_CXX_FLAGS "")
   if(NOT(WASM STREQUAL "OFF"))
-    message(STATUS "WASM: ${WASM}")
     set(POLY_CXX_FLAGS -DCMAKE_CXX_FLAGS=-Wno-error=deprecated-literal-operator)
   endif()
   # We pass the full path of GMP to LibPoly, s.t. we can ensure that LibPoly is
@@ -181,7 +180,6 @@ if(NOT Poly_FOUND_SYSTEM)
                -DGMP_LIBRARY=${GMP_LIBRARIES}
                -DCMAKE_SKIP_INSTALL_ALL_DEPENDENCY=TRUE
                -DBUILD_TESTING=OFF
-               -DCMAKE_CXX_FLAGS=-Wno-error=deprecated-literal-operator
                ${POLY_CXX_FLAGS}
     BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} ${POLY_TARGETS}
     ${POLY_INSTALL_CMD}

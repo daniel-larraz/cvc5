@@ -238,10 +238,6 @@ add_check_c_cxx_flag("-Wimplicit-fallthrough")
 add_check_c_cxx_flag("-Wshadow")
 add_check_c_cxx_flag("-fno-operator-names")
 
-if(NOT(WASM STREQUAL "OFF"))
-  add_check_cxx_flag("-Wno-error=deprecated-literal-operator")
-endif()
-
 # Assume no dynamic initialization of thread-local variables in non-defining
 # translation units. This option should result in better performance and works
 # around crashing issues with our Windows build.

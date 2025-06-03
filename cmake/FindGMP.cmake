@@ -125,9 +125,6 @@ if(NOT GMP_FOUND_SYSTEM)
     set(CONFIGURE_OPTS --build=${BUILD_TRIPLET}) # Defined in Helpers
   endif()
   set(CONFIGURE_ENV ${CONFIGURE_ENV} env "CFLAGS=${GMP_CFLAGS}")
-  if(NOT(WASM STREQUAL "OFF"))
-    set(CONFIGURE_ENV ${CONFIGURE_ENV} env "CXXFLAGS=-Wno-error=deprecated-literal-operator")
-  endif()
 
   # `CC_FOR_BUILD`, `--host`, and `--build` are passed to `configure` to ensure
   # that cross-compilation works (as suggested in the GMP documentation).

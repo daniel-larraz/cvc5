@@ -238,7 +238,7 @@ add_check_c_cxx_flag("-Wimplicit-fallthrough")
 add_check_c_cxx_flag("-Wshadow")
 add_check_c_cxx_flag("-fno-operator-names")
 
-f(NOT(WASM STREQUAL "OFF"))
+if(NOT(WASM STREQUAL "OFF"))
   add_check_cxx_flag("-Wno-error=deprecated-literal-operator")
 endif()
 

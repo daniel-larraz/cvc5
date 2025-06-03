@@ -191,6 +191,7 @@ jobs:
           - has-tag: false
             build:
               name: macos:production-arm64-gpl
+              java-version: 11
 
 
     name: ${{ matrix.build.name }}

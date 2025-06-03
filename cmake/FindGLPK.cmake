@@ -97,12 +97,7 @@ if(NOT GLPK_FOUND_SYSTEM)
         env "LDFLAGS=-arch ${CMAKE_OSX_ARCHITECTURES}")
     endif()
   else()
-    if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin" AND
-       CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
-      set(CONFIGURE_OPTS --build="")
-    else()
-      set(CONFIGURE_OPTS --build=${BUILD_TRIPLET}) # Defined in Helpers
-    endif()
+    set(CONFIGURE_OPTS --build=${BUILD_TRIPLET}) # Defined in Helpers
   endif()
 
   ExternalProject_Add(

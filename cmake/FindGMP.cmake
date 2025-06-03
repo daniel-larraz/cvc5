@@ -125,7 +125,7 @@ if(NOT GMP_FOUND_SYSTEM)
     set(CONFIGURE_OPTS --build=${BUILD_TRIPLET}) # Defined in Helpers
   endif()
   set(CONFIGURE_ENV ${CONFIGURE_ENV} env "CFLAGS=${GMP_CFLAGS}")
-  if(WASM STREQUAL "ON")
+  if(NOT(WASM STREQUAL "OFF"))
     set(CONFIGURE_ENV ${CONFIGURE_ENV} env "CXXFLAGS=-Wno-error=deprecated-literal-operator")
   endif()
 

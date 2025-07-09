@@ -58,6 +58,8 @@ if(BUILD_BINDINGS_JAVA)
     OUTPUT ${JAVADOC_INDEX_FILE}
     COMMAND
       ${Java_JAVADOC_EXECUTABLE} io.github.cvc5
+      -Xdoclint:all
+      -Werror
       -sourcepath ${CMAKE_SOURCE_DIR}/src/api/java/:${CMAKE_BINARY_DIR}/src/api/java/
       -d ${JAVADOC_OUTPUT_DIR}
       -cp ${CVC5_JAR_FILE}

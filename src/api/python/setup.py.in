@@ -82,6 +82,7 @@ else:
         os.environ['PATH'] += r';C:\msys64\mingw64\bin;C:\a\_temp\msys64\clangarm64\bin'
         os.environ['CC'] = r'clang'
         os.environ['CXX'] = r'clang++'
+        os.environ['LD'] = r'lld'
 
     ext_options = {
         "libraries" : ["cvc5", "cvc5parser"],

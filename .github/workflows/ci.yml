@@ -110,6 +110,7 @@ jobs:
             strip-bin: strip
             python-bindings: true
             java-bindings: true
+            java-version: 21
             windows-build: true
             shell: 'msys2 {0}'
             check-examples: true

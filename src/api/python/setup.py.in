@@ -79,7 +79,7 @@ else:
         # See https://stackoverflow.com/q/64898146
         extra_compile_args += ["-DMS_WIN64"]
         # Add default MSYS2 installation path for local development
-        os.environ['PATH'] += r';C:\msys64\mingw64\bin;C:\a\_temp\msys64\clangarm64\bin\'
+        os.environ['PATH'] += r';C:\msys64\mingw64\bin;C:\a\_temp\msys64\clangarm64\bin'
         os.environ['CC'] += r'clang'
         os.environ['CXX'] += r'clang++'
 

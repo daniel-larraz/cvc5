@@ -97,16 +97,6 @@ void AssertArgumentException::construct(const char* header,
 
   setMessage(std::string(buf));
 
-#ifdef CVC5_DEBUG
-  LastExceptionBuffer* buffer = LastExceptionBuffer::getCurrent();
-  if (buffer != NULL)
-  {
-    if (buffer->getContents() == NULL)
-    {
-      buffer->setContents(buf);
-    }
-  }
-#endif /* CVC5_DEBUG */
   delete[] buf;
 }
 
@@ -156,16 +146,6 @@ void AssertArgumentException::construct(const char* header,
 
   setMessage(std::string(buf));
 
-#ifdef CVC5_DEBUG
-  LastExceptionBuffer* buffer = LastExceptionBuffer::getCurrent();
-  if (buffer != NULL)
-  {
-    if (buffer->getContents() == NULL)
-    {
-      buffer->setContents(buf);
-    }
-  }
-#endif /* CVC5_DEBUG */
   delete[] buf;
 }
 

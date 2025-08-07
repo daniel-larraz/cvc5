@@ -60,9 +60,11 @@ runs:
         echo "::endgroup::"
 
     - run: echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
+      shell: ${{ inputs.shell }}
       if: runner.os == 'Windows' && runner.arch == 'ARM64'
 
     - run: vcpkg install openssl:arm64-windows-static-md
+      shell: ${{ inputs.shell }}
       if: runner.os == 'Windows' && runner.arch == 'ARM64'
 
     - name: Install pyGithub

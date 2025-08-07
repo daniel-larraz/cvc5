@@ -34,7 +34,6 @@ runs:
         rm -rf ${{ inputs.build-dir }}/install/lib/python*
         rm -rf ${{ inputs.build-dir }}/install/lib/site-packages
 
-        ARCH=$(uname -m)
         if [[ "$MSYSTEM" == "MINGW64" ]]; then
           if [ -f ${{ inputs.build-dir }}/install/bin/libcvc5.dll ]; then
             cp /mingw64/bin/libgcc_s_seh-1.dll ${{ inputs.build-dir }}/install/bin/
@@ -59,6 +58,12 @@ runs:
         # Move package to root directory
         mv ${{ inputs.build-dir }}/${{ inputs.package-name }}.zip .
         echo "::endgroup::"
+
+    - run: echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
+      if: runner.os == 'Windows' && runner.arch == 'ARM64'
+
+    - run: vcpkg install openssl:arm64-windows-static-md
+      if: runner.os == 'Windows' && runner.arch == 'ARM64'
 
     - name: Install pyGithub
       shell: ${{ inputs.shell }}

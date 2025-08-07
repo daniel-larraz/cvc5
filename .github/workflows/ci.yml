@@ -109,7 +109,6 @@ jobs:
             config: production --auto-download --java-bindings
             cache-key: production-win64-native-arm64
             strip-bin: strip
-            python-bindings: true
             java-bindings: true
             java-version: 21
             windows-build: true

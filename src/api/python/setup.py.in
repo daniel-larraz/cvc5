@@ -84,7 +84,7 @@ else:
         if machine in ["arm64", "aarch64"]:
             #os.environ['PATH'] += r';C:/a/_temp/msys64/clangarm64/bin'
             #os.environ['CC'] = r'C:/a/_temp/msys64/clangarm64/bin/clang.exe'
-            os.environ['CXX'] = r'clangarm64'
+            os.environ['CXX'] = r'aarch64-w64-mingw32-clang++'
             #os.environ['LD'] = r'C:/a/_temp/msys64/clangarm64/bin/lld.exe'
 
     ext_options = {

@@ -26,4 +26,4 @@ runs:
         # Construct filename
         filename="${name}-${commit_date}-${sha:0:7}.${ext}"
         echo "Generated filename: $filename"
-        gh release upload latest "${PACKAGE}#${filename}" --repo "${repo}"
+        gh release upload latest "${PACKAGE}" --name ${filename} --repo "${repo}"

@@ -106,9 +106,10 @@ jobs:
           - name: win64:production-arm64
             os: windows-11-arm
             env: CC=clang CXX=clang++
-            config: production --auto-download --java-bindings
+            config: production --auto-download --all-bindings
             cache-key: production-win64-native-arm64
             strip-bin: strip
+            python-bindings: true
             java-bindings: true
             java-version: 21
             windows-build: true

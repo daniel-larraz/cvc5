@@ -52,7 +52,7 @@ runs:
         else
           export PYTHONPATH="$PYTHONPATH:$PYTHON_MODULE_PATH"
         fi
-        python3 -c "import cvc5"
+        python3 examples/api/python/quickstart.py
 
     - name: Check Examples
       shell: ${{ inputs.shell }}

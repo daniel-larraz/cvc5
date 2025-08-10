@@ -12,8 +12,9 @@ runs:
   using: composite
   steps:
     - name: Store to latest
+      shell: ${{ inputs.shell }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
         PACKAGE: ${{ inputs.asset-filename }}
       run: |
         sha="${GITHUB_SHA}"

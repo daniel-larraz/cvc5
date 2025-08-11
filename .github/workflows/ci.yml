@@ -15,7 +15,7 @@ jobs:
         uses: ./.github/actions/get-latest-ready
 
   builds:
-    needs: [get-latest-ready]
+    needs: [get-releases-ready]
     strategy:
       matrix:
         has-tag:

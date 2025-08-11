@@ -14,8 +14,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get latest ready
-        #if: github.ref == 'refs/heads/main' && github.repository == 'cvc5/cvc5'
+        if: github.ref == 'refs/heads/main' #&& github.repository == 'cvc5/cvc5'
         uses: ./.github/actions/get-latest-ready
+
+      - name: Get new version ready
+        if: startsWith(github.ref, 'refs/tags/') #&& github.repository == 'cvc5/cvc5'
+        uses: ./.github/actions/get-version-ready
 
   builds:
     needs: [get-releases-ready]

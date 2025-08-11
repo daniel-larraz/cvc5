@@ -22,6 +22,8 @@ jobs:
           git push --tags -f
 
       - name: Create the latest release if it doesn't already exist
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view latest --repo $GITHUB_REPOSITORY; then
             gh release create latest --title "latest" --notes "Latest builds" \

@@ -5,6 +5,7 @@ runs:
   steps:
     - name: Extract release notes from NEWS.md
       id: notes
+      shell: bash
       run: |
         python3 <<'PYCODE'
         import re
@@ -28,6 +29,7 @@ runs:
         PYCODE
 
     - name: Create release page
+      shell: bash
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: |

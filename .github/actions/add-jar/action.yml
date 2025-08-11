@@ -68,7 +68,7 @@ runs:
         rm QuickStart.class
 
     - name: Store to latest
-      if: github.ref == 'refs/heads/main'
+      #if: github.ref == 'refs/heads/main'
       uses: ./.github/actions/store-to-latest
       with:
         asset-filename: ${{ inputs.jar-name }}.jar

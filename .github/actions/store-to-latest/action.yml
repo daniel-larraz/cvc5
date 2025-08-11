@@ -32,6 +32,7 @@ runs:
         filename = '{}-{}-{}{}'.format(name, curtime, sha[:7], ext)
 
         # prune old commits
+        rel = repo.get_release('latest')
         assets = list(rel.get_assets())
         assets.sort(key=lambda x: x.created_at, reverse=True)
 

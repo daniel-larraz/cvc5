@@ -10,6 +10,9 @@ jobs:
   get-releases-ready:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Get latest ready
         #if: github.ref == 'refs/heads/main' && github.repository == 'cvc5/cvc5'
         uses: ./.github/actions/get-latest-ready

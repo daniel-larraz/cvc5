@@ -9,7 +9,7 @@ runs:
     - name: Create release page
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token-release }}
+        GH_TOKEN: ${{ inputs.github-token-release }}
         EXTRACT_FROM_NEWS: |
           import re
           from pathlib import Path

@@ -20,6 +20,9 @@ jobs:
       - name: Get new version ready
         if: startsWith(github.ref, 'refs/tags/') #&& github.repository == 'cvc5/cvc5'
         uses: ./.github/actions/get-version-ready
+        # when using GITHUB_TOKEN, no further workflows are triggered
+        with:
+          github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
 
   builds:
     needs: [get-releases-ready]

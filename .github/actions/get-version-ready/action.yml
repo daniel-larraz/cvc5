@@ -1,13 +1,16 @@
 name: Get new version release page ready
 description: Get new version release page ready
+inputs:
+  github-token-release:
+    description: token to upload package to release
 runs:
   using: composite
   steps:
     - name: Create release page
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ github.token }}
-        PY_SCRIPT: |
+        GITHUB_TOKEN: ${{ inputs.github-token-release }}
+        EXTRACT_FROM_NEWS: |
           import re
           from pathlib import Path
           news_file = Path("NEWS.md")
@@ -24,7 +27,8 @@ runs:
           print(relmsg)
       run: |
         tag="${GITHUB_REF#refs/tags/}"
-        relmsg=$(python3 -c "$PY_SCRIPT")
+
+        relmsg=$(python3 -c "$EXTRACT_FROM_NEWS")
         if [ -z "$relmsg" ]; then
           echo "No matching section found in NEWS.md, using commit message."
           relmsg=$(git log -1 --pretty=%B)

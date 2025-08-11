@@ -7,11 +7,11 @@ env:
     HOMEBREW_NO_INSTALL_FROM_API: ""
 
 jobs:
-  get-latest-ready:
+  get-releases-ready:
     runs-on: ubuntu-latest
     steps:
       - name: Get latest ready
-        if: github.ref == 'refs/heads/main' && github.repository == 'cvc5/cvc5'
+        #if: github.ref == 'refs/heads/main' && github.repository == 'cvc5/cvc5'
         uses: ./.github/actions/get-latest-ready
 
   builds:

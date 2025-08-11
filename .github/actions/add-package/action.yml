@@ -44,6 +44,14 @@ runs:
           fi
         fi
 
+        if [[ "$MSYSTEM" == "CLANGARM64" ]]; then
+          if [ -f ${{ inputs.build-dir }}/install/bin/libcvc5.dll ]; then
+            cp /clangarm64/bin/libc++.dll ${{ inputs.build-dir }}/install/bin/
+          else
+            cp /clangarm64/lib/libgmp.a ${{ inputs.build-dir }}/install/bin/
+          fi
+        fi
+
         # Copy AUTHORS and COPYING files and licenses directory to install directory
         cp AUTHORS COPYING ${{ inputs.build-dir }}/install/
         cp -r licenses ${{ inputs.build-dir }}/install/

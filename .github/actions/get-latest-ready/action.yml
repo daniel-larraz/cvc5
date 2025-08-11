@@ -3,10 +3,6 @@ description: Get latest tag and release page ready
 runs:
   using: composite
   steps:
-    - name: Checkout code
-      shell: bash
-      uses: actions/checkout@v4
-
     - name: Update latest tag
       shell: bash
       run: |

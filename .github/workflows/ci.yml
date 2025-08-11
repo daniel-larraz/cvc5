@@ -25,9 +25,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view latest --repo $GITHUB_REPOSITORY; then
-            gh release create latest --title "latest" --notes "Latest builds" \
-              --prerelease --repo $GITHUB_REPOSITORY
+          if ! gh release view latest --repo $GITHUB_REPOSITORY >/dev/null 2>&1; then
+            gh release create latest \
+              --title "latest" \
+              --notes "Latest builds" \
+              --prerelease \
+              --repo $GITHUB_REPOSITORY
           fi
 
   builds:

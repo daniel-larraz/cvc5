@@ -3,40 +3,28 @@ description: Get new version release page ready
 runs:
   using: composite
   steps:
-    - name: Extract release notes from NEWS.md
-      id: notes
-      shell: bash
-      run: |
-        python3 <<'PYCODE'
-        import re
-        from pathlib import Path
-
-        news_file = Path("NEWS.md")
-        relmsg = ""
-
-        if news_file.exists():
-            content = news_file.read_text(encoding="utf-8")
-            pattern = re.compile(r'cvc5 [1-9]\.[0-9]+\.[0-9]+\n[=]+\s*\n')
-            m1 = pattern.search(content)
-            if m1:
-                start = m1.end()
-                m2 = pattern.search(content, start + 1)
-                end = m2.start() if m2 else len(content)
-                relmsg = content[start:end].strip()
-
-        # Write output for GitHub Actions
-        print(f"relmsg<<EOF\n{relmsg}\nEOF")
-        PYCODE
-
     - name: Create release page
       shell: bash
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        PY_SCRIPT: |
+          import re
+          from pathlib import Path
+          news_file = Path("NEWS.md")
+          relmsg = ""
+          if news_file.exists():
+              content = news_file.read_text(encoding="utf-8")
+              pattern = re.compile(r'cvc5 [1-9]\.[0-9]+\.[0-9]+\n[=]+\s*\n')
+              m1 = pattern.search(content)
+              if m1:
+                  start = m1.end()
+                  m2 = pattern.search(content, start + 1)
+                  end = m2.start() if m2 else len(content)
+                  relmsg = content[start:end].strip()
+          print(relmsg)
       run: |
         tag="${GITHUB_REF#refs/tags/}"
-
-        # Use relmsg from previous step or fallback to commit message if empty
-        relmsg="${{ steps.notes.outputs.relmsg }}"
+        relmsg=$(python3 -c "$PY_SCRIPT")
         if [ -z "$relmsg" ]; then
           echo "No matching section found in NEWS.md, using commit message."
           relmsg=$(git log -1 --pretty=%B)

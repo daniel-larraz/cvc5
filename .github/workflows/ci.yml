@@ -342,12 +342,9 @@ jobs:
       group: cleanup-artifacts
       cancel-in-progress: false
     steps:
-    - name: Authenticate gh CLI
+    - name: Prune old assets
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh auth login --with-token < $GITHUB_TOKEN
-
-    - name: Prune old assets
       shell: 'python3 {0}'
       run: |
         import subprocess

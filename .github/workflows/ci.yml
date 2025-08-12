@@ -372,7 +372,7 @@ jobs:
         seven_days_ago = now - timedelta(days=7)
 
         # Dictionary to group assets by prefix and date
-        # for filenames like "prefix-YYYY-MM-DD-sha.ext"
+        # for filenames like "prefix-date-sha.ext"
         # Structure: { prefix: { date: [asset1, asset2, ...] } }
         prefix_date_assets = {}
 
@@ -384,7 +384,8 @@ jobs:
             if created_at < seven_days_ago:
                 continue
 
-            # Extract prefix and date from filename
+            # Extract prefix and date from filenames like:
+            # "prefix-YYYY-MM-DD-sha.ext"
             m = re.match(r"^(.+)-(\d{4}-\d{2}-\d{2})-.*$", name)
             if not m:
                 continue

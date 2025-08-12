@@ -5,6 +5,8 @@ inputs:
     description: filename of the asset
   github-token:
     description: token to upload asset to latest
+  shell:
+    default: bash
   
 runs:
   using: composite

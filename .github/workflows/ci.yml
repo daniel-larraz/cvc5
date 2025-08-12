@@ -8,6 +8,7 @@ env:
 
 jobs:
   get-releases-ready:
+    name: Get release pages ready
     runs-on: ubuntu-latest
     concurrency:
       group: get-releases-ready
@@ -336,6 +337,7 @@ jobs:
 
 
   cleanup-artifacts:
+    name: Clean up artifacts from latest
     runs-on: ubuntu-latest
     needs: [builds]
     concurrency:

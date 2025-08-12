@@ -373,7 +373,7 @@ jobs:
         # Structure: { prefix: { date: [asset1, asset2, ...] } }
         prefix_date_assets = {}
 
-        # Set of unwanted assets
+        # Set of assets to delete
         delete_ids = set()
 
         # Group assets by prefix and date (excluding assets older than 7 days)
@@ -384,6 +384,7 @@ jobs:
             # Mark for deletion assets older than 7 days
             if created_at < seven_days_ago:
                 delete_ids.add(asset["id"])
+                continue
 
             # Extract prefix and date from filenames like:
             # "prefix-YYYY-MM-DD-sha.ext"
@@ -412,7 +413,7 @@ jobs:
             if asset["id"] not in keep_ids:
                 delete_ids.add(asset["id"])
 
-        # Delete unwanted assets
+        # Delete old assets
         for asset_id in delete_ids:
             print(f"Deleting asset ID {asset_id}")
             subprocess.run([

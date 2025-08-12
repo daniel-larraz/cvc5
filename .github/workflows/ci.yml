@@ -342,6 +342,11 @@ jobs:
       group: cleanup-artifacts
       cancel-in-progress: false
     steps:
+    - name: Authenticate gh CLI
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh auth login --with-token < $GITHUB_TOKEN
+
     - name: Prune old assets
       shell: 'python3 {0}'
       run: |
@@ -375,7 +380,7 @@ jobs:
             if created_at < seven_days_ago:
                 continue
 
-            m = re.match(r"^([^-]+)-(\d{4}-\d{2}-\d{2})-.*$", name)
+            m = re.match(r"^(.+)-(\d{4}-\d{2}-\d{2})-.*$", name)
             if not m:
                 continue
 

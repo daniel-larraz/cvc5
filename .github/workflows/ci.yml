@@ -371,8 +371,12 @@ jobs:
         now = datetime.now(timezone.utc)
         seven_days_ago = now - timedelta(days=7)
 
+        # Dictionary to group assets by prefix and date
+        # for filenames like "prefix-YYYY-MM-DD-sha.ext"
+        # Structure: { prefix: { date: [asset1, asset2, ...] } }
         prefix_date_assets = {}
 
+        # Group assets by prefix and date (excluding assets older than 7 days)
         for asset in assets:
             name = asset["name"]
             created_at = datetime.fromisoformat(asset["created_at"].replace("Z", "+00:00"))
@@ -380,14 +384,19 @@ jobs:
             if created_at < seven_days_ago:
                 continue
 
+            # Extract prefix and date from filename
             m = re.match(r"^(.+)-(\d{4}-\d{2}-\d{2})-.*$", name)
             if not m:
                 continue
 
             prefix, date_str = m.group(1), m.group(2)
+            # Append asset to the relevant prefix/date group
             prefix_date_assets.setdefault(prefix, {}).setdefault(date_str, []).append(asset)
 
         keep_ids = set()
+        # For each prefix, keep only:
+        # - The 2 most recent dates
+        # - The newest asset for each date
         for prefix, date_assets in prefix_date_assets.items():
             sorted_dates = sorted(date_assets.keys(), reverse=True)
             top_two_dates = sorted_dates[:2]
@@ -397,11 +406,15 @@ jobs:
                 keep_ids.add(newest_asset["id"])
 
         delete_ids = set()
+        # Determine which assets to delete
+        # - Older than 7 days
+        # - Not in keep_ids
         for asset in assets:
             created_at = datetime.fromisoformat(asset["created_at"].replace("Z", "+00:00"))
             if created_at < seven_days_ago or asset["id"] not in keep_ids:
                 delete_ids.add(asset["id"])
 
+        # Delete unwanted assets
         for asset_id in delete_ids:
             print(f"Deleting asset ID {asset_id}")
             subprocess.run([

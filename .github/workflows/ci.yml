@@ -373,13 +373,17 @@ jobs:
         # Structure: { prefix: { date: [asset1, asset2, ...] } }
         prefix_date_assets = {}
 
+        # Set of unwanted assets
+        delete_ids = set()
+
         # Group assets by prefix and date (excluding assets older than 7 days)
         for asset in assets:
             name = asset["name"]
             created_at = datetime.fromisoformat(asset["created_at"].replace("Z", "+00:00"))
 
+            # Mark for deletion assets older than 7 days
             if created_at < seven_days_ago:
-                continue
+                delete_ids.add(asset["id"])
 
             # Extract prefix and date from filenames like:
             # "prefix-YYYY-MM-DD-sha.ext"
@@ -403,13 +407,9 @@ jobs:
                 newest_asset = max(date_assets[date], key=lambda a: a["created_at"])
                 keep_ids.add(newest_asset["id"])
 
-        delete_ids = set()
-        # Determine which assets to delete
-        # - Older than 7 days
-        # - Not in keep_ids
+        # Mark for deletion all assets not in keep_ids
         for asset in assets:
-            created_at = datetime.fromisoformat(asset["created_at"].replace("Z", "+00:00"))
-            if created_at < seven_days_ago or asset["id"] not in keep_ids:
+            if asset["id"] not in keep_ids:
                 delete_ids.add(asset["id"])
 
         # Delete unwanted assets

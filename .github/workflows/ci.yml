@@ -129,7 +129,7 @@ jobs:
           # Selected job for building the documentation
           - name: ubuntu:production-dbg
             os: ubuntu-24.04 # Use Doxygen version from this Ubuntu release
-            config: >
+            config: >-
               production --auto-download --assertions --tracing --unit-testing --editline
               --cocoa --gpl --all-bindings --docs --docs-ga -DBUILD_GMP=1
             cache-key: dbg

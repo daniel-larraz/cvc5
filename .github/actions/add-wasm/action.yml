@@ -36,12 +36,12 @@ runs:
       #if: github.ref == 'refs/heads/main'
       uses: ./.github/actions/store-to-latest
       with:
-        asset-filename: ${{ inputs.wasm-name }}.tar.gz
+        asset-filename: ${{ inputs.wasm-name }}.zip
         github-token: ${{ inputs.github-token-latest }}
     
     - name: Store WASM package to release
       if: startsWith(github.ref, 'refs/tags/')
       uses: ./.github/actions/store-to-release
       with:
-        asset-filename: ${{ inputs.wasm-name }}.tar.gz
+        asset-filename: ${{ inputs.wasm-name }}.zip
         github-token: ${{ inputs.github-token-release }}

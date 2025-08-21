@@ -24,12 +24,12 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Prepare WASM artifacts"
-        mkdir -p wasm-package
-        cp ${{ inputs.build-dir }}/bin/cvc5.wasm wasm-package/
-        cp ${{ inputs.build-dir }}/bin/cvc5.js wasm-package/
+        mkdir -p ${{ inputs.wasm-name }}
+        cp ${{ inputs.build-dir }}/bin/cvc5.wasm ${{ inputs.wasm-name }}/
+        cp ${{ inputs.build-dir }}/bin/cvc5.js ${{ inputs.wasm-name }}/
         
-        # Create a tar.gz package containing both files
-        tar -czf ${{ inputs.wasm-name }}.tar.gz -C wasm-package .
+        # Create a ZIP file containing both files
+        zip -r ${{ inputs.wasm-name }} ${{ inputs.wasm-name }}
         echo "::endgroup::"
     
     - name: Store WASM package to latest

@@ -33,7 +33,7 @@ runs:
         echo "::endgroup::"
     
     - name: Store WASM package to latest
-      if: github.ref == 'refs/heads/main'
+      #if: github.ref == 'refs/heads/main'
       uses: ./.github/actions/store-to-latest
       with:
         asset-filename: ${{ inputs.wasm-name }}.tar.gz

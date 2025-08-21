@@ -222,6 +222,14 @@ jobs:
       with:
         shell: ${{ matrix.build.shell }}
 
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        with-documentation: ${{ matrix.build.build-documentation }}
+        windows-build: ${{ matrix.build.windows-build }}
+        wasm-build: ${{ matrix.build.wasm-build }}
+        shell: ${{ matrix.build.shell }}
+
     - name: Install pyGithub
       if: matrix.build.package-name || matrix.build.wasm-pkg-name
       run: |
@@ -230,14 +238,6 @@ jobs:
         #   module 'lib' has no attribute 'X509_V_FLAG_NOTIFY_POLICY'
         python3 -m pip install -U pyopenssl
         python3 -m pip install pyGithub
-
-    - name: Install dependencies
-      uses: ./.github/actions/install-dependencies
-      with:
-        with-documentation: ${{ matrix.build.build-documentation }}
-        windows-build: ${{ matrix.build.windows-build }}
-        wasm-build: ${{ matrix.build.wasm-build }}
-        shell: ${{ matrix.build.shell }}
 
     - name: Setup caches
       uses: ./.github/actions/setup-cache

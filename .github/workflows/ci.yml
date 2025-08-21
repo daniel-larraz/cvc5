@@ -224,7 +224,6 @@ jobs:
 
     - name: Install pyGithub
       if: matrix.build.package-name || matrix.build.wasm-pkg-name
-      shell: ${{ inputs.shell }}
       run: |
         # Upgrading pyopenssl resolves the following error:
         # AttributeError:

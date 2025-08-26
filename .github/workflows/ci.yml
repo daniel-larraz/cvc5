@@ -384,7 +384,7 @@ jobs:
 
             # Mark for deletion assets older than 7 days
             if created_at < seven_days_ago:
-                delete_ids.add(asset["id"])
+                delete_ids.add((asset["id"], asset["name"]))
                 continue
 
             # Extract prefix and date from filenames like:
@@ -412,11 +412,11 @@ jobs:
         # Mark for deletion all assets not in keep_ids
         for asset in assets:
             if asset["id"] not in keep_ids:
-                delete_ids.add(asset["id"])
+                delete_ids.add((asset["id"], asset["name"]))
 
         # Delete old assets
-        for asset_id in delete_ids:
-            print(f"Deleting asset ID {asset_id}")
+        for asset_id, asset_name in delete_ids:
+            print(f"Deleting asset {asset_name} ({asset_id})")
             subprocess.run([
                 "gh", "api",
                 "--method", "DELETE",

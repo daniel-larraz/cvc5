@@ -7,7 +7,30 @@ env:
     HOMEBREW_NO_INSTALL_FROM_API: ""
 
 jobs:
+  setup-release-pages:
+    name: Set up release pages
+    runs-on: ubuntu-latest
+    concurrency:
+      group: setup-release-pages
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+        uses: actions/checkout@v4
+
+      - name: Set up latest page
+        if: github.ref == 'refs/heads/main'
+        uses: ./.github/actions/setup-latest
+
+      - name: Set up new version page
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ./.github/actions/setup-new-version
+        # when using GITHUB_TOKEN, no further workflows are triggered
+        with:
+          github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+
   builds:
+    needs: [setup-release-pages]
     strategy:
       matrix:
         has-tag:
@@ -232,15 +255,6 @@ jobs:
         windows-build: ${{ matrix.build.windows-build }}
         wasm-build: ${{ matrix.build.wasm-build }}
         shell: ${{ matrix.build.shell }}
-
-    - name: Install pyGithub
-      if: matrix.build.package-name || matrix.build.wasm-pkg-name
-      run: |
-        # Upgrading pyopenssl resolves the following error:
-        # AttributeError:
-        #   module 'lib' has no attribute 'X509_V_FLAG_NOTIFY_POLICY'
-        python3 -m pip install -U pyopenssl
-        python3 -m pip install pyGithub
 
     - name: Setup caches
       uses: ./.github/actions/setup-cache

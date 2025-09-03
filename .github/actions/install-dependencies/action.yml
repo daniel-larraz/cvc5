@@ -153,10 +153,6 @@ runs:
         python3 -m pip install --upgrade pip
         echo "::endgroup::"
 
-    - name: Install pyGithub
-      shell: ${{ inputs.shell }}
-      run: python3 -m pip install pyGithub
-
     - name: Install software for documentation
       if: inputs.with-documentation == 'true'
       shell: ${{ inputs.shell }}

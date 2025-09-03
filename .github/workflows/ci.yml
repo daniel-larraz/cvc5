@@ -27,7 +27,7 @@ jobs:
         uses: ./.github/actions/setup-new-version
         # when using GITHUB_TOKEN, no further workflows are triggered
         with:
-          github-token-release: ${{ secrets.ACTION_USER_TOKEN }}
+          github-token-release: ${{ github.token }}
 
   builds:
     needs: [setup-release-pages]

@@ -98,7 +98,7 @@ jobs:
         install: |
           make
           mingw-w64-clang-aarch64-cmake
-          mingw-w64-clang-aarch64-gcc
+          mingw-w64-clang-aarch64-clang
           mingw-w64-clang-aarch64-gmp
 
     # cibuildwheel requires pyproject.toml to be present from the beginning

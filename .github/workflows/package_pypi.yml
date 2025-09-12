@@ -146,6 +146,8 @@ jobs:
         CIBW_ENVIRONMENT_MACOS: >
           DYLD_LIBRARY_PATH="$(pwd)/install/lib:$DYLD_LIBRARY_PATH"
           MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos-target }}
+        CIBW_ENVIRONMENT_WINDOWS: >
+          PATH="${{ steps.mingw64-path.outputs.bin }};$PATH"
         CIBW_TEST_COMMAND: python {project}/examples/api/python/quickstart.py
         CIBW_TEST_SKIP: "cp38-macosx_arm64" # Silence warning. See: https://github.com/pypa/cibuildwheel/pull/1171
 

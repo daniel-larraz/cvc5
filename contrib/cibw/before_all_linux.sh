@@ -2,7 +2,7 @@
 
 GPL="$1"
 
-COMMON_CMD="./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install"
+COMMON_CMD="./configure.sh production --auto-download --python-bindings --python-only-src --prefix=./install -DUSE_DEFAULT_LINKER=1"
 
 if [ "$GPL" = "true" ]; then
   GPL_FLAGS="--gpl --cln --glpk --cocoa"

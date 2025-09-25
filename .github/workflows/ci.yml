@@ -105,7 +105,7 @@ jobs:
             java-bindings: true
             check-examples: true
             package-name: cvc5-macOS-x86_64
-            macos-target: 10.13
+            macos-target: 10.15
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
@@ -228,7 +228,7 @@ jobs:
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-macOS-x86_64
-            macos-target: 10.13
+            macos-target: 10.15
             gpl-tag: -gpl
 
           - name: macos:production-arm64-gpl

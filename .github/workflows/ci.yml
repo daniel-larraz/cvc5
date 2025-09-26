@@ -110,7 +110,7 @@ jobs:
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
           - name: macos:production-arm64
-            os: macos-14
+            os: macos-15
             config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
             cache-key: production-arm64
             strip-bin: strip
@@ -232,7 +232,7 @@ jobs:
             gpl-tag: -gpl
 
           - name: macos:production-arm64-gpl
-            os: macos-14
+            os: macos-15
             config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1 -DBUILD_CLN=1
             cache-key: production-arm64-gpl
             strip-bin: strip

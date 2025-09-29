@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
   {
     return runCvc5(argc, argv, solver);
   }
-  catch (cvc5::CVC5ApiOptionException& e)
+  catch (const cvc5::CVC5ApiOptionException& e)
   {
 #ifdef CVC5_COMPETITION_MODE
     solver->getDriverOptions().out() << "unknown" << std::endl;
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
               << "Please use --help to get help on command-line options."
               << std::endl;
   }
-  catch (OptionException& e)
+  catch (const OptionException& e)
   {
 #ifdef CVC5_COMPETITION_MODE
     solver->getDriverOptions().out() << "unknown" << std::endl;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
               << "Please use --help to get help on command-line options."
               << std::endl;
   }
-  catch (cvc5::CVC5ApiException& e)
+  catch (const std::exception& e)
   {
 #ifdef CVC5_COMPETITION_MODE
     solver->getDriverOptions().out() << "unknown" << std::endl;
@@ -64,12 +64,12 @@ int main(int argc, char* argv[])
     if (solver->getOption("output-language") == "LANG_SMTLIB_V2_6")
     {
       solver->getDriverOptions().out()
-          << "(error \"" << e << "\")" << std::endl;
+          << "(error \"" << e.what() << "\")" << std::endl;
     }
     else
     {
       solver->getDriverOptions().err()
-          << "(error \"" << e << "\")" << std::endl;
+          << "(error \"" << e.what() << "\")" << std::endl;
     }
     if (solver->getOptionInfo("stats").boolValue() && pExecutor != nullptr)
     {

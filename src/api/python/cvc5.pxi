@@ -1528,7 +1528,6 @@ cdef class TermManager:
             :param arity: The arity of the sort (must be > 0).
             :return: The sort constructor sort.
         """
-        cdef Sort sort = Sort(self)
         if symbol is None:
           return _sort(self, self.ctm.mkUninterpretedSortConstructorSort(arity))
         return _sort(
@@ -5576,9 +5575,7 @@ cdef class Term:
 
                 This is safe to call when :py:meth:`hasOp()` returns True.
         """
-        cdef Op op = Op(self.tm)
-        op.cop = self.cterm.getOp()
-        return op
+        return _op(self.tm, self.cterm.getOp())
 
     def hasSymbol(self):
         """

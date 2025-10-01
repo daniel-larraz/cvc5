@@ -446,7 +446,7 @@ cdef class Datatype:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __getitem__(self, index):
         """
@@ -579,7 +579,7 @@ cdef class DatatypeConstructor:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __getitem__(self, index):
         """
@@ -729,7 +729,7 @@ cdef class DatatypeConstructorDecl:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def addSelector(self, str name, Sort sort):
         """
@@ -798,7 +798,7 @@ cdef class DatatypeDecl:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def addConstructor(self, DatatypeConstructorDecl ctor):
         """
@@ -854,7 +854,7 @@ cdef class DatatypeSelector:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def getName(self):
         """
@@ -926,7 +926,7 @@ cdef class Op:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __eq__(self, Op other):
         return self.cop == other.cop
@@ -993,7 +993,7 @@ cdef class Grammar:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __str__(self):
         return self.cgrammar.toString().decode()
@@ -4785,7 +4785,7 @@ cdef class Sort:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __eq__(self, Sort other):
         return self.csort == other.csort
@@ -5447,7 +5447,7 @@ cdef class Term:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __eq__(self, Term other):
         return self.cterm == other.cterm
@@ -6139,7 +6139,7 @@ cdef class Proof:
     cdef TermManager tm
 
     def __init__(self):
-        tm = None
+        self.tm = None
 
     def __eq__(self, Proof other):
         return self.cproof == other.cproof

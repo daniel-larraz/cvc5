@@ -5424,6 +5424,9 @@ cdef class Term:
     cdef c_Term cterm
     cdef TermManager tm
 
+    def __init__(self):
+        tm = None
+
     def __eq__(self, Term other):
         return self.cterm == other.cterm
 
@@ -6115,6 +6118,9 @@ cdef class Proof:
     cdef c_Proof cproof
     cdef TermManager tm
 
+    def __init__(self):
+        tm = None
+
     def __eq__(self, Proof other):
         return self.cproof == other.cproof
 
@@ -6142,15 +6148,19 @@ cdef class Proof:
         """
             :return: The conclusion of the root step of the proof.
         """
-        return _term(self.tm, self.cproof.getResult())
+        if self.tm is None:
+          return Term()
+        else:
+          return _term(self.tm, self.cproof.getResult())
 
     def getChildren(self):
         """
             :return: The premises of the root step of the proof.
         """
         proofs = []
-        for p in self.cproof.getChildren():
-            proofs.append(_proof(self.tm, p))
+        if self.tm is not None:
+            for p in self.cproof.getChildren():
+                proofs.append(_proof(self.tm, p))
         return proofs
 
     def getArguments(self):
@@ -6159,8 +6169,9 @@ cdef class Proof:
                     Some of those terms might be strings.
         """
         args = []
-        for a in self.cproof.getArguments():
-            args.append(_term(self.tm, a))
+        if self.tm is not None:
+            for a in self.cproof.getArguments():
+                args.append(_term(self.tm, a))
         return args
 
 

@@ -88,63 +88,63 @@ from cvc5skolemids cimport SkolemId as c_SkolemId
 # ----------------------------------------------------------------------------
 
 cdef Op _op(tm: TermManager, op: c_Op):
-  o = Op()
+  o = Op.__new__(Op) # bypass __init__
   o.cop = op
   o.tm = tm
   return o
 
 cdef Term _term(tm: TermManager, term: c_Term):
-  t = Term()
+  t = Term.__new__(Term) # bypass __init__
   t.cterm = term
   t.tm = tm
   return t
 
 cdef Sort _sort(tm: TermManager, sort: c_Sort):
-  s = Sort()
+  s = Sort.__new__(Sort) # bypass __init__
   s.csort = sort
   s.tm = tm
   return s
 
 cdef Datatype _datatype(tm: TermManager, dt: c_Datatype):
-  d = Datatype()
+  d = Datatype.__new__(Datatype) # bypass __init__
   d.cdt = dt
   d.tm = tm
   return d
 
 cdef DatatypeDecl _dtdecl(tm: TermManager, decl: c_DatatypeDecl):
-  d = DatatypeDecl()
+  d = DatatypeDecl.__new__(DatatypeDecl) # bypass __init__
   d.cdtdecl = decl
   d.tm = tm
   return d
 
 cdef DatatypeConstructor _dtcons(
     tm: TermManager, cons: c_DatatypeConstructor):
-  d = DatatypeConstructor()
+  d = DatatypeConstructor.__new__(DatatypeConstructor) # bypass __init__
   d.cdtcons = cons
   d.tm = tm
   return d
 
 cdef DatatypeConstructorDecl _dtconsdecl(
     tm: TermManager, decl: c_DatatypeConstructorDecl):
-  d = DatatypeConstructorDecl()
+  d = DatatypeConstructorDecl.__new__(DatatypeConstructorDecl) # bypass __init__
   d.cdtconsdecl = decl
   d.tm = tm
   return d
 
 cdef DatatypeSelector _dtsel(tm: TermManager, sel: c_DatatypeSelector):
-  d = DatatypeSelector()
+  d = DatatypeSelector.__new__(DatatypeSelector) # bypass __init__
   d.cdtsel = sel
   d.tm = tm
   return d
 
 cdef Grammar _grammar(tm: TermManager, grammar: c_Grammar):
-  g = Grammar()
+  g = Grammar.__new__(Grammar) # bypass __init__
   g.cgrammar = grammar
   g.tm = tm
   return g
 
 cdef Proof _proof(tm: TermManager, proof: c_Proof):
-  p = Proof()
+  p = Proof.__new__(Proof) # bypass __init__
   p.cproof = proof
   p.tm = tm
   return p
@@ -445,6 +445,9 @@ cdef class Datatype:
     cdef c_Datatype cdt
     cdef TermManager tm
 
+    def __init__(self):
+        tm = None
+
     def __getitem__(self, index):
         """
             Get the datatype constructor with the given index, where index can
@@ -574,6 +577,9 @@ cdef class DatatypeConstructor:
     """
     cdef c_DatatypeConstructor cdtcons
     cdef TermManager tm
+
+    def __init__(self):
+        tm = None
 
     def __getitem__(self, index):
         """
@@ -722,6 +728,9 @@ cdef class DatatypeConstructorDecl:
     cdef c_DatatypeConstructorDecl cdtconsdecl
     cdef TermManager tm
 
+    def __init__(self):
+        tm = None
+
     def addSelector(self, str name, Sort sort):
         """
             Add datatype selector declaration.
@@ -788,6 +797,9 @@ cdef class DatatypeDecl:
     cdef c_DatatypeDecl cdtdecl
     cdef TermManager tm
 
+    def __init__(self):
+        tm = None
+
     def addConstructor(self, DatatypeConstructorDecl ctor):
         """
             Add a datatype constructor declaration.
@@ -840,6 +852,9 @@ cdef class DatatypeSelector:
     """
     cdef c_DatatypeSelector cdtsel
     cdef TermManager tm
+
+    def __init__(self):
+        tm = None
 
     def getName(self):
         """
@@ -910,6 +925,9 @@ cdef class Op:
     cdef c_Op cop
     cdef TermManager tm
 
+    def __init__(self):
+        tm = None
+
     def __eq__(self, Op other):
         return self.cop == other.cop
 
@@ -973,6 +991,9 @@ cdef class Grammar:
     """
     cdef c_Grammar  cgrammar
     cdef TermManager tm
+
+    def __init__(self):
+        tm = None
 
     def __str__(self):
         return self.cgrammar.toString().decode()
@@ -4764,6 +4785,9 @@ cdef class Sort:
     """
     cdef c_Sort csort
     cdef TermManager tm
+
+    def __init__(self):
+        tm = None
 
     def __eq__(self, Sort other):
         return self.csort == other.csort

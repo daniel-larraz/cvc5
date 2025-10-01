@@ -565,7 +565,6 @@ def test_datatype_specialized_cons(tm):
     iargs = [isort]
     listInt = dtsorts[0].instantiate(iargs)
 
-    testConsTerm = Term(tm)
     # get the specialized constructor term for list[Int]
     testConsTerm = nilc.getInstantiatedTerm(listInt)
     assert testConsTerm != nilc.getTerm()

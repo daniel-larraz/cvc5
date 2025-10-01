@@ -1498,7 +1498,6 @@ cdef class TermManager:
             :param symbol: The name of the sort.
             :return: The uninterpreted sort.
         """
-        cdef Sort sort = Sort(self)
         if name is None:
           return _sort(self, self.ctm.mkUninterpretedSort())
         return _sort(self, self.ctm.mkUninterpretedSort(name.encode()))

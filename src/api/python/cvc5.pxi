@@ -88,63 +88,63 @@ from cvc5skolemids cimport SkolemId as c_SkolemId
 # ----------------------------------------------------------------------------
 
 cdef Op _op(tm: TermManager, op: c_Op):
-  o = Op.__new__(Op) # bypass __init__
+  o = Op()
   o.cop = op
   o.tm = tm
   return o
 
 cdef Term _term(tm: TermManager, term: c_Term):
-  t = Term.__new__(Term) # bypass __init__
+  t = Term()
   t.cterm = term
   t.tm = tm
   return t
 
 cdef Sort _sort(tm: TermManager, sort: c_Sort):
-  s = Sort.__new__(Sort) # bypass __init__
+  s = Sort()
   s.csort = sort
   s.tm = tm
   return s
 
 cdef Datatype _datatype(tm: TermManager, dt: c_Datatype):
-  d = Datatype.__new__(Datatype) # bypass __init__
+  d = Datatype()
   d.cdt = dt
   d.tm = tm
   return d
 
 cdef DatatypeDecl _dtdecl(tm: TermManager, decl: c_DatatypeDecl):
-  d = DatatypeDecl.__new__(DatatypeDecl) # bypass __init__
+  d = DatatypeDecl()
   d.cdtdecl = decl
   d.tm = tm
   return d
 
 cdef DatatypeConstructor _dtcons(
     tm: TermManager, cons: c_DatatypeConstructor):
-  d = DatatypeConstructor.__new__(DatatypeConstructor) # bypass __init__
+  d = DatatypeConstructor()
   d.cdtcons = cons
   d.tm = tm
   return d
 
 cdef DatatypeConstructorDecl _dtconsdecl(
     tm: TermManager, decl: c_DatatypeConstructorDecl):
-  d = DatatypeConstructorDecl.__new__(DatatypeConstructorDecl) # bypass __init__
+  d = DatatypeConstructorDecl()
   d.cdtconsdecl = decl
   d.tm = tm
   return d
 
 cdef DatatypeSelector _dtsel(tm: TermManager, sel: c_DatatypeSelector):
-  d = DatatypeSelector.__new__(DatatypeSelector) # bypass __init__
+  d = DatatypeSelector()
   d.cdtsel = sel
   d.tm = tm
   return d
 
 cdef Grammar _grammar(tm: TermManager, grammar: c_Grammar):
-  g = Grammar.__new__(Grammar) # bypass __init__
+  g = Grammar()
   g.cgrammar = grammar
   g.tm = tm
   return g
 
 cdef Proof _proof(tm: TermManager, proof: c_Proof):
-  p = Proof.__new__(Proof) # bypass __init__
+  p = Proof()
   p.cproof = proof
   p.tm = tm
   return p

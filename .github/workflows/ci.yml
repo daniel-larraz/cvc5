@@ -297,6 +297,7 @@ jobs:
       run: |
         sudo apt-get remove bison
         whereis bison
+        whereis yacc
 
     - name: Setup caches
       uses: ./.github/actions/setup-cache

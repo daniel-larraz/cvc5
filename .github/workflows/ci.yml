@@ -295,7 +295,7 @@ jobs:
     - name: Remove Bison (ubuntu:production-arm64-cross)
       if: ${{ matrix.build.name == 'ubuntu:production-arm64-cross' }}
       run: |
-        apt remove bison
+        sudo apt-get remove bison
         whereis bison
 
     - name: Setup caches

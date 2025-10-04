@@ -292,8 +292,8 @@ jobs:
         wasm-build: ${{ matrix.build.wasm-build }}
         shell: ${{ matrix.build.shell }}
 
-    - name: Remove Bison (ubuntu:production-arm64)
-      if: ${{ matrix.build.name == 'ubuntu:production-arm64' }}
+    - name: Remove Bison (ubuntu:production-arm64-cross)
+      if: ${{ matrix.build.name == 'ubuntu:production-arm64-cross' }}
       run: |
         apt remove bison
         whereis bison

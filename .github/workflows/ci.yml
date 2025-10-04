@@ -292,6 +292,18 @@ jobs:
         wasm-build: ${{ matrix.build.wasm-build }}
         shell: ${{ matrix.build.shell }}
 
+    - name: Remove Bison (ubuntu:production-arm64)
+      if: ${{ matrix.build.name == 'ubuntu:production-arm64' }}
+      run: |
+        apt remove bison
+        whereis bison
+
+    - name: Remove Bison (macos:production-arm64-cross)
+      if: ${{ matrix.build.name == 'macos:production-arm64-cross' }}
+      run: |
+        brew uninstall bison
+        which bison
+
     - name: Setup caches
       uses: ./.github/actions/setup-cache
       with:

@@ -298,12 +298,6 @@ jobs:
         apt remove bison
         whereis bison
 
-    - name: Remove Bison (macos:production-arm64-cross)
-      if: ${{ matrix.build.name == 'macos:production-arm64-cross' }}
-      run: |
-        brew uninstall bison
-        which bison
-
     - name: Setup caches
       uses: ./.github/actions/setup-cache
       with:

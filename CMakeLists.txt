@@ -433,12 +433,6 @@ if(ENABLE_AUTO_DOWNLOAD AND USE_PYTHON_VENV)
   set(VENV_PATH "${CMAKE_BINARY_DIR}/venv-${Python_VERSION}")
   if(NOT EXISTS ${VENV_PATH})
     create_venv()
-  else()
-    if(NOT (EXISTS ${VENV_PATH}/bin/pip OR EXISTS ${VENV_PATH}/Scripts/pip.exe))
-      # This situation may be possible if cvc5 was built before 715f649
-      execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ${VENV_PATH})
-      create_venv()
-    endif()
   endif()
   find_package(Pip REQUIRED)
 

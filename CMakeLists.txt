@@ -434,7 +434,6 @@ if(ENABLE_AUTO_DOWNLOAD AND USE_PYTHON_VENV)
   if(NOT EXISTS ${VENV_PATH})
     create_venv()
   endif()
-  find_package(Pip REQUIRED)
 
   # Set up variables to find Python within the virtual environment
   set(ENV{VIRTUAL_ENV} "${VENV_PATH}")
@@ -449,6 +448,7 @@ if(ENABLE_AUTO_DOWNLOAD AND USE_PYTHON_VENV)
 
   # Find the Python interpreter within the virtual environment
   find_package(Python COMPONENTS Interpreter REQUIRED)
+  find_package(Pip REQUIRED)
 endif()
 
 find_package(GMP 6.3 REQUIRED)

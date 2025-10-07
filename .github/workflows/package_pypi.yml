@@ -72,13 +72,6 @@ jobs:
         fetch-depth: 0
         ref: ${{ github.event.inputs.release_tag }}
 
-    # Required by PEP-668
-    - name: Set up Python virtual environment
-      if: runner.os == 'macOS'
-      run: |
-        python3 -m venv ~/.venv
-        echo "$HOME/.venv/bin" >> $GITHUB_PATH
-
     - uses: msys2/setup-msys2@v2
       if: runner.os == 'Windows' && runner.arch == 'X64'
       with:

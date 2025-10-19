@@ -46,6 +46,7 @@ macro(cvc5_add_java_api_test name dir)
     set(testname api/java/${dir}/${name})
   endif()
   add_test(${testname}
+      ${ENV_PATH_CMD}
       ${Java_JAVA_EXECUTABLE}
         -Djava.library.path=${CVC5_JNI_PATH}
         -cp "${CVC5_JAR_PATH}${PATH_SEP}${test_bin_dir}/${name}.jar" ${name}

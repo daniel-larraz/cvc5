@@ -52,14 +52,22 @@ if(NOT Poly_FOUND_SYSTEM)
 
   set(Poly_VERSION "0.2.0")
 
-  set(POLY_PATCH_KWD PATCH_COMMAND)
+  find_package(Patch)
+  if(NOT Patch_FOUND)
+    message(FATAL_ERROR "Can not build LibPoly, missing binary for patch")
+  endif()
+
+  set(POLY_PATCH_CMD
+    PATCH_COMMAND
+      ${Patch_EXECUTABLE} -p1 -d <SOURCE_DIR>
+        -i ${CMAKE_CURRENT_LIST_DIR}/deps-utils/libpoly.patch
+  )
   check_if_cross_compiling(CCWIN "Windows" "")
   if(CCWIN)
-    set(POLY_PATCH_CMD
-      PATCH_COMMAND
+    set(POLY_PATCH_CMD ${POLY_PATCH_CMD}
+      COMMAND
         ${CMAKE_SOURCE_DIR}/cmake/deps-utils/Poly-windows-patch.sh <SOURCE_DIR>
     )
-    set(POLY_PATCH_KWD COMMAND)
   endif()
 
   # On Windows, CMake's default install action places DLLs into the runtime
@@ -140,7 +148,7 @@ if(NOT Poly_FOUND_SYSTEM)
     # of the static libraries, so remove the installation targets for the other
     # versions of LibPoly
     set(POLY_PATCH_CMD ${POLY_PATCH_CMD}
-      ${POLY_PATCH_KWD}
+      COMMAND
         sed -ri.orig
           "/TARGETS (poly|polyxx|static_poly|static_polyxx) /d"
           <SOURCE_DIR>/src/CMakeLists.txt

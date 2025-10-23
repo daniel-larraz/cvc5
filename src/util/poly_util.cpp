@@ -280,7 +280,7 @@ std::ostream& operator<<(std::ostream& os, const VariableInformation& vi)
   }
   else
   {
-    os << "Info for " << vi.var << ": ";
+    os << "Info for " << stream_variable(*(vi.polyCtx), vi.var) << ": ";
     os << "max deg " << vi.max_degree;
     os << ", max lc deg: " << vi.max_lc_degree;
     os << ", max term tdeg: " << vi.max_terms_tdegree;

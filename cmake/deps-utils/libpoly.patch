@@ -1,0 +1,52 @@
+diff --git a/include/polyxx/polynomial.h b/include/polyxx/polynomial.h
+index cafea22..fa856ff 100644
+--- a/include/polyxx/polynomial.h
++++ b/include/polyxx/polynomial.h
+@@ -45,6 +45,7 @@ namespace poly {
+ 
+     /** Construct from an integer and a custom context. */
+     Polynomial(const Context& c, Integer i);
++    Polynomial(const lp_polynomial_context_t* c, Integer i);
+     /** Construct from an integer. */
+     Polynomial(Integer i);
+ 
+diff --git a/include/polyxx/variable.h b/include/polyxx/variable.h
+index cb114a6..565fa41 100644
+--- a/include/polyxx/variable.h
++++ b/include/polyxx/variable.h
+@@ -47,8 +47,8 @@ namespace poly {
+   /** Stream the given Variable from the given context.
+    * Use as follows: os << stream_variable(c, v) << ...
+    */
+-  inline detail::variable_printer stream_variable(const Context& c,
+-                                                  const Variable& v);
++  detail::variable_printer stream_variable(const Context& c,
++                                           const Variable& v);
+ 
+   /** Compare two variables for equality. */
+   bool operator==(const Variable& lhs, const Variable& rhs);
+diff --git a/src/polyxx/polynomial.cpp b/src/polyxx/polynomial.cpp
+index a71c51f..609180f 100644
+--- a/src/polyxx/polynomial.cpp
++++ b/src/polyxx/polynomial.cpp
+@@ -51,6 +51,11 @@ namespace poly {
+     lp_polynomial_construct_simple(get_internal(), c.get_polynomial_context(),
+                                    i.get_internal(), lp_variable_null, 0);
+   }
++  Polynomial::Polynomial(const lp_polynomial_context_t* c, Integer i)
++      : mPoly(lp_polynomial_new(c), polynomial_deleter) {
++    lp_polynomial_construct_simple(get_internal(), c,
++                                   i.get_internal(), lp_variable_null, 0);
++  }
+   Polynomial::Polynomial(Integer i) : Polynomial(Context::get_context(), i){};
+   Polynomial::Polynomial(const Context& c, long i)
+       : Polynomial(c, Integer(i)) {}
+@@ -370,7 +375,7 @@ namespace poly {
+     if (degree(p) == 1) {
+       // Derivative is constant, making the resultant trivial (and resultant()
+       // does not cope with that)
+-      return Polynomial(Integer(1));
++      return Polynomial(detail::context(p), Integer(1));
+     }
+     return div(resultant(p, derivative(p)), leading_coefficient(p));
+   }

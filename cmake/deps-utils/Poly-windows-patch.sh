@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm -rf $1/.git
+
 # Roughly following https://stackoverflow.com/a/44383330/2375725
 # Avoid %z and %llu format specifiers
 find $1/ -type f ! -name "*.orig" -exec \

@@ -177,8 +177,8 @@ if(NOT Poly_FOUND_SYSTEM)
   ExternalProject_Add(
     Poly-EP
     ${COMMON_EP_CONFIG}
-    URL https://github.com/SRI-CSL/libpoly/archive/refs/tags/v${Poly_VERSION}.tar.gz
-    URL_HASH SHA256=146adc0d3f6fe8038adb6b8b69dd16114a4be12f520d5c1fb333f3746d233abe
+    GIT_REPOSITORY https://github.com/Ovascos/libpoly.git
+    GIT_TAG discriminant-context-fix
     ${POLY_PATCH_CMD}
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
                -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>

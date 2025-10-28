@@ -55,13 +55,20 @@ add_custom_target(build-junit-tests
 )
 add_dependencies(build-units build-junit-tests)
 
+if(WIN32)
+  set(PATH_SEP ";")
+else()
+  set(PATH_SEP ":")
+endif()
+
 macro(cvc5_add_java_api_test name)
   add_test (NAME unit/api/java/${name}
     COMMAND
+      ${ENV_PATH_CMD}
       ${Java_JAVA_EXECUTABLE}
       -Djava.library.path=${CVC5_JNI_PATH}
       -jar ${JUnit_JAR}
-      -cp ${JUnit_JAR}:${CVC5_JAR_PATH}:.
+      -cp "${JUnit_JAR}${PATH_SEP}${CVC5_JAR_PATH}${PATH_SEP}."
       -select-package tests
       -n tests.${name}
   )

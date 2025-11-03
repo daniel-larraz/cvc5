@@ -326,23 +326,13 @@ endif()
 set(CVC5_JAR "cvc5-${CVC5_VERSION}.jar")
 
 # Create cvc5.jar file
-if (WIN32)
-  # CMake creates a symbolic link pointing to the jar with
-  # the version info when the VERSION attribute is provided.
-  # This fails on Windows so we don't provide it.
-  add_jar(cvc5jar
-    SOURCES
-    ${JAVA_FILES}
-    OUTPUT_NAME cvc5
-  )
-else()
-  add_jar(cvc5jar
-    SOURCES
-    ${JAVA_FILES}
-    VERSION ${CVC5_VERSION}
-    OUTPUT_NAME cvc5
-  )
-endif()
+
+add_jar(cvc5jar
+  SOURCES
+  ${JAVA_FILES}
+  VERSION ${CVC5_VERSION}
+  OUTPUT_NAME cvc5
+)
 
 add_dependencies(cvc5jar generate-java-kinds cvc5jni cvc5 cvc5parser)
 

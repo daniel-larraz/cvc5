@@ -340,6 +340,7 @@ install(TARGETS cvc5jni COMPONENT java-api)
 
 if (WIN32)
   get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
+  set_target_properties(cvc5jar PROPERTIES INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}/share/java")
   install(FILES
     ${CVC5_JAR_PATH}
     DESTINATION share/java

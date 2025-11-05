@@ -36,6 +36,7 @@ runs:
       run: |
         if [[ "${{ inputs.check-install }}" != "true" ]]; then exit 0; fi
         cd ${{ inputs.build-dir }}
+        ls -la src/api/java/
         make -j${{ env.num_proc }} install
         echo "#include <cvc5/cvc5.h>" > /tmp/test.cpp
         echo "using namespace cvc5;" >> /tmp/test.cpp

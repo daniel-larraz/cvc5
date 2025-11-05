@@ -323,10 +323,7 @@ if (WIN32)
   set_target_properties(cvc5jni PROPERTIES IMPORT_PREFIX "")
 endif()
 
-set(CVC5_JAR "cvc5-${CVC5_VERSION}.jar")
-
 # Create cvc5.jar file
-
 add_jar(cvc5jar
   SOURCES
   ${JAVA_FILES}
@@ -341,10 +338,18 @@ add_dependencies(cvc5jar generate-java-kinds cvc5jni cvc5 cvc5parser)
 # DLLs into the runtime path (by default "bin")
 install(TARGETS cvc5jni COMPONENT java-api)
 
-install_jar(cvc5jar
-  DESTINATION share/java
-  COMPONENT java-api
-)
+if (WIN32)
+  get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
+  install(FILES
+    ${CVC5_JAR_PATH}
+    DESTINATION share/java
+    COMPONENT java-api)
+else()
+  install_jar(cvc5jar
+    DESTINATION share/java
+    COMPONENT java-api
+  )
+endif()
 
 install_jar_exports(
   TARGETS cvc5jar

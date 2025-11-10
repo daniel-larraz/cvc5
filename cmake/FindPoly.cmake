@@ -169,8 +169,8 @@ if(NOT Poly_FOUND_SYSTEM)
   ExternalProject_Add(
     Poly-EP
     ${COMMON_EP_CONFIG}
-    GIT_REPOSITORY https://github.com/Ovascos/libpoly.git
-    GIT_TAG fix-missing-operations
+    GIT_REPOSITORY https://github.com/SRI-CSL/libpoly.git
+    GIT_TAG master
     ${POLY_PATCH_CMD}
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
                -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>

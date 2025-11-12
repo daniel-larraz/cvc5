@@ -19,9 +19,6 @@ find_package(JUnit REQUIRED)
 
 get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
 get_target_property(CVC5_JNI_LIBDIR cvc5jni LIBRARY_OUTPUT_DIRECTORY)
-if(NOT CVC5_JNI_LIBDIR)
-    get_target_property(CVC5_JNI_LIBDIR cvc5jni RUNTIME_OUTPUT_DIRECTORY)
-endif()
 
 # specify source files for junit tests
 set(java_test_src_files

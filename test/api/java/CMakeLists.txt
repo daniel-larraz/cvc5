@@ -18,9 +18,6 @@ include(UseJava)
 
 get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
 get_target_property(CVC5_JNI_LIBDIR cvc5jni LIBRARY_OUTPUT_DIRECTORY)
-if(NOT JCVC5_JNI_LIBDIR)
-    get_target_property(CVC5_JNI_LIBDIR cvc5jni RUNTIME_OUTPUT_DIRECTORY)
-endif()
 
 add_custom_target(build-japitests)
 add_dependencies(build-apitests build-japitests)

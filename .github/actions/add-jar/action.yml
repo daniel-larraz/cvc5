@@ -16,8 +16,9 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Create JAR"
-        jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses \
-            ${{ inputs.build-dir }}/src/api/java/io ${{ inputs.build-dir }}/src/api/java/cvc5-libs
+        unzip ${{ inputs.build-dir }}/src/api/java/cvc5.jar
+        jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses io \
+            ${{ inputs.build-dir }}/src/api/java/cvc5-libs
         echo "::endgroup::"
 
     - name: Test JAR

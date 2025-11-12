@@ -18,7 +18,10 @@ include(UseJava)
 find_package(JUnit REQUIRED)
 
 get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
-get_filename_component(CVC5_JNI_PATH ${CVC5_JAR_PATH} DIRECTORY)
+get_target_property(CVC5_JNI_LIBDIR cvc5jni LIBRARY_OUTPUT_DIRECTORY)
+if(NOT CVC5_JNI_LIBDIR)
+    get_target_property(CVC5_JNI_LIBDIR cvc5jni RUNTIME_OUTPUT_DIRECTORY)
+endif()
 
 # specify source files for junit tests
 set(java_test_src_files
@@ -66,7 +69,7 @@ macro(cvc5_add_java_api_test name)
     COMMAND
       ${ENV_PATH_CMD}
       ${Java_JAVA_EXECUTABLE}
-      -Djava.library.path=${CVC5_JNI_PATH}
+      -Djava.library.path=${CVC5_JNI_LIBDIR}
       -jar ${JUnit_JAR}
       -cp "${JUnit_JAR}${PATH_SEP}${CVC5_JAR_PATH}${PATH_SEP}."
       -select-package tests

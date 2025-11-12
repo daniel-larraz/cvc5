@@ -17,7 +17,9 @@ find_package(Java REQUIRED)
 include(UseJava)
 
 get_target_property(CVC5_JAR_PATH cvc5jar JAR_FILE)
-set(CVC5_JNI_PATH $<TARGET_FILE_DIR:cvc5jni>)
+get_target_property(CVC5JNI_LOCATION cvc5jni LOCATION)
+get_filename_component(CVC5_JNI_PATH ${CVC5JNI_LOCATION} DIRECTORY)
+message(STATUS "Library directory: ${CVC5_JNI_PATH}")
 
 add_custom_target(build-japitests)
 add_dependencies(build-apitests build-japitests)

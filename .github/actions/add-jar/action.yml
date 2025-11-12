@@ -18,7 +18,7 @@ runs:
         echo "::group::Create JAR"
         unzip ${{ inputs.build-dir }}/src/api/java/cvc5.jar
         jar cf ${{ inputs.jar-name }}.jar AUTHORS COPYING licenses io \
-            ${{ inputs.build-dir }}/src/api/java/cvc5-libs
+            -C ${{ inputs.build-dir }}/src/api/java/ cvc5-libs
         echo "::endgroup::"
 
     - name: Test JAR

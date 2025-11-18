@@ -394,7 +394,7 @@ if(NOT BUILD_SHARED_LIBS)
       OUTPUT ${NATIVE_JAR}
       COMMAND ${Java_JAR_EXECUTABLE} cf ${NATIVE_JAR} -C ${CMAKE_CURRENT_BINARY_DIR} ${JNI_PREFIX}
       DEPENDS cvc5jni
-      COMMENT "Generating native JAR"
+      COMMENT "Creating native Java archive ${NATIVE_JAR}"
   )
   add_custom_target(cvc5-native-jar ALL DEPENDS ${NATIVE_JAR})
 endif()

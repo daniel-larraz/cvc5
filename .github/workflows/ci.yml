@@ -390,7 +390,7 @@ jobs:
       with:
         name: mvn-${{ matrix.build.package-name }}
         path: |
-          ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/*-x86_86.jar
+          ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/*-x86_64.jar
           ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/*-aarch_64.jar
         #if-no-files-found: ignore
 

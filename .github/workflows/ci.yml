@@ -366,58 +366,37 @@ jobs:
         jar-name: ${{ matrix.build.package-name }}${{ matrix.build.gpl-tag }}-java-api
         shell: ${{ matrix.build.shell }}
 
-    - name: Get ready Maven files
-      run: |
-        cd ${{ steps.configure-and-build.outputs.static-build-dir }}
-        files=(
-          "pom.xml"
-          "src/api/java/cvc5.jar"
-          "src/api/java/cvc5-sources.jar"
-          "docs/api/java/cvc5-javadoc.jar"
-          "src/api/java/*-x86_64.jar"
-          "src/api/java/*-aarch_64.jar"
-        )
-        for pattern in "${files[@]}"; do
-          matches=( $pattern )
-          if (( ${#matches[@]} > 0 )); then
-            for f in "${matches[@]}"; do
-              if [[ -f "$f" ]]; then
-                cp "$f" ./
-              fi
-            done
-          fi
-        done
-
-    - name: Upload main Maven JAR and POM file
+    - name: Copy main Maven JAR and POM file
       if: matrix.build.name == 'ubuntu:production' #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      run: |
+        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/pom.xml .
+        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/cvc5.jar .
+
+    - name: Copy sources and javadoc Maven JARs
+      if: matrix.build.name == 'ubuntu:production-dbg' #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      run: |
+        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/cvc5-sources.jar .
+        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/docs/api/java/cvc5-javadoc.jar .
+
+    - name: Copy architecture-specific Maven JARs
+      if: matrix.build.java-bindings && matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+      run: |
+        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/*-{x86_64,aarch_64}.jar .
+
+    - name: Upload Mave files
+      if: matrix.build.name == 'ubuntu:production-dbg' || (matrix.build.java-bindings && matrix.build.package-name)
       uses: actions/upload-artifact@v5
       with:
-        name: mvn-main
+        name: mvn-${{ matrix.build.package-name || 'docs' }}
         retention-days: 1
+        if-no-files-found: ignore
         path: |
           pom.xml
           cvc5.jar
-
-    - name: Upload sources and javadoc Maven JARs
-      if: matrix.build.name == 'ubuntu:production-dbg' #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: actions/upload-artifact@v5
-      with:
-        name: mvn-docs
-        retention-days: 1
-        path: |
           cvc5-sources.jar
           cvc5-javadoc.jar
-
-    - name: Upload architecture-specific Maven JARs
-      if: matrix.build.java-bindings && matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      uses: actions/upload-artifact@v5
-      with:
-        name: mvn-${{ matrix.build.package-name }}
-        retention-days: 1
-        path: |
           *-x86_64.jar
           *-aarch_64.jar
-        #if-no-files-found: ignore
 
   publish-to-maven-central:
     name: Publish to Maven central

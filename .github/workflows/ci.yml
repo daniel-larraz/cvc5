@@ -45,6 +45,7 @@ jobs:
             strip-bin: strip
             python-bindings: true
             java-bindings: true
+            upload-maven-main: true
             check-examples: true
             package-name: cvc5-Linux-x86_64
             exclude_regress: 3-4
@@ -188,6 +189,7 @@ jobs:
             python-bindings: true
             java-version: 21 # Use Javadoc from this Java version
             build-documentation: true
+            upload-maven-doc: true
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester proof --tester dump
 
@@ -366,14 +368,15 @@ jobs:
         jar-name: ${{ matrix.build.package-name }}${{ matrix.build.gpl-tag }}-java-api
         shell: ${{ matrix.build.shell }}
 
-    - name: Upload Maven files as artifacts
+    - name: Upload Maven artifacts
       if: >
-        (matrix.build.name == 'ubuntu:production-dbg' ||
+        (matrix.build.upload-maven-doc ||
          (matrix.build.java-bindings && matrix.build.package-name))
       uses: ./.github/actions/upload-mvn-files
       with:
         build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
-        package-name: ${{ matrix.build.package-name }}
+        upload-main: ${{ matrix.build.upload-maven-main }}
+        artifact-suffix: ${{ matrix.build.package-name || 'docs' }}
         shell: ${{ matrix.build.shell }}
 
   publish-to-maven-central:

@@ -1,0 +1,47 @@
+name: Upload Maven files as artifacts
+description: |
+  Upload all Maven files required to publish
+  the cvc5 Java bindings to Maven Central as
+  artifacts.
+input:
+  build-dir:
+    description: path to the build directory
+  package-name:
+    description: package name or empty string
+  shell:
+    default: bash
+runs:
+  using: composite
+  steps:
+    - name: Copy main Maven JAR and POM file
+      if: inputs.package-name == 'cvc5-Linux-x86_64'
+      shell: ${{ inputs.shell }}
+      run: |
+        cp ${{ inputs.build-dir }}/pom.xml .
+        cp ${{ inputs.build-dir }}/src/api/java/cvc5.jar .
+
+    - name: Copy sources and javadoc Maven JARs
+      if: !inputs.package-name
+      shell: ${{ inputs.shell }}
+      run: |
+        cp ${{ inputs.build-dir }}/src/api/java/cvc5-sources.jar .
+        cp ${{ inputs.build-dir }}/docs/api/java/cvc5-javadoc.jar .
+
+    - name: Copy architecture-specific Maven JARs
+      if: inputs.package-name
+      shell: ${{ inputs.shell }}
+      run: |
+        cp ${{ inputs.build-dir }}/src/api/java/*_64.jar .
+
+    - name: Upload Mave files
+      uses: actions/upload-artifact@v5
+      with:
+        name: mvn-${{ inputs.package-name || 'docs' }}
+        retention-days: 1
+        if-no-files-found: ignore
+        path: |
+          pom.xml
+          cvc5.jar
+          cvc5-sources.jar
+          cvc5-javadoc.jar
+          *_64.jar

@@ -366,39 +366,16 @@ jobs:
         jar-name: ${{ matrix.build.package-name }}${{ matrix.build.gpl-tag }}-java-api
         shell: ${{ matrix.build.shell }}
 
-    - name: Copy main Maven JAR and POM file
-      if: matrix.build.name == 'ubuntu:production' #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      shell: ${{ matrix.build.shell }}
-      run: |
-        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/pom.xml .
-        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/cvc5.jar .
-
-    - name: Copy sources and javadoc Maven JARs
-      if: matrix.build.name == 'ubuntu:production-dbg' #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      shell: ${{ matrix.build.shell }}
-      run: |
-        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/cvc5-sources.jar .
-        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/docs/api/java/cvc5-javadoc.jar .
-
-    - name: Copy architecture-specific Maven JARs
-      if: matrix.build.java-bindings && matrix.build.package-name #&& (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
-      shell: ${{ matrix.build.shell }}
-      run: |
-        cp ${{ steps.configure-and-build.outputs.static-build-dir }}/src/api/java/*_64.jar .
-
-    - name: Upload Mave files
-      if: matrix.build.name == 'ubuntu:production-dbg' || (matrix.build.java-bindings && matrix.build.package-name)
-      uses: actions/upload-artifact@v5
+    - name: Upload Maven files as artifacts
+      if: >
+        #(github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) &&
+        (matrix.build.name == 'ubuntu:production-dbg' ||
+         (matrix.build.java-bindings && matrix.build.package-name))
+      uses: ./.github/actions/upload-mvn-files
       with:
-        name: mvn-${{ matrix.build.package-name || 'docs' }}
-        retention-days: 1
-        if-no-files-found: ignore
-        path: |
-          pom.xml
-          cvc5.jar
-          cvc5-sources.jar
-          cvc5-javadoc.jar
-          *_64.jar
+        build-dir: ${{ steps.configure-and-build.outputs.static-build-dir }}
+        package-name: ${{ matrix.build.package-name }}
+        shell: ${{ matrix.build.shell }}
 
   publish-to-maven-central:
     name: Publish to Maven central

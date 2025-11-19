@@ -414,13 +414,11 @@ jobs:
         merge-multiple: true
 
     - name: List all JARs
-      shell: ${{ matrix.build.shell }}
       run: ls -la ./jars
 
     - name: Delete mvn-* artifacts from this run
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      shell: ${{ matrix.build.shell }}
       run: |
         echo "Getting artifacts for run $GITHUB_RUN_ID"
         gh api /repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts \

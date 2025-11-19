@@ -58,10 +58,10 @@ runs:
       run: |
         cp ${{ inputs.build-dir }}/src/api/java/*_64.jar .
 
-    - name: Upload Mave files
+    - name: Upload architecture-specific Mave JARs
       if: ${{ inputs.artifact-suffix != 'docs' }}
       uses: actions/upload-artifact@v5
       with:
         name: mvn-${{ inputs.artifact-suffix }}
         retention-days: 1
-        path: *_64.jar
+        path: '*_64.jar'

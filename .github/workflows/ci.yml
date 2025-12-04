@@ -75,7 +75,9 @@ jobs:
 
           - name: ubuntu:production-libc++
             os: ubuntu-22.04
-            env: CC=clang CXX=clang++
+            env:
+              CC: clang
+              CXX: clang++
             libcxx: true
             config: production --auto-download -DBUILD_GMP=1
             cache-key: production-libcxx
@@ -99,7 +101,9 @@ jobs:
 
           - name: ubuntu:production-arm64-libc++
             os: ubuntu-22.04-arm
-            env: CC=clang CXX=clang++
+            env:
+              CC: clang
+              CXX: clang++
             libcxx: true
             config: production --auto-download -DBUILD_GMP=1
             cache-key: production-arm64-libcxx
@@ -196,7 +200,9 @@ jobs:
 
           - name: ubuntu:production-clang
             os: ubuntu-22.04
-            env: CC=clang CXX=clang++
+            env:
+              CC: clang
+              CXX: clang++
             config: production --auto-download --no-poly
             cache-key: productionclang
             check-examples: true
@@ -219,7 +225,9 @@ jobs:
 
           - name: ubuntu:production-dbg-clang
             os: ubuntu-22.04
-            env: CC=clang CXX=clang++
+            env:
+              CC: clang
+              CXX: clang++
             config: production --auto-download --assertions --tracing --cln --gpl
             cache-key: dbgclang
             exclude_regress: 3-4
@@ -287,10 +295,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up env
+    - name: Set up compiler
       if: matrix.build.env
       run: |
-        echo "${{ matrix.build.env }}" >> "$GITHUB_OUTPUT"
+        echo "CC=${{ matrix.build.env.CC }}" >> "$GITHUB_OUTPUT"
+        echo "CXX=${{ matrix.build.env.CXX }}" >> "$GITHUB_OUTPUT"
 
     - name: Set up libc++
       if: matrix.build.libcxx

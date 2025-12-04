@@ -74,8 +74,9 @@ jobs:
             run_regression_args: --tester base --tester proof --tester cpc --tester model --tester dump
 
           - name: ubuntu:production-libc++
-            os: ubuntu-24.04
-            env: CC=clang CXX=clang++
+            os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
             libcxx: true
             config: production --auto-download -DBUILD_GMP=1
             cache-key: production-libcxx
@@ -94,6 +95,19 @@ jobs:
             java-bindings: true
             check-examples: true
             package-name: cvc5-Linux-arm64
+            exclude_regress: 3-4
+            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+
+          - name: ubuntu:production-arm64-libc++
+            os: ubuntu-22.04-arm
+            CC: clang
+            CXX: clang++
+            libcxx: true
+            config: production --auto-download -DBUILD_GMP=1
+            cache-key: production-arm64-libcxx
+            strip-bin: strip
+            check-examples: true
+            package-name: cvc5-Linux-arm64-libcxx
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
@@ -184,7 +198,8 @@ jobs:
 
           - name: ubuntu:production-clang
             os: ubuntu-22.04
-            env: CC=clang CXX=clang++
+            CC: clang
+            CXX: clang++
             config: production --auto-download --no-poly
             cache-key: productionclang
             check-examples: true
@@ -207,7 +222,8 @@ jobs:
 
           - name: ubuntu:production-dbg-clang
             os: ubuntu-22.04
-            env: CC=clang CXX=clang++
+            CC: clang
+            CXX: clang++
             config: production --auto-download --assertions --tracing --cln --gpl
             cache-key: dbgclang
             exclude_regress: 3-4
@@ -267,6 +283,10 @@ jobs:
     name: ${{ matrix.build.name }}
     runs-on: ${{ matrix.build.os }}
 
+    env:
+      CC: ${{ matrix.build.CC }}
+      CXX: ${{ matrix.build.CXX }}
+
     # cancel already running jobs for the same branch/pr/tag
     concurrency:
       group: build-${{ github.ref }}-${{ matrix.build.name }}-${{ github.ref != 'refs/heads/main' || github.run_id }}
@@ -293,6 +313,13 @@ jobs:
         distribution: 'temurin'
         java-version: ${{ matrix.build.java-version || '8' }}
 
+    - name: Setup CMake
+      uses: ./.github/actions/setup-cmake
+      # Exclude Linux ARM64 runners, which are currently unsupported
+      if: runner.os == 'Linux' && ! contains(runner.arch, 'ARM')
+      with:
+        shell: ${{ matrix.build.shell }}
+
     - name: Install dependencies
       uses: ./.github/actions/install-dependencies
       with:
@@ -313,7 +340,6 @@ jobs:
       id: configure-and-build
       uses: ./.github/actions/configure-and-build
       with:
-        configure-env: ${{ matrix.build.env }}
         configure-config: ${{ matrix.build.config }}
         macos-target: ${{ matrix.build.macos-target }}
         build-shared: ${{ matrix.build.build-shared }}

@@ -290,6 +290,8 @@ jobs:
     - name: Set up libc++
       if: matrix.build.libcxx
       run: |
+        sudo apt-get update
+        sudo apt-get install -y libc++-dev libc++abi-dev
         CLANG_DIR="$(dirname $(realpath $(which clang++)))"
         echo "-stdlib=libc++ -lc++abi" > clang++.cfg
         cat clang++.cfg

@@ -75,9 +75,7 @@ jobs:
 
           - name: ubuntu:production-libc++
             os: ubuntu-22.04
-            env:
-              CC: clang
-              CXX: clang++
+            env: CC=clang CXX=clang++
             libcxx: true
             config: production --auto-download -DBUILD_GMP=1
             cache-key: production-libcxx
@@ -101,9 +99,7 @@ jobs:
 
           - name: ubuntu:production-arm64-libc++
             os: ubuntu-22.04-arm
-            env:
-              CC: clang
-              CXX: clang++
+            env: CC=clang CXX=clang++
             libcxx: true
             config: production --auto-download -DBUILD_GMP=1
             cache-key: production-arm64-libcxx
@@ -200,9 +196,7 @@ jobs:
 
           - name: ubuntu:production-clang
             os: ubuntu-22.04
-            env:
-              CC: clang
-              CXX: clang++
+            env: CC=clang CXX=clang++
             config: production --auto-download --no-poly
             cache-key: productionclang
             check-examples: true
@@ -225,9 +219,7 @@ jobs:
 
           - name: ubuntu:production-dbg-clang
             os: ubuntu-22.04
-            env:
-              CC: clang
-              CXX: clang++
+            env: CC=clang CXX=clang++
             config: production --auto-download --assertions --tracing --cln --gpl
             cache-key: dbgclang
             exclude_regress: 3-4
@@ -287,8 +279,6 @@ jobs:
     name: ${{ matrix.build.name }}
     runs-on: ${{ matrix.build.os }}
 
-    env: ${{ fromJSON(toJSON(matrix.build.env)) }}
-
     # cancel already running jobs for the same branch/pr/tag
     concurrency:
       group: build-${{ github.ref }}-${{ matrix.build.name }}-${{ github.ref != 'refs/heads/main' || github.run_id }}
@@ -296,6 +286,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set up env
+      if: matrix.build.env
+      run: |
+        echo "${{ matrix.build.env }}" >> "$GITHUB_OUTPUT"
 
     - name: Set up libc++
       if: matrix.build.libcxx

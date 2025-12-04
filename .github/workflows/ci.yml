@@ -293,7 +293,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libc++-dev libc++abi-dev
         CLANG_DIR="$(dirname $(realpath $(which clang++)))"
-        sudo echo "-stdlib=libc++ -lc++abi" > $CLANG_DIR/clang++.cfg
+        echo "-stdlib=libc++ -lc++abi" > clang++.cfg
+        cat clang++.cfg
+        sudo cp clang++.cfg $CLANG_DIR/
 
     # Ensure that the Java bindings, Java API tests, and Java examples are compatible
     # with the minimum required Java version (currently Java 8).

@@ -293,13 +293,6 @@ jobs:
         distribution: 'temurin'
         java-version: ${{ matrix.build.java-version || '8' }}
 
-    - name: Setup CMake
-      uses: ./.github/actions/setup-cmake
-      # Exclude Linux ARM64 runners, which are currently unsupported
-      if: runner.os == 'Linux' && ! contains(runner.arch, 'ARM')
-      with:
-        shell: ${{ matrix.build.shell }}
-
     - name: Install dependencies
       uses: ./.github/actions/install-dependencies
       with:

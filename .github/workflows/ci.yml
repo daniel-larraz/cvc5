@@ -298,8 +298,8 @@ jobs:
     - name: Set up compiler
       if: matrix.build.env
       run: |
-        echo "CC=${{ matrix.build.env.CC }}" >> $GITHUB_OUTPUT
-        echo "CXX=${{ matrix.build.env.CXX }}" >> $GITHUB_OUTPUT
+        echo "CC=${{ matrix.build.env.CC }}" >> $GITHUB_ENV
+        echo "CXX=${{ matrix.build.env.CXX }}" >> $GITHUB_ENV
 
     - name: Set up libc++
       if: matrix.build.libcxx

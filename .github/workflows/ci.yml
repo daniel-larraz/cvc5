@@ -287,7 +287,7 @@ jobs:
     name: ${{ matrix.build.name }}
     runs-on: ${{ matrix.build.os }}
 
-    env: ${{ matrix.build.env }}
+    env: ${{ matrix.build.env || {} }}
 
     # cancel already running jobs for the same branch/pr/tag
     concurrency:

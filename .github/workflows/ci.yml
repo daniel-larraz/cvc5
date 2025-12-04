@@ -73,6 +73,18 @@ jobs:
             exclude_regress: 3-4
             run_regression_args: --tester base --tester proof --tester cpc --tester model --tester dump
 
+          - name: ubuntu:production-libc++
+            os: ubuntu-22.04
+            env: CC=clang CXX=clang++
+            libcpp: true
+            config: production --auto-download -DBUILD_GMP=1
+            cache-key: production-libcpp
+            strip-bin: strip
+            check-examples: true
+            package-name: cvc5-Linux-x86_64-libcpp
+            exclude_regress: 3-4
+            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+
           - name: ubuntu:production-arm64
             os: ubuntu-22.04-arm
             config: production --auto-download --all-bindings --editline -DBUILD_GMP=1
@@ -82,6 +94,18 @@ jobs:
             java-bindings: true
             check-examples: true
             package-name: cvc5-Linux-arm64
+            exclude_regress: 3-4
+            run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
+
+          - name: ubuntu:production-arm64-libc++
+            os: ubuntu-22.04-arm
+            env: CC=clang CXX=clang++
+            libcpp: true
+            config: production --auto-download -DBUILD_GMP=1
+            cache-key: production-arm64-libcpp
+            strip-bin: strip
+            check-examples: true
+            package-name: cvc5-Linux-arm64-libcpp
             exclude_regress: 3-4
             run_regression_args: --tester base --tester model --tester synth --tester abduct --tester dump
 
@@ -262,6 +286,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set up libc++
+      if: matrix.build.libcpp
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libc++-dev libc++abi-dev
+        CLANG_DIR="$(dirname $(realpath $(which clang++)))"
+        echo "-stdlib=libc++ -lc++abi" > $CLANG_DIR/clang++.cfg
 
     # Ensure that the Java bindings, Java API tests, and Java examples are compatible
     # with the minimum required Java version (currently Java 8).

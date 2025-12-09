@@ -109,10 +109,10 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
-        TAR_FILE=lean-llvm-x86_64-w64-windows-gnu.tar.zst
-        wget -q https://github.com/leanprover/lean-llvm/releases/download/19.1.2/$TAR_FILE
         mkdir -p deps
         cd deps
+        TAR_FILE=lean-llvm-x86_64-w64-windows-gnu.tar.zst
+        wget -q https://github.com/leanprover/lean-llvm/releases/download/19.1.2/$TAR_FILE
         mkdir llvm
         # must run `tar` twice in case of symlinked files listed before their targets...
         tar xf $TAR_FILE --dereference --strip-components 1 --directory llvm || tar xf $TAR_FILE --dereference --strip-components 1 --directory llvm

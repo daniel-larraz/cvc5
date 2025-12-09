@@ -112,12 +112,13 @@ runs:
         wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-llvm-19.1.7-1-any.pkg.tar.zst
         wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-libs-19.1.7-1-any.pkg.tar.zst
         wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-compiler-rt-19.1.7-1-any.pkg.tar.zst
-        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-ldd-19.1.7-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-lld-19.1.7-1-any.pkg.tar.zst
         wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-19.1.7-1-any.pkg.tar.zst
+
         pacman -U mingw-w64-clang-x86_64-llvm-19.1.7-1-any.pkg.tar.zst
         pacman -U mingw-w64-clang-x86_64-clang-libs-19.1.7-1-any.pkg.tar.zst
         pacman -U mingw-w64-clang-x86_64-compiler-rt-19.1.7-1-any.pkg.tar.zst
-        pacman -U mingw-w64-clang-x86_64-ldd-19.1.7-1-any.pkg.tar.zst
+        pacman -U mingw-w64-clang-x86_64-lld-19.1.7-1-any.pkg.tar.zst
         pacman -U mingw-w64-clang-x86_64-clang-19.1.7-1-any.pkg.tar.zst
 
     - name: Install Windows arm64 software

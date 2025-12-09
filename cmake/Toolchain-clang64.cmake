@@ -17,11 +17,14 @@
 
 SET(CMAKE_SYSTEM_NAME Windows)
 
-# Set target environment path
-SET(CMAKE_FIND_ROOT_PATH "${CMAKE_SOURCE_DIR}/deps/llvm")
 
-SET(CMAKE_C_COMPILER ${CMAKE_FIND_ROOT_PATH}/bin/clang.exe)
-SET(CMAKE_CXX_COMPILER ${CMAKE_FIND_ROOT_PATH}/bin/clang++.exe)
+set(LLVM_SYSROOT "${CMAKE_CURRENT_LIST_DIR}/deps/llvm")
+
+# Set target environment path
+SET(CMAKE_FIND_ROOT_PATH "${LLVM_SYSROOT}")
+
+SET(CMAKE_C_COMPILER ${LLVM_SYSROOT}/bin/clang.exe)
+SET(CMAKE_CXX_COMPILER ${LLVM_SYSROOT}/bin/clang++.exe)
 
 # Adjust the default behaviour of the find_XXX() commands:
 # search headers and libraries in the target environment, search
@@ -30,3 +33,4 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
+string(APPEND CMAKE_EXE_LINKER_FLAGS "-L${LLVM_SYSROOT}/lib")

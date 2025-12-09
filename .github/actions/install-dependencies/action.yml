@@ -116,6 +116,7 @@ runs:
         mkdir llvm
         # must run `tar` twice in case of symlinked files listed before their targets...
         tar xf $TAR_FILE --dereference --strip-components 1 --directory llvm || tar xf $TAR_FILE --dereference --strip-components 1 --directory llvm
+        cp -r llvm/. /clang64/
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'

@@ -98,6 +98,7 @@ runs:
         msystem: CLANG64
         path-type: inherit
         install: |
+          rsync
           make
           mingw-w64-clang-x86_64-autotools
           mingw-w64-clang-x86_64-ccache

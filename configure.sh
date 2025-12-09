@@ -162,6 +162,7 @@ valgrind=default
 win64=default
 win64_native=default
 arm64=default
+clang64=default
 werror=default
 ipo=default
 
@@ -260,6 +261,8 @@ do
     --win64) win64=ON;;
 
     --win64-native) win64_native=ON;;
+
+    --clang64) clang64=ON;;
 
     --arm64) arm64=ON;;
 
@@ -444,6 +447,8 @@ fi
   && cmake_opts="$cmake_opts -DENABLE_GPL=$gpl"
 [ $win64 != default ] \
   && cmake_opts="$cmake_opts -DCMAKE_TOOLCHAIN_FILE=$(make_abs_path 'cmake/Toolchain-mingw64.cmake')"
+[ $clang64 != default ] \
+  && cmake_opts="$cmake_opts -DCMAKE_TOOLCHAIN_FILE=$(make_abs_path 'cmake/Toolchain-clang64.cmake')"
 # Because 'MSYS Makefiles' has a space in it, we set the variable vs. adding to 'cmake_opts'
 [ $win64_native != default ] \
   && [ $ninja == default ] && export CMAKE_GENERATOR="MSYS Makefiles"

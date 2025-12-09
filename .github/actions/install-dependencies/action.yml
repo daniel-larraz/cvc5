@@ -108,10 +108,20 @@ runs:
           make
           mingw-w64-clang-x86_64-autotools
           mingw-w64-clang-x86_64-ccache
-          mingw-w64-clang-x86_64-clang
           mingw-w64-clang-x86_64-cmake
           mingw-w64-clang-x86_64-gmp
           zip
+
+    - name: Install LLVM toolchain
+      if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
+      shell: ${{ inputs.shell }}
+      run: |
+        wget -q https://github.com/leanprover/lean-llvm/releases/download/19.1.2/lean-llvm-x86_64-w64-windows-gnu.tar.zst
+        mkdir -p deps
+        cd deps
+        mkdir llvm
+        # must run `tar` twice in case of symlinked files listed before their targets...
+        tar xf $FILE --dereference --strip-components 1 --directory llvm || tar xf $FILE --dereference --strip-components 1 --directory llvm
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'

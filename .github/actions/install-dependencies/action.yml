@@ -98,7 +98,6 @@ runs:
         msystem: CLANG64
         path-type: inherit
         install: |
-          rsync
           make
           mingw-w64-clang-x86_64-autotools
           mingw-w64-clang-x86_64-ccache
@@ -106,18 +105,12 @@ runs:
           mingw-w64-clang-x86_64-gmp
           zip
 
-    - name: Install LLVM toolchain
+    - name: Install Clang 19
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
-        mkdir -p deps
-        cd deps
-        TAR_FILE=lean-llvm-x86_64-w64-windows-gnu.tar.zst
-        wget -q https://github.com/leanprover/lean-llvm/releases/download/19.1.2/$TAR_FILE
-        mkdir llvm
-        # must run `tar` twice in case of symlinked files listed before their targets...
-        tar xf $TAR_FILE --dereference --strip-components 1 --directory llvm || tar xf $TAR_FILE --dereference --strip-components 1 --directory llvm
-        rsync -av llvm/ /clang64/
+        wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-19.1.7-1-any.pkg.tar.zst
+        pacman -U mingw-w64-clang-x86_64-clang-19.1.7-1-any.pkg.tar.zst
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'

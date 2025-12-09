@@ -34,7 +34,7 @@ runs:
       id: shared-build
       # Boolean inputs are actually strings:
       # https://github.com/actions/runner/issues/1483
-      if: false
+      if: inputs.build-shared == '' || inputs.build-shared == 'true'
       shell: ${{ inputs.shell }}
       run: |
         echo "::group::Shared build"

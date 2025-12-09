@@ -20,6 +20,8 @@ SET(CMAKE_SYSTEM_NAME Windows)
 
 set(LLVM_SYSROOT "${CMAKE_SOURCE_DIR}/deps/llvm")
 
+set(CMAKE_SYSROOT "${LLVM_SYSROOT}")
+
 # Set target environment path
 SET(CMAKE_FIND_ROOT_PATH "${LLVM_SYSROOT}")
 

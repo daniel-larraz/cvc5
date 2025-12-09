@@ -109,11 +109,11 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
-        wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-llvm-19.1.7-1-any.pkg.tar.zst
-        wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-libs-19.1.7-1-any.pkg.tar.zst
-        wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-compiler-rt-19.1.7-1-any.pkg.tar.zst
-        wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-ldd-19.1.7-1-any.pkg.tar.zst
-        wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-19.1.7-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-llvm-19.1.7-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-libs-19.1.7-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-compiler-rt-19.1.7-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-ldd-19.1.7-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-clang-19.1.7-1-any.pkg.tar.zst
         pacman -U mingw-w64-clang-x86_64-llvm-19.1.7-1-any.pkg.tar.zst
         pacman -U mingw-w64-clang-x86_64-clang-libs-19.1.7-1-any.pkg.tar.zst
         pacman -U mingw-w64-clang-x86_64-compiler-rt-19.1.7-1-any.pkg.tar.zst

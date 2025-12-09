@@ -139,7 +139,7 @@ jobs:
           - name: win64:production
             os: windows-latest
             use-clang: true
-            config: production --auto-download --clang64
+            config: production --auto-download
             cache-key: production-win64-native
             strip-bin: strip
             python-bindings: true

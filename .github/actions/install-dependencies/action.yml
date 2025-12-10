@@ -97,12 +97,21 @@ runs:
         echo "$(pwd)" >> $GITHUB_PATH
         echo "$(pwd)/upstream/emscripten" >> $GITHUB_PATH
 
+    - name: Download MSYS2 installation tarball
+      shell: ${{ inputs.shell }}
+      if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
+      run: |
+        TAR_FILE=msys64_arm64.tar.zst
+        wget -q https://github.com/daniel-larraz/cvc5/releases/download/latest/$TAR_FILE
+        mkdir msys64
+        tar xf $TAR_FILE --dereference --strip-components 1 --directory msys64 || tar xf $TAR_FILE --dereference --strip-components 1 --directory msys64
+        mv msys64 /c/
+
     - name: Install Windows x86_64 software
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
         update: false
-        release: false
         msystem: CLANG64
         path-type: inherit
         install: |

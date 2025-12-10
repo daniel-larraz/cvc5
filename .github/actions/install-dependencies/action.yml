@@ -99,9 +99,9 @@ runs:
 
     - name: Install Windows x86_64 software
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
-      uses: msys2/setup-msys2@v2
+      uses: msys2/setup-msys2@d44ca8e88d8b43d56cf5670f91747359d5537f97
       with:
-        update: true
+        update: false
         msystem: CLANG64
         path-type: inherit
         install: |
@@ -115,9 +115,9 @@ runs:
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
-      uses: msys2/setup-msys2@v2
+      uses: msys2/setup-msys2@d44ca8e88d8b43d56cf5670f91747359d5537f97
       with:
-        update: true
+        update: false
         msystem: CLANGARM64
         path-type: inherit
         install: |

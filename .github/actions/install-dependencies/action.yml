@@ -97,55 +97,61 @@ runs:
         echo "$(pwd)" >> $GITHUB_PATH
         echo "$(pwd)/upstream/emscripten" >> $GITHUB_PATH
 
-    - name: Download MSYS2 installation tarball
-      if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
-      shell: pwsh
-      run: |
-        $TarFile = "msys64_x86_64.tar.zst"
-        $Url = "https://github.com/daniel-larraz/cvc5/releases/download/latest/$TarFile"
+    # - name: Download MSYS2 installation tarball
+    #   if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
+    #   shell: pwsh
+    #   run: |
+    #     $TarFile = "msys64_x86_64.tar.zst"
+    #     $Url = "https://github.com/daniel-larraz/cvc5/releases/download/latest/$TarFile"
 
-        # Download the tarball
-        Invoke-WebRequest -Uri $Url -OutFile $TarFile -UseBasicParsing
+    #     # Download the tarball
+    #     Invoke-WebRequest -Uri $Url -OutFile $TarFile -UseBasicParsing
 
-        # Create extraction directory
-        $ExtractDir = "msys64"
-        New-Item -ItemType Directory -Path $ExtractDir -Force | Out-Null
+    #     # Create extraction directory
+    #     $ExtractDir = "msys64"
+    #     New-Item -ItemType Directory -Path $ExtractDir -Force | Out-Null
 
-        # Extract the tarball using 7-Zip
-        $SevenZip = "C:\Program Files\7-Zip\7z.exe"
-        if (Test-Path $SevenZip) {
-            # Decompress zst to tar or directly extract
-            & $SevenZip x $TarFile -aoa -o$ExtractDir | Out-Null
-            $TarInside = Get-ChildItem $ExtractDir -Filter *.tar | Select-Object -First 1
+    #     # Extract the tarball using 7-Zip
+    #     $SevenZip = "C:\Program Files\7-Zip\7z.exe"
+    #     if (Test-Path $SevenZip) {
+    #         # Decompress zst to tar or directly extract
+    #         & $SevenZip x $TarFile -aoa -o$ExtractDir | Out-Null
+    #         $TarInside = Get-ChildItem $ExtractDir -Filter *.tar | Select-Object -First 1
 
-            if ($TarInside) {
-                & $SevenZip x $TarInside.FullName -aoa -o$ExtractDir | Out-Null
-                Remove-Item $TarInside.FullName -Force
-            }
+    #         if ($TarInside) {
+    #             & $SevenZip x $TarInside.FullName -aoa -o$ExtractDir | Out-Null
+    #             Remove-Item $TarInside.FullName -Force
+    #         }
 
-            # Optional: Flatten top-level directory (simulate --strip-components 1)
-            $TopDir = Get-ChildItem $ExtractDir | Where-Object { $_.PSIsContainer } | Select-Object -First 1
-            if ($TopDir) {
-                Get-ChildItem $TopDir.FullName | Move-Item -Destination $ExtractDir -Force
-                Remove-Item $TopDir.FullName -Recurse -Force
-            }
-        } else {
-            Write-Error "7-Zip is required to extract .tar.zst files on Windows."
-            exit 1
-        }
+    #         # Optional: Flatten top-level directory (simulate --strip-components 1)
+    #         $TopDir = Get-ChildItem $ExtractDir | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+    #         if ($TopDir) {
+    #             Get-ChildItem $TopDir.FullName | Move-Item -Destination $ExtractDir -Force
+    #             Remove-Item $TopDir.FullName -Recurse -Force
+    #         }
+    #     } else {
+    #         Write-Error "7-Zip is required to extract .tar.zst files on Windows."
+    #         exit 1
+    #     }
 
-        # Move msys64 to C:\
-        Move-Item -Path $ExtractDir -Destination "D:\a\_temp\" -Force
+    #     # Move msys64 to C:\
+    #     Move-Item -Path $ExtractDir -Destination "D:\a\_temp\" -Force
 
     - name: Install Windows x86_64 software
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
-      uses: msys2/setup-msys2@v2
+      uses: msys2/setup-msys2@d44ca8e88d8b43d56cf5670f91747359d5537f97
       with:
         update: false
-        release: false
-        location: D:\a\_temp\msys64
         msystem: CLANG64
         path-type: inherit
+        install: |
+          make
+          mingw-w64-clang-aarch64-autotools
+          mingw-w64-clang-aarch64-ccache
+          mingw-w64-clang-aarch64-clang
+          mingw-w64-clang-aarch64-cmake
+          mingw-w64-clang-aarch64-gmp
+          zip
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'

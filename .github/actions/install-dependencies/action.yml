@@ -98,10 +98,10 @@ runs:
         echo "$(pwd)/upstream/emscripten" >> $GITHUB_PATH
 
     - name: Download MSYS2 installation tarball
-      if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
+      if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: pwsh
       run: |
-        $TarFile = "msys64_arm64.tar.zst"
+        $TarFile = "msys64.tar.zst"
         $Url = "https://github.com/daniel-larraz/cvc5/releases/download/latest/$TarFile"
 
         # Download the tarball
@@ -142,23 +142,16 @@ runs:
       uses: msys2/setup-msys2@v2
       with:
         update: false
+        release: false
+        location: C:\msys64
         msystem: CLANG64
         path-type: inherit
-        install: |
-          make
-          mingw-w64-clang-x86_64-autotools
-          mingw-w64-clang-x86_64-ccache
-          mingw-w64-clang-x86_64-clang
-          mingw-w64-clang-x86_64-cmake
-          mingw-w64-clang-x86_64-gmp
-          zip
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
         update: false
-        release: false
         msystem: CLANGARM64
         path-type: inherit
         install: |

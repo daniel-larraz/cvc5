@@ -114,13 +114,14 @@ runs:
         # Extract the tarball using 7-Zip
         $SevenZip = "C:\Program Files\7-Zip\7z.exe"
         if (Test-Path $SevenZip) {
-            # Decompress zst to tar
+            # Decompress zst to tar or directly extract
             & $SevenZip x $TarFile -aoa -o$ExtractDir | Out-Null
             $TarInside = Get-ChildItem $ExtractDir -Filter *.tar | Select-Object -First 1
 
-            # Extract tar contents
-            & $SevenZip x $TarInside.FullName -aoa -o$ExtractDir | Out-Null
-            Remove-Item $TarInside.FullName
+            if ($TarInside) {
+                & $SevenZip x $TarInside.FullName -aoa -o$ExtractDir | Out-Null
+                Remove-Item $TarInside.FullName -Force
+            }
 
             # Optional: Flatten top-level directory (simulate --strip-components 1)
             $TopDir = Get-ChildItem $ExtractDir | Where-Object { $_.PSIsContainer } | Select-Object -First 1

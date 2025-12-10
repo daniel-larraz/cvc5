@@ -116,6 +116,8 @@ runs:
     - name: Get size (x86_64)
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
       run: |
         du -sh /d/a/_temp/msys64
         tar -I "zstd -19" -cf msys64.tar.zst /d/a/_temp/msys64
@@ -141,6 +143,8 @@ runs:
     - name: Get size (arm64)
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
       run: |
         du -sh /c/a/_temp/msys64/
         tar -I "zstd -19" -cf msys64_arm64.tar.zst /c/a/_temp/msys64/

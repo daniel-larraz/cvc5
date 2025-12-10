@@ -94,7 +94,7 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
-        update: true
+        update: false
         msystem: CLANG64
         path-type: inherit
         install: |
@@ -110,6 +110,13 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: ${{ inputs.shell }}
       run: |
+        pactree make
+        pactree mingw-w64-clang-x86_64-autotools
+        pactree mingw-w64-clang-x86_64-ccache
+        pactree mingw-w64-clang-x86_64-cmake
+        pactree mingw-w64-clang-x86_64-clang
+        pactree mingw-w64-clang-x86_64-gmp
+        pactree zip
         pactree mingw-w64-clang-x86_64-clang
         # wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-llvm-libs-19.1.7-1-any.pkg.tar.zst
         # wget -q https://repo.msys2.org/mingw/clang64/mingw-w64-clang-x86_64-llvm-19.1.7-1-any.pkg.tar.zst

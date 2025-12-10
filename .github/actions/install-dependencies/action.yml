@@ -101,7 +101,7 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
-        update: true
+        update: false
         msystem: CLANG64
         path-type: inherit
         install: |
@@ -113,11 +113,17 @@ runs:
           mingw-w64-clang-x86_64-gmp
           zip
 
+    - name: Get size (x86_64)
+      if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
+      shell: ${{ inputs.shell }}
+      run: |
+        du -sh /d/a/_temp/msys64
+
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
-        update: true
+        update: false
         msystem: CLANGARM64
         path-type: inherit
         install: |
@@ -128,6 +134,12 @@ runs:
           mingw-w64-clang-aarch64-cmake
           mingw-w64-clang-aarch64-gmp
           zip
+
+    - name: Get size (arm64)
+      if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
+      shell: ${{ inputs.shell }}
+      run: |
+        du -sh /c/a/_temp/msys64/
 
     - name: Set up num_proc variable for Linux and Windows
       if: runner.os == 'Linux' || runner.os == 'Windows'

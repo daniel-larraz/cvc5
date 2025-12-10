@@ -101,7 +101,7 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       shell: pwsh
       run: |
-        $TarFile = "msys64.tar.zst"
+        $TarFile = "msys64_x86_64.tar.zst"
         $Url = "https://github.com/daniel-larraz/cvc5/releases/download/latest/$TarFile"
 
         # Download the tarball
@@ -135,7 +135,7 @@ runs:
         }
 
         # Move msys64 to C:\
-        Move-Item -Path $ExtractDir -Destination "C:\" -Force
+        Move-Item -Path $ExtractDir -Destination "D:\a\_temp\" -Force
 
     - name: Install Windows x86_64 software
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
@@ -143,7 +143,7 @@ runs:
       with:
         update: false
         release: false
-        location: C:\msys64
+        location: D:\a\_temp\msys64
         msystem: CLANG64
         path-type: inherit
 

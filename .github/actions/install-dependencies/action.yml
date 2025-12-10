@@ -118,6 +118,9 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         du -sh /d/a/_temp/msys64
+        tar -I "zstd -19" -cf msys64.tar.zst /d/a/_temp/msys64
+        ls -lah msys64.tar.zst
+        gh release upload latest msys64.tar.zst --repo "${GITHUB_REPOSITORY}"
 
     - name: Install Windows arm64 software
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
@@ -140,6 +143,9 @@ runs:
       shell: ${{ inputs.shell }}
       run: |
         du -sh /c/a/_temp/msys64/
+        tar -I "zstd -19" -cf msys64_arm64.tar.zst /c/a/_temp/msys64/
+        ls -lah msys64_arm64.tar.zst
+        gh release upload latest msys64_arm64.tar.zst --repo "${GITHUB_REPOSITORY}"
 
     - name: Set up num_proc variable for Linux and Windows
       if: runner.os == 'Linux' || runner.os == 'Windows'

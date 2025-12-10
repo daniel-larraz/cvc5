@@ -98,14 +98,43 @@ runs:
         echo "$(pwd)/upstream/emscripten" >> $GITHUB_PATH
 
     - name: Download MSYS2 installation tarball
-      shell: ${{ inputs.shell }}
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
+      shell: pwsh
       run: |
-        TAR_FILE=msys64_arm64.tar.zst
-        wget -q https://github.com/daniel-larraz/cvc5/releases/download/latest/$TAR_FILE
-        mkdir msys64
-        tar xf $TAR_FILE --dereference --strip-components 1 --directory msys64 || tar xf $TAR_FILE --dereference --strip-components 1 --directory msys64
-        mv msys64 /c/
+        $TarFile = "msys64_arm64.tar.zst"
+        $Url = "https://github.com/daniel-larraz/cvc5/releases/download/latest/$TarFile"
+
+        # Download the tarball
+        Invoke-WebRequest -Uri $Url -OutFile $TarFile -UseBasicParsing
+
+        # Create extraction directory
+        $ExtractDir = "msys64"
+        New-Item -ItemType Directory -Path $ExtractDir -Force | Out-Null
+
+        # Extract the tarball using 7-Zip
+        $SevenZip = "C:\Program Files\7-Zip\7z.exe"
+        if (Test-Path $SevenZip) {
+            # Decompress zst to tar
+            & $SevenZip x $TarFile -aoa -o$ExtractDir | Out-Null
+            $TarInside = Get-ChildItem $ExtractDir -Filter *.tar | Select-Object -First 1
+
+            # Extract tar contents
+            & $SevenZip x $TarInside.FullName -aoa -o$ExtractDir | Out-Null
+            Remove-Item $TarInside.FullName
+
+            # Optional: Flatten top-level directory (simulate --strip-components 1)
+            $TopDir = Get-ChildItem $ExtractDir | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+            if ($TopDir) {
+                Get-ChildItem $TopDir.FullName | Move-Item -Destination $ExtractDir -Force
+                Remove-Item $TopDir.FullName -Recurse -Force
+            }
+        } else {
+            Write-Error "7-Zip is required to extract .tar.zst files on Windows."
+            exit 1
+        }
+
+        # Move msys64 to C:\
+        Move-Item -Path $ExtractDir -Destination "C:\" -Force
 
     - name: Install Windows x86_64 software
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'

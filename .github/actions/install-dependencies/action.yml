@@ -101,7 +101,8 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'X64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
-        update: true
+        update: false
+        release: false
         msystem: CLANG64
         path-type: inherit
         install: |
@@ -117,7 +118,8 @@ runs:
       if: runner.os == 'Windows' && runner.arch == 'ARM64' && inputs.windows-build == 'true'
       uses: msys2/setup-msys2@v2
       with:
-        update: true
+        update: false
+        release: false
         msystem: CLANGARM64
         path-type: inherit
         install: |

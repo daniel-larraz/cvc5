@@ -1364,7 +1364,7 @@ TrustNode TheoryArithPrivate::dioCutting()
 {
   context::Context::ScopedPush speculativePush(context());
   //DO NOT TOUCH THE OUTPUTSTREAM
-
+  Trace("arith::dio") << "---" << endl;
   for(var_iterator vi = var_begin(), vend = var_end(); vi != vend; ++vi){
     ArithVar v = *vi;
     if(isInteger(v)){
@@ -3389,7 +3389,7 @@ bool TheoryArithPrivate::postCheck(Theory::Effort effortLevel)
       possibleConflict = callDioSolver();
       if(possibleConflict != Node::null()){
         revertOutOfConflict();
-        Trace("arith::conflict") << "dio conflict   " << possibleConflict << endl;
+        Trace("arith::dio") << "dio conflict   " << possibleConflict << endl;
         // TODO (project #37): justify (proofs in the DIO solver)
         Pf pf;
         if (isProofEnabled())

@@ -44,6 +44,7 @@ DioSolver::DioSolver(Env& env)
       d_inputConstraints(context()),
       d_nextInputConstraintToEnqueue(context(), 0),
       d_trail(context()),
+      d_constraintMap(context()),
       d_subs(context()),
       d_currentF(),
       d_savedQueue(context()),
@@ -134,27 +135,33 @@ void DioSolver::pushInputConstraint(const Comparison& eq, Node reason){
   SumPair sp = eq.toSumPair();
   Assert(!sp.isNonlinear());
 
+  auto it = d_constraintMap.find(sp.getNode());
+  if (it == d_constraintMap.end())
+  {
+    uint32_t length = sp.maxLength();
+    if(length > d_maxInputCoefficientLength){
+      d_maxInputCoefficientLength = length;
+    }
 
+    size_t varIndex = allocateProofVariable();
+    Variable proofVariable(d_proofVariablePool[varIndex]);
+    // Variable proofVariable(makeIntegerVariable(nodeManager()));
 
-  uint32_t length = sp.maxLength();
-  if(length > d_maxInputCoefficientLength){
-    d_maxInputCoefficientLength = length;
+    TrailIndex posInTrail = d_trail.size();
+    Trace("dio::pushInputConstraint") << "pushInputConstraint @ " << posInTrail
+                                      << " " << eq.getNode()
+                                      << " " << reason << endl;
+    d_trail.push_back(Constraint(sp,Polynomial::mkPolynomial(proofVariable)));
+    d_constraintMap.insert(sp.getNode(), posInTrail);
+
+    size_t posInConstraintList = d_inputConstraints.size();
+    d_inputConstraints.push_back(InputConstraint(reason, posInTrail));
+
+    d_varToInputConstraintMap[proofVariable.getNode()] = posInConstraintList;
   }
-
-  size_t varIndex = allocateProofVariable();
-  Variable proofVariable(d_proofVariablePool[varIndex]);
-  // Variable proofVariable(makeIntegerVariable(nodeManager()));
-
-  TrailIndex posInTrail = d_trail.size();
-  Trace("dio::pushInputConstraint") << "pushInputConstraint @ " << posInTrail
-                                    << " " << eq.getNode()
-                                    << " " << reason << endl;
-  d_trail.push_back(Constraint(sp,Polynomial::mkPolynomial(proofVariable)));
-
-  size_t posInConstraintList = d_inputConstraints.size();
-  d_inputConstraints.push_back(InputConstraint(reason, posInTrail));
-
-  d_varToInputConstraintMap[proofVariable.getNode()] = posInConstraintList;
+  else {
+    d_inputConstraints.push_back(InputConstraint(reason, it->second));
+  }
 }
 
 
@@ -170,14 +177,23 @@ DioSolver::TrailIndex DioSolver::scaleEqAtIndex(DioSolver::TrailIndex i, const I
   Assert(newSP.isIntegral());
   Assert(newSP.gcd() == 1);
 
-  TrailIndex j = d_trail.size();
+  auto it = d_constraintMap.find(newSP.getNode());
+  if (it == d_constraintMap.end())
+  {
+    TrailIndex j = d_trail.size();
 
-  d_trail.push_back(Constraint(newSP, newProof));
+    d_trail.push_back(Constraint(newSP, newProof));
+    d_constraintMap.insert(newSP.getNode(), j);
 
-  Trace("arith::dio") << "scaleEqAtIndex(" << i <<","<<g<<")"<<endl;
-  Trace("arith::dio") << "derived "<< newSP.getNode()
-                      <<" with proof " << newProof.getNode() << endl;
-  return j;
+    Trace("arith::dio") << "scaleEqAtIndex(" << i <<","<<g<<")"<<endl;
+    Trace("arith::dio") << "derived "<< newSP.getNode()
+                        <<" with proof " << newProof.getNode() << endl;
+    return j;
+  }
+  else {
+    Trace("arith::dio") << "Already in MAP (2): " << newSP.getNode() << endl;
+    return it->second;
+  }
 }
 
 Node DioSolver::proveIndex(TrailIndex i){
@@ -237,7 +253,7 @@ bool DioSolver::anyCoefficientExceedsMaximum(TrailIndex j) const{
 void DioSolver::enqueueInputConstraints(){
   Assert(d_currentF.empty());
   while(d_savedQueueIndex < d_savedQueue.size()){
-    d_currentF.push_back(d_savedQueue[d_savedQueueIndex]);
+    pushToQueueBack(d_savedQueue[d_savedQueueIndex]);
     d_savedQueueIndex = d_savedQueueIndex + 1;
   }
 
@@ -419,6 +435,8 @@ DioSolver::TrailIndex DioSolver::impliedGcdOfOne(){
 bool DioSolver::processEquations(bool allowDecomposition){
   Assert(!inConflict());
 
+  Trace("arith::dio") << "Subs size: " << d_subs.size() << endl;
+
   enqueueInputConstraints();
   while(! queueEmpty() && !inConflict()){
     moveMinimumByAbsToQueueFront();
@@ -544,19 +562,26 @@ DioSolver::TrailIndex DioSolver::combineEqAtIndexes(DioSolver::TrailIndex i, con
 
   SumPair newSi = (si * cq) + (sj * cr);
 
+  auto it = d_constraintMap.find(newSi.getNode());
+  if (it == d_constraintMap.end())
+  {
+    const Polynomial& pi = d_trail[i].d_proof;
+    const Polynomial& pj = d_trail[j].d_proof;
+    Polynomial newPi = (pi * cq) + (pj * cr);
 
-  const Polynomial& pi = d_trail[i].d_proof;
-  const Polynomial& pj = d_trail[j].d_proof;
-  Polynomial newPi = (pi * cq) + (pj * cr);
-
-  TrailIndex k = d_trail.size();
-  d_trail.push_back(Constraint(newSi, newPi));
+    TrailIndex k = d_trail.size();
+    d_trail.push_back(Constraint(newSi, newPi));
+    d_constraintMap.insert(newSi.getNode(), k);
 
 
-  Trace("arith::dio") << "derived "<< newSi.getNode()
-                      <<" with proof " << newPi.getNode() << endl;
+    Trace("arith::dio") << "derived "<< newSi.getNode()
+                        <<" with proof " << newPi.getNode() << endl;
 
-  return k;
+    return k;
+  } else {
+    Trace("arith::dio") << "Already in MAP (3): " << newSi.getNode() << endl;
+    return it->second;
+  }
 
 }
 
@@ -777,6 +802,16 @@ bool DioSolver::gcdIsOne(DioSolver::TrailIndex i){
   return eq.gcd() == Integer(1);
 }
 
+bool DioSolver::InF(size_t writeIter, TrailIndex curr) {
+  for(size_t i=0; i < writeIter; ++i){
+    if (d_currentF[i] == curr) {
+      Trace("arith::dio") << "NOPUSH1! "<< std::endl;
+      return true;
+    }
+  }
+  return false;
+}
+
 void DioSolver::subAndReduceCurrentFByIndex(DioSolver::SubIndex subIndex){
   size_t N = d_currentF.size();
 
@@ -785,8 +820,10 @@ void DioSolver::subAndReduceCurrentFByIndex(DioSolver::SubIndex subIndex){
     TrailIndex curr = d_currentF[readIter];
     TrailIndex nextTI = applySubstitution(subIndex, curr);
     if(nextTI == curr){
-      d_currentF[writeIter] = curr;
-      ++writeIter;
+      if (!InF(writeIter, curr)) {
+        d_currentF[writeIter] = curr;
+        ++writeIter;
+      }
     }else{
       Assert(nextTI != curr);
 
@@ -797,8 +834,10 @@ void DioSolver::subAndReduceCurrentFByIndex(DioSolver::SubIndex subIndex){
 
         if(!(inConflict() || anyCoefficientExceedsMaximum(nextNextTI))){
           Assert(queueConditions(nextNextTI));
-          d_currentF[writeIter] = nextNextTI;
-          ++writeIter;
+          if (!InF(writeIter, nextNextTI)) {
+            d_currentF[writeIter] = nextNextTI;
+            ++writeIter;
+          }
         }
       }
     }

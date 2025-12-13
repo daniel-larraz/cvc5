@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 
+#include "context/cdinsert_hashmap.h"
 #include "context/cdlist.h"
 #include "context/cdmaybe.h"
 #include "context/cdo.h"
@@ -104,6 +105,8 @@ class DioSolver : protected EnvObj
     {}
   };
   context::CDList<Constraint> d_trail;
+
+  context::CDInsertHashMap<Node,TrailIndex> d_constraintMap;
 
   // /** Compare by d_minimal. */
   // struct TrailMinimalCoefficientOrder {
@@ -256,6 +259,8 @@ private:
    */
   bool debugEqualityInInputEquations(Node eq);
 
+  bool InF(size_t writeIter, TrailIndex curr);
+
   /** Applies the substitution at subIndex to currentF. */
   void subAndReduceCurrentFByIndex(SubIndex d_subIndex);
 
@@ -345,11 +350,27 @@ private:
 
   void pushToQueueBack(TrailIndex t){
     Assert(queueConditions(t));
+    size_t N = d_currentF.size();
+    for(size_t i=0; i < N; ++i){
+      if (d_currentF[i] == t) {
+        Trace("arith::dio") << "NOPUSH! "<< std::endl;
+        return;
+      }
+    }
+    Trace("arith::dio") << "YESPUSH! "<< std::endl;
     d_currentF.push_back(t);
   }
 
   void pushToQueueFront(TrailIndex t){
     Assert(queueConditions(t));
+    size_t N = d_currentF.size();
+    for(size_t i=0; i < N; ++i){
+      if (d_currentF[i] == t) {
+        Trace("arith::dio") << "NOPUSH! "<< std::endl;
+        return;
+      }
+    }
+    Trace("arith::dio") << "YESPUSH! "<< std::endl;
     d_currentF.push_front(t);
   }
 

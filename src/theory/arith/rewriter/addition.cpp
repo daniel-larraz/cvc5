@@ -121,22 +121,17 @@ Node collectSumWithBase(NodeManager* nm,
                         const RealAlgebraicNumber& basemultiplicity,
                         const std::vector<Node>& baseproduct)
 {
-  if (sum.empty()) return mkConst(nm, Rational(0));
-  // construct the sum as nodes.
-  NodeBuilder nb(nm, Kind::ADD);
+  // Using sum_with_base ensures the correct monomial order
+  Sum sum_with_base;
   for (const auto& summand : sum)
   {
     Assert(!summand.second.isZero());
     RealAlgebraicNumber mult = summand.second * basemultiplicity;
     std::vector<Node> product = baseproduct;
     rewriter::addToProduct(product, mult, summand.first);
-    nb << mkMultTerm(nm, mult, std::move(product));
+    sum_with_base.emplace(mkNonlinearMult(nm, std::move(product)), mult);
   }
-  if (nb.getNumChildren() == 1)
-  {
-    return nb[0];
-  }
-  return nb.constructNode();
+  return collectSum(nm, sum_with_base);
 }
 }
 

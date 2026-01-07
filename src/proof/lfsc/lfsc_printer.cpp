@@ -897,7 +897,7 @@ bool LfscPrinter::computeProofArgs(const ProofNode* pn,
             {
               // Singleton list uses null terminator. We first construct an
               // original term and convert it.
-              Node tt = nm->mkNode(k, args[i][0], null);
+              Node tt = nm->mkNode(k, {args[i][0], null});
               tt = d_tproc.convert(tt);
               // Since conversion adds a null terminator, we have that
               // tt is of the form (f t (f null null)). We reconstruct

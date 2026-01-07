@@ -82,7 +82,7 @@ Node GlobalNegate::simplify(const std::vector<Node>& assertions,
 
     Node bvl = nm->mkNode(Kind::BOUND_VAR_LIST, bvs);
 
-    body = nm->mkNode(Kind::FORALL, bvl, body);
+    body = nm->mkNode(Kind::FORALL, {bvl, body});
   }
 
   Trace("cegqi-gn-debug") << "...got (pre-rewrite) : " << body << std::endl;

@@ -88,7 +88,7 @@ PreprocessingPassResult LearnedRewrite::applyInternal(
         Node atomu;
         if (!pol)
         {
-          atomu = nm->mkNode(Kind::LT, atom[0], atom[1]);
+          atomu = nm->mkNode(Kind::LT, {atom[0], atom[1]});
           atomu = rewrite(atomu);
           originLit[atomu] = l;
         }
@@ -282,7 +282,7 @@ Node LearnedRewrite::rewriteLearned(Node nr,
       {
         // maybe the disequality is in the learned literal set?
         Node deq =
-            nm->mkNode(Kind::EQUAL, den, nm->mkConstInt(Rational(0))).notNode();
+            nm->mkNode(Kind::EQUAL, {den, nm->mkConstInt(Rational(0))}).notNode();
         deq = rewrite(deq);
         if (std::find(learnedLits.begin(), learnedLits.end(), deq)
             != learnedLits.end())
@@ -341,7 +341,7 @@ Node LearnedRewrite::rewriteLearned(Node nr,
             // if the numerator is negative, then (mod x y) ---> (+ x (abs y))
             // otherwise, (mod x y) ---> x
             Node ret = bnuml.sgn() == -1 ? nm->mkNode(
-                           Kind::ADD, nr[0], nm->mkNode(Kind::ABS, nr[1]))
+                           Kind::ADD, {nr[0], nm->mkNode(Kind::ABS, nr[1])})
                                          : nr[0];
             nr = returnRewriteLearned(nr, ret, LearnedRewriteId::INT_MOD_RANGE);
           }

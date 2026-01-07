@@ -521,10 +521,12 @@ class NodeManager
   static Node mkNode(Kind kind, TNode child1);
 
   /** Create a node with two children. */
-  static Node mkNode(Kind kind, TNode child1, TNode child2);
+  static Node mkNode(Kind kind, const TNode& child1, const TNode& child2);
+  static Node mkNode(Kind kind, TNode&& child1, TNode&& child2) = delete;
 
   /** Create a node with three children. */
-  static Node mkNode(Kind kind, TNode child1, TNode child2, TNode child3);
+  static Node mkNode(Kind kind, const TNode& child1, const TNode& child2, const TNode& child3);
+  static Node mkNode(Kind kind, TNode&& child1, TNode&& child2, TNode&& child3) = delete;
 
   /** Create a node with an arbitrary number of children. */
   template <bool ref_count>
@@ -539,7 +541,8 @@ class NodeManager
    *   expected, e.g., mkNode(REGEXP_NONE, {}) will call this overload instead
    *   of creating a node with a null node as a child.
    */
-  Node mkNode(Kind kind, std::initializer_list<TNode> children);
+  template <bool ref_count>
+  Node mkNode(Kind kind, std::initializer_list<NodeTemplate<ref_count>> children);
 
   /**
    * Create an AND node with arbitrary number of children. This returns the
@@ -570,10 +573,12 @@ class NodeManager
   static Node mkNode(TNode opNode, TNode child1);
 
   /** Create a node with two children by operator. */
-  static Node mkNode(TNode opNode, TNode child1, TNode child2);
+  static Node mkNode(TNode opNode, const TNode& child1, const TNode& child2);
+  static Node mkNode(TNode opNode, TNode&& child1, TNode&& child2) = delete;
 
   /** Create a node with three children by operator. */
-  static Node mkNode(TNode opNode, TNode child1, TNode child2, TNode child3);
+  static Node mkNode(TNode opNode, const TNode& child1, const TNode& child2, const TNode& child3);
+  static Node mkNode(TNode opNode, TNode&& child1, TNode&& child2, TNode&& child3) = delete;
 
   /** Create a node by applying an operator to the children. */
   template <bool ref_count>
@@ -585,7 +590,8 @@ class NodeManager
    *
    * Analoguous to `mkNode(Kind, std::initializer_list<TNode>)`.
    */
-  Node mkNode(TNode opNode, std::initializer_list<TNode> children);
+  template <bool ref_count>
+  static Node mkNode(TNode opNode, std::initializer_list<NodeTemplate<ref_count>> children);
 
   /**
    * @param name The name.
@@ -1150,20 +1156,29 @@ inline Node NodeManager::mkNode(Kind kind, TNode child1) {
   return nb.constructNode();
 }
 
-inline Node NodeManager::mkNode(Kind kind, TNode child1, TNode child2) {
+inline Node NodeManager::mkNode(Kind kind, const TNode& child1, const TNode& child2) {
   NodeBuilder nb(child1.getNodeManager(), kind);
   nb << child1 << child2;
   return nb.constructNode();
 }
 
-inline Node NodeManager::mkNode(Kind kind, TNode child1, TNode child2,
-                                TNode child3) {
+inline Node NodeManager::mkNode(Kind kind, const TNode& child1, const TNode& child2,
+                                const TNode& child3) {
   NodeBuilder nb(child1.getNodeManager(), kind);
   nb << child1 << child2 << child3;
   return nb.constructNode();
 }
 
 // N-ary version
+template <bool ref_count>
+inline Node NodeManager::mkNode(Kind kind,
+                                std::initializer_list<NodeTemplate<ref_count>>
+                                children) {
+  NodeBuilder nb(this, kind);
+  nb.append(children.begin(), children.end());
+  return nb.constructNode();
+}
+
 template <bool ref_count>
 inline Node NodeManager::mkNode(Kind kind,
                                 const std::vector<NodeTemplate<ref_count> >&
@@ -1221,7 +1236,7 @@ inline Node NodeManager::mkNode(TNode opNode, TNode child1) {
   return nb.constructNode();
 }
 
-inline Node NodeManager::mkNode(TNode opNode, TNode child1, TNode child2) {
+inline Node NodeManager::mkNode(TNode opNode, const TNode& child1, const TNode& child2) {
   NodeBuilder nb(opNode.getNodeManager(), operatorToKind(opNode));
   if (opNode.getKind() != Kind::BUILTIN)
   {
@@ -1231,8 +1246,8 @@ inline Node NodeManager::mkNode(TNode opNode, TNode child1, TNode child2) {
   return nb.constructNode();
 }
 
-inline Node NodeManager::mkNode(TNode opNode, TNode child1, TNode child2,
-                                TNode child3) {
+inline Node NodeManager::mkNode(TNode opNode, const TNode& child1, const TNode& child2,
+                                const TNode& child3) {
   NodeBuilder nb(opNode.getNodeManager(), operatorToKind(opNode));
   if (opNode.getKind() != Kind::BUILTIN)
   {
@@ -1243,6 +1258,19 @@ inline Node NodeManager::mkNode(TNode opNode, TNode child1, TNode child2,
 }
 
 // N-ary version for operators
+template <bool ref_count>
+inline Node NodeManager::mkNode(TNode opNode,
+                                std::initializer_list<NodeTemplate<ref_count>>
+                                children) {
+  NodeBuilder nb(opNode.getNodeManager(), operatorToKind(opNode));
+  if (opNode.getKind() != Kind::BUILTIN)
+  {
+      nb << opNode;
+  }
+  nb.append(children.begin(), children.end());
+  return nb.constructNode();
+}
+
 template <bool ref_count>
 inline Node NodeManager::mkNode(TNode opNode,
                                 const std::vector<NodeTemplate<ref_count> >&

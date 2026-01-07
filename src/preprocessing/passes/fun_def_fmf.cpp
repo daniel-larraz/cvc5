@@ -113,7 +113,7 @@ void FunDefFmf::process(AssertionPipeline* assertionsToPreprocess)
       if (!bd.isNull())
       {
         d_funcs.push_back(f);
-        bd = nm->mkNode(Kind::EQUAL, n, bd);
+        bd = nm->mkNode(Kind::EQUAL, {n, bd});
 
         // create a sort S that represents the inputs of the function
         std::stringstream ss;
@@ -151,7 +151,7 @@ void FunDefFmf::process(AssertionPipeline* assertionsToPreprocess)
         for (size_t j = 0; j < nchildn; j++)
         {
           vars.push_back(n[j]);
-          subs.push_back(nm->mkNode(Kind::APPLY_UF, d_input_arg_inj[f][j], bv));
+          subs.push_back(nm->mkNode(Kind::APPLY_UF, {d_input_arg_inj[f][j], bv}));
         }
         bd = bd.substitute(vars.begin(), vars.end(), subs.begin(), subs.end());
         subs_head[i] =
@@ -160,7 +160,7 @@ void FunDefFmf::process(AssertionPipeline* assertionsToPreprocess)
         Trace("fmf-fun-def")
             << "FMF fun def: FUNCTION : rewrite " << assertions[i] << std::endl;
         Trace("fmf-fun-def") << "  to " << std::endl;
-        Node new_q = nm->mkNode(Kind::FORALL, bvl, bd);
+        Node new_q = nm->mkNode(Kind::FORALL, {bvl, bd});
         assertionsToPreprocess->replace(
             i, new_q, nullptr, TrustId::PREPROCESS_FUN_DEF_FMF);
         assertionsToPreprocess->ensureRewritten(i);
@@ -241,12 +241,12 @@ Node FunDefFmf::simplifyFormula(
     // append prenex to constraints
     for (unsigned i = 0; i < constraints.size(); i++)
     {
-      constraints[i] = nm->mkNode(Kind::FORALL, n[0], constraints[i]);
+      constraints[i] = nm->mkNode(Kind::FORALL, {n[0], constraints[i]});
       constraints[i] = rewrite(constraints[i]);
     }
     if (c != n[1])
     {
-      ret = nm->mkNode(Kind::FORALL, n[0], c);
+      ret = nm->mkNode(Kind::FORALL, {n[0], c});
     }
     else
     {
@@ -315,11 +315,11 @@ Node FunDefFmf::simplifyFormula(
           // always care about constraints on the head of the ITE, but only
           // care about one of the children depending on how it evaluates
           branch_cond = nm->mkNode(Kind::AND,
-                                   branch_constraints[0],
+                                   {branch_constraints[0],
                                    nm->mkNode(Kind::ITE,
-                                              n[0],
+                                              {n[0],
                                               branch_constraints[1],
-                                              branch_constraints[2]));
+                                              branch_constraints[2]})});
         }
         else
         {
@@ -332,9 +332,9 @@ Node FunDefFmf::simplifyFormula(
             // recursive conditions
             branch_cond =
                 nm->mkNode(Kind::ITE,
-                           (n.getKind() == Kind::OR ? n[i] : n[i].negate()),
+                           {(n.getKind() == Kind::OR ? n[i] : n[i].negate()),
                            branch_constraints[i],
-                           branch_cond);
+                           branch_cond});
           }
         }
         Trace("fmf-fun-def-debug2")

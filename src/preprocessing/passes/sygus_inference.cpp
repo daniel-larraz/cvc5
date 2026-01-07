@@ -286,7 +286,7 @@ bool SygusInference::solveSygus(const std::vector<Node>& assertions,
   if (!qvars.empty())
   {
     Node bvl = nm->mkNode(Kind::BOUND_VAR_LIST, qvars);
-    body = nm->mkNode(Kind::EXISTS, bvl, body);
+    body = nm->mkNode(Kind::EXISTS, {bvl, body});
   }
 
   // sygus attribute to mark the conjecture as a sygus conjecture

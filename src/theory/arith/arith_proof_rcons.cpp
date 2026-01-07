@@ -274,7 +274,7 @@ std::shared_ptr<ProofNode> ArithProofRCons::getProofFor(Node fact)
             applySR(cdp, tcnv, asubs, bl.second);
             applySR(cdp, tcnv, asubs, itb->second);
             Node l2strict =
-                nm->mkNode(Kind::GT, l2[0], nm->mkConstInt(c2m1)).notNode();
+                nm->mkNode(Kind::GT, {l2[0], nm->mkConstInt(c2m1)}).notNode();
             Node l2n = l2.notNode();
             Node equiv = l2n.eqNode(l2strict);
             cdp.addStep(equiv, ProofRule::MACRO_SR_PRED_INTRO, {}, {equiv});

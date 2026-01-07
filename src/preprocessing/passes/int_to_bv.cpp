@@ -80,7 +80,7 @@ Node intToBVMakeBinary(NodeManager* nm, TNode n, NodeMap& cache)
         Assert(cache.find(current[i]) != cache.end());
         Node child = current[i];
         Node childRes = cache[current[i]];
-        result = nm->mkNode(current.getKind(), result, childRes);
+        result = nm->mkNode(current.getKind(), {result, childRes});
       }
     }
     else
@@ -251,9 +251,9 @@ Node IntToBV::intToBV(TNode n, NodeMap& cache)
                                       nm->mkNode(Kind::BITVECTOR_NEG, result));
           Node bv2int = nm->mkNode(
               Kind::ITE,
-              nm->mkNode(Kind::BITVECTOR_SLT, result, nm->mkConst(bvzero)),
+              {nm->mkNode(Kind::BITVECTOR_SLT, {result, nm->mkConst(bvzero)}),
               nm->mkNode(Kind::NEG, negResult),
-              nm->mkNode(Kind::BITVECTOR_UBV_TO_INT, result));
+              nm->mkNode(Kind::BITVECTOR_UBV_TO_INT, result)});
           d_preprocContext->addSubstitution(current, bv2int);
         }
       }

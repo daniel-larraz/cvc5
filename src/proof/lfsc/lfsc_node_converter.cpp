@@ -294,7 +294,7 @@ Node LfscNodeConverter::postConvert(Node n)
     Node ret = postConvert(getNullTerminator(d_nm, Kind::STRING_CONCAT, tn));
     for (size_t i = 0, size = charVec.size(); i < size; i++)
     {
-      ret = d_nm->mkNode(Kind::STRING_CONCAT, charVec[i], ret);
+      ret = d_nm->mkNode(Kind::STRING_CONCAT, {charVec[i], ret});
     }
     return ret;
   }
@@ -314,7 +314,7 @@ Node LfscNodeConverter::postConvert(Node n)
         // singleton case
         return u;
       }
-      ret = d_nm->mkNode(Kind::STRING_CONCAT, u, ret);
+      ret = d_nm->mkNode(Kind::STRING_CONCAT, {u, ret});
     }
     return ret;
   }
@@ -435,14 +435,14 @@ Node LfscNodeConverter::postConvert(Node n)
     {
       // DISTINCT(x1,...,xn) --->
       // AND(DISTINCT(x1,x2), AND(,..., AND(,..,DISTINCT(x_{n-1},x_n))))
-      Node ret = d_nm->mkNode(k, children[0], children[1]);
+      Node ret = d_nm->mkNode(k, {children[0], children[1]});
       for (unsigned i = 0; i < nchild; i++)
         for (unsigned j = i + 1; j < nchild; j++)
         {
           if (i != 0 && j != 1)
           {
             ret = d_nm->mkNode(
-                Kind::AND, ret, d_nm->mkNode(k, children[i], children[j]));
+                Kind::AND, {ret, d_nm->mkNode(k, {children[i], children[j]})});
           }
         }
       Trace("lfsc-term-process-debug") << "n: " << n << std::endl
@@ -498,7 +498,7 @@ Node LfscNodeConverter::postConvert(Node n)
       }
       else
       {
-        ret = d_nm->mkNode(k, children[i], ret);
+        ret = d_nm->mkNode(k, {children[i], ret});
       }
     }
     Trace("lfsc-term-process-debug")

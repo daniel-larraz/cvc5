@@ -107,8 +107,8 @@ PreprocessingPassResult FfBitsum::applyInternal(
               Node scaled = multiplier.isOne()
                                 ? bitsum
                                 : nm->mkNode(Kind::FINITE_FIELD_MULT,
-                                             nm->mkConst(multiplier),
-                                             bitsum);
+                                             {nm->mkConst(multiplier),
+                                             bitsum});
               Trace("ff::bitsum") << "found " << scaled << std::endl;
               bs->second.push_back(scaled);
             }

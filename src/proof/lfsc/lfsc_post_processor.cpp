@@ -118,7 +118,7 @@ bool LfscProofPostprocessCallback::update(Node res,
         addLfscRule(cdp, fconc, {curr}, LfscRule::LAMBDA, {args[ii]});
         // we use a chained implication (=> F1 ... (=> Fn C)) which avoids
         // aliasing.
-        Node next = nm->mkNode(Kind::OR, args[ii].notNode(), curr);
+        Node next = nm->mkNode(Kind::OR, {args[ii].notNode(), curr});
         addLfscRule(cdp, next, {fconc}, LfscRule::SCOPE, {args[ii]});
         curr = next;
       }
@@ -231,8 +231,8 @@ bool LfscProofPostprocessCallback::update(Node res,
           }
           else
           {
-            curL = nm->mkNode(Kind::HO_APPLY, vop, curL);
-            curR = nm->mkNode(Kind::HO_APPLY, vop, curR);
+            curL = nm->mkNode(Kind::HO_APPLY, {vop, curL});
+            curR = nm->mkNode(Kind::HO_APPLY, {vop, curR});
             nextEq = curL.eqNode(curR);
           }
           addLfscRule(cdp, nextEq, {vopEq, currEq}, LfscRule::CONG, {});
@@ -298,14 +298,14 @@ bool LfscProofPostprocessCallback::update(Node res,
           {
             // we get the operator of the next argument concatenated with the
             // current accumulated remainder.
-            Node currApp = nm->mkNode(k, children[ii][0], currEq[0]);
+            Node currApp = nm->mkNode(k, {children[ii][0], currEq[0]});
             uop = d_tproc.getOperatorOfTerm(currApp);
           }
           Trace("lfsc-pp-cong") << "Apply " << uop << " to " << children[ii][0]
                                 << " and " << children[ii][1] << std::endl;
           Node argAppEq =
-              nm->mkNode(Kind::HO_APPLY, uop, children[ii][0])
-                  .eqNode(nm->mkNode(Kind::HO_APPLY, uop, children[ii][1]));
+              nm->mkNode(Kind::HO_APPLY, {uop, children[ii][0]})
+                  .eqNode(nm->mkNode(Kind::HO_APPLY, {uop, children[ii][1]}));
           addLfscRule(cdp, argAppEq, {opEq, children[ii]}, LfscRule::CONG, {});
           // now, congruence to the current equality
           Node nextEq;
@@ -318,8 +318,8 @@ bool LfscProofPostprocessCallback::update(Node res,
           {
             // otherwise continue to apply
             nextEq =
-                nm->mkNode(Kind::HO_APPLY, argAppEq[0], currEq[0])
-                    .eqNode(nm->mkNode(Kind::HO_APPLY, argAppEq[1], currEq[1]));
+                nm->mkNode(Kind::HO_APPLY, {argAppEq[0], currEq[0]})
+                    .eqNode(nm->mkNode(Kind::HO_APPLY, {argAppEq[1], currEq[1]}));
           }
           addLfscRule(cdp, nextEq, {argAppEq, currEq}, LfscRule::CONG, {});
           currEq = nextEq;
@@ -347,7 +347,7 @@ bool LfscProofPostprocessCallback::update(Node res,
       {
         size_t jj = (nchildren - 1) - j;
         // conclude the final conclusion if we are finished
-        Node next = jj == 0 ? res : nm->mkNode(Kind::AND, children[jj], cur);
+        Node next = jj == 0 ? res : nm->mkNode(Kind::AND, {children[jj], cur});
         if (j == 0)
         {
           addLfscRule(cdp, next, {children[jj]}, LfscRule::AND_INTRO1, {});
@@ -475,8 +475,8 @@ void LfscProofPostprocessCallback::updateCong(Node res,
     }
     else
     {
-      curL = nm->mkNode(Kind::HO_APPLY, curL, children[i][0]);
-      curR = nm->mkNode(Kind::HO_APPLY, curR, children[i][1]);
+      curL = nm->mkNode(Kind::HO_APPLY, {curL, children[i][0]});
+      curR = nm->mkNode(Kind::HO_APPLY, {curR, children[i][1]});
       nextEq = curL.eqNode(curR);
     }
     addLfscRule(cdp, nextEq, {currEq, children[i]}, LfscRule::CONG, {});
@@ -514,7 +514,7 @@ Node LfscProofPostprocessCallback::mkChain(Kind k,
   }
   while (i < nchildren)
   {
-    ret = nm->mkNode(k, children[(nchildren - 1) - i], ret);
+    ret = nm->mkNode(k, {children[(nchildren - 1) - i], ret});
     i++;
   }
   return ret;

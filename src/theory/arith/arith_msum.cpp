@@ -169,11 +169,11 @@ Node ArithMSum::mkCoeffTerm(Node c, Node t)
     if (!tt.isReal())
     {
       Assert(tt.isInteger());
-      return nm->mkNode(Kind::MULT, c, nm->mkNode(Kind::TO_REAL, t));
+      return nm->mkNode(Kind::MULT, {c, nm->mkNode(Kind::TO_REAL, t)});
     }
   }
   return nm->mkNode(
-      Kind::MULT, nm->mkConstRealOrInt(tt, c.getConst<Rational>()), t);
+      Kind::MULT, {nm->mkConstRealOrInt(tt, c.getConst<Rational>()), t});
 }
 
 int ArithMSum::isolate(
@@ -228,13 +228,13 @@ int ArithMSum::isolate(
         else
         {
           val = nm->mkNode(
-              Kind::MULT, val, nm->mkConstReal(Rational(1) / r.abs()));
+              Kind::MULT, {val, nm->mkConstReal(Rational(1) / r.abs())});
         }
       }
       val = r.sgn() == 1
                 ? nm->mkNode(Kind::MULT,
-                             nm->mkConstRealOrInt(val.getType(), Rational(-1)),
-                             val)
+                             {nm->mkConstRealOrInt(val.getType(), Rational(-1)),
+                             val})
                 : val;
       return (r.sgn() == 1 || k == Kind::EQUAL) ? 1 : -1;
     }
@@ -257,7 +257,7 @@ int ArithMSum::isolate(
     {
       if (doCoeff)
       {
-        vc = nm->mkNode(Kind::MULT, veq_c, vc);
+        vc = nm->mkNode(Kind::MULT, {veq_c, vc});
       }
       else
       {
@@ -281,7 +281,7 @@ int ArithMSum::isolate(
       Assert(val.getType() == vc.getType())
           << val << " " << vc << " " << val.getType() << " " << vc.getType();
     }
-    veq = nm->mkNode(k, inOrder ? vc : val, inOrder ? val : vc);
+    veq = nm->mkNode(k, {inOrder ? vc : val, inOrder ? val : vc});
   }
   return ires;
 }

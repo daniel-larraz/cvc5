@@ -228,7 +228,7 @@ void ProofFinalCallback::finalize(std::shared_ptr<ProofNode> pn)
       Node query = conc;
       if (!premises.empty())
       {
-        query = nm->mkNode(Kind::IMPLIES, nm->mkAnd(premises), query);
+        query = nm->mkNode(Kind::IMPLIES, {nm->mkAnd(premises), query});
       }
       // print the trusted step information
       if (isOutputOn(OutputTag::TRUSTED_PROOF_STEPS))

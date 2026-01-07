@@ -117,7 +117,7 @@ Node RealToInt::realToIntInternal(TNode n, NodeMap& cache, std::vector<Node>& va
                 Node vv = realToIntInternal(v, cache, var_eq);
                 if (vv.getType().isInteger())
                 {
-                  sum.push_back(nodeManager()->mkNode(Kind::MULT, c, vv));
+                  sum.push_back(nodeManager()->mkNode(Kind::MULT, {c, vv}));
                 }
                 else
                 {
@@ -132,7 +132,7 @@ Node RealToInt::realToIntInternal(TNode n, NodeMap& cache, std::vector<Node>& va
                     ? nm->mkConstInt(Rational(0))
                     : (sum.size() == 1 ? sum[0] : nm->mkNode(Kind::ADD, sum));
             ret = nm->mkNode(
-                ret_lit.getKind(), sumt, nm->mkConstInt(Rational(0)));
+                ret_lit.getKind(), {sumt, nm->mkConstInt(Rational(0))});
             if (!ret_pol)
             {
               ret = ret.negate();

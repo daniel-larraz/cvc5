@@ -441,8 +441,8 @@ inline Node RewriteRule<MultDistribConst>::apply(TNode node)
   {
     // push negation on the constant part
     BitVector const_bv = constant.getConst<BitVector>();
-    return NodeManager::mkNode(
-        Kind::BITVECTOR_MULT, factor[0], utils::mkConst(nm, -const_bv));
+    return nm->mkNode(
+        Kind::BITVECTOR_MULT, {factor[0], TNode(utils::mkConst(nm, -const_bv))});
   }
 
   std::vector<Node> children;
@@ -894,7 +894,7 @@ template <>
 inline Node RewriteRule<NegSub>::apply(TNode node)
 {
   Trace("bv-rewrite") << "RewriteRule<NegSub>(" << node << ")" << std::endl;
-  return NodeManager::mkNode(Kind::BITVECTOR_SUB, node[0][1], node[0][0]);
+  return node.getNodeManager()->mkNode(Kind::BITVECTOR_SUB, {node[0][1], node[0][0]});
 }
 
 template <>
@@ -1331,7 +1331,7 @@ inline Node RewriteRule<BitwiseSlicing>::apply(TNode node)
       Node other_extract = utils::mkExtract(other, end, start);
       Node const_extract = utils::mkExtract(constant, end, start);
       Node bitwise_op =
-          NodeManager::mkNode(node.getKind(), const_extract, other_extract);
+          nm->mkNode(node.getKind(), {const_extract, other_extract});
       concat_children.push_back(bitwise_op);
       start = end = i;
     }
@@ -1344,7 +1344,7 @@ inline Node RewriteRule<BitwiseSlicing>::apply(TNode node)
       Node other_extract = utils::mkExtract(other, end, 0);
       Node const_extract = utils::mkExtract(constant, end, 0);
       Node bitwise_op =
-          NodeManager::mkNode(node.getKind(), const_extract, other_extract);
+          nm->mkNode(node.getKind(), {const_extract, other_extract});
       concat_children.push_back(bitwise_op);
     }
   }

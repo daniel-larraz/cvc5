@@ -127,7 +127,7 @@ Node SubtypeElimConverterCallback::convert(Node res,
           Assert(atom[1].isConst() && atom[1].getConst<Rational>().sgn() == 0);
           childChanged = true;
           Node newAtom = nm->mkNode(
-              atom.getKind(), cargs[1][i], nm->mkConstReal(Rational(0)));
+              atom.getKind(), {cargs[1][i], nm->mkConstReal(Rational(0))});
           newAtom = neg ? newAtom.notNode() : newAtom;
           premise[itp->second] = newAtom;
         }
@@ -210,7 +210,7 @@ Node SubtypeElimConverterCallback::convert(Node res,
       // reprove what is necessary for the sum for each child
       for (size_t i = 0, nchild = children.size(); i < nchild; i++)
       {
-        Node newRel = nm->mkNode(children[i].getKind(), resc[0][i], resc[1][i]);
+        Node newRel = nm->mkNode(children[i].getKind(), {resc[0][i], resc[1][i]});
         if (!prove(children[i], newRel, cdp))
         {
           success = false;
@@ -247,12 +247,12 @@ Node SubtypeElimConverterCallback::convert(Node res,
       // predicate.
       Node sc = resc[0][0];
       Node relOld = resc[0][1];
-      Node relNew = nm->mkNode(relOld.getKind(), resc[1][0][1], resc[1][1][1]);
+      Node relNew = nm->mkNode(relOld.getKind(), {resc[1][0][1], resc[1][1][1]});
       if (prove(relOld, relNew, cdp))
       {
         Node relNewMult = resc[1];
-        Node antec = nm->mkNode(Kind::AND, sc, relNew);
-        Node rimpl = nm->mkNode(Kind::IMPLIES, antec, relNewMult);
+        Node antec = nm->mkNode(Kind::AND, {sc, relNew});
+        Node rimpl = nm->mkNode(Kind::IMPLIES, {antec, relNewMult});
         cdp->addStep(rimpl, id, {}, {args[0], relNew});
         cdp->addStep(antec, ProofRule::AND_INTRO, {sc, relNew}, {});
         cdp->addStep(relNewMult, ProofRule::MODUS_PONENS, {antec, rimpl}, {});
@@ -386,7 +386,7 @@ bool SubtypeElimConverterCallback::prove(const Node& src,
       cdp->addStep(convEq[j], ProofRule::REFL, {}, {conv[j]});
     }
   }
-  Node csrc = nm->mkNode(src.getKind(), conv[0], conv[1]);
+  Node csrc = nm->mkNode(src.getKind(), {conv[0], conv[1]});
   if (tgt.getKind() == Kind::EQUAL)
   {
     std::vector<Node> cargs;

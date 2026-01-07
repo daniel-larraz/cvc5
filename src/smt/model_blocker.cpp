@@ -161,7 +161,7 @@ Node ModelBlocker::getModelBlocker(const std::vector<Node>& assertions,
               cond = cond.negate();
               branch = catom[2];
             }
-            impl = nm->mkNode(Kind::AND, cond, cpol ? branch : branch.negate());
+            impl = nm->mkNode(Kind::AND, {cond, cpol ? branch : branch.negate()});
           }
           else
           {

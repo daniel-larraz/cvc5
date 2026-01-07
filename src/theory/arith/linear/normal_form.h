@@ -615,8 +615,8 @@ private:
     Assert(!c.isZero());
     Assert(!c.isOne());
     Assert(!vl.empty());
-    return NodeManager::mkNode(
-        Kind::MULT, c.getNode(), vl.getNode());
+    return c.getNode().getNodeManager()->mkNode(
+        Kind::MULT, {c.getNode(), vl.getNode()});
   }
 
   static bool multStructured(Node n) {
@@ -1146,8 +1146,8 @@ public:
 class SumPair : public NodeWrapper {
 private:
   static Node toNode(const Polynomial& p, const Constant& c){
-    return NodeManager::mkNode(
-        Kind::ADD, p.getNode(), c.getNode());
+    return c.getNode().getNodeManager()->mkNode(
+        Kind::ADD, {p.getNode(), c.getNode()});
   }
 
   SumPair(TNode n) : NodeWrapper(n) { Assert(isNormalForm()); }

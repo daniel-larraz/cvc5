@@ -623,15 +623,15 @@ Node PolyNorm::getArithPolyNormRelPremise(TNode a,
     uint32_t wb = b[0].getType().getBitVectorSize();
     Node cx = nm->mkConst(BitVector(wa, rx.getNumerator()));
     Node cy = nm->mkConst(BitVector(wb, ry.getNumerator()));
-    Node x = nm->mkNode(Kind::BITVECTOR_SUB, a[0], a[1]);
-    Node y = nm->mkNode(Kind::BITVECTOR_SUB, b[0], b[1]);
-    lhs = nm->mkNode(Kind::BITVECTOR_MULT, cx, x);
-    rhs = nm->mkNode(Kind::BITVECTOR_MULT, cy, y);
+    Node x = nm->mkNode(Kind::BITVECTOR_SUB, {a[0], a[1]});
+    Node y = nm->mkNode(Kind::BITVECTOR_SUB, {b[0], b[1]});
+    lhs = nm->mkNode(Kind::BITVECTOR_MULT, {cx, x});
+    rhs = nm->mkNode(Kind::BITVECTOR_MULT, {cy, y});
   }
   else
   {
-    Node x = nm->mkNode(Kind::SUB, a[0], a[1]);
-    Node y = nm->mkNode(Kind::SUB, b[0], b[1]);
+    Node x = nm->mkNode(Kind::SUB, {a[0], a[1]});
+    Node y = nm->mkNode(Kind::SUB, {b[0], b[1]});
     Node cx, cy;
     // Equality does not support mixed arithmetic, so we eliminate it here.
     if (x.getType().isInteger() && y.getType().isInteger())
@@ -653,8 +653,8 @@ Node PolyNorm::getArithPolyNormRelPremise(TNode a,
         y = nm->mkNode(Kind::TO_REAL, y);
       }
     }
-    lhs = nm->mkNode(Kind::MULT, cx, x);
-    rhs = nm->mkNode(Kind::MULT, cy, y);
+    lhs = nm->mkNode(Kind::MULT, {cx, x});
+    rhs = nm->mkNode(Kind::MULT, {cy, y});
   }
   return lhs.eqNode(rhs);
 }

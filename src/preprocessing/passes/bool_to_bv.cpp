@@ -137,7 +137,7 @@ Node BoolToBV::lowerAssertion(const TNode& assertion, bool allowIteIntroduction)
     Assert(newAssertionType.getBitVectorSize() == 1);
     NodeManager* nm = nodeManager();
     newAssertion =
-        nm->mkNode(Kind::EQUAL, newAssertion, bv::utils::mkOne(nm, 1));
+        nm->mkNode(Kind::EQUAL, {newAssertion, bv::utils::mkOne(nm, 1)});
     newAssertionType = newAssertion.getType();
   }
   Assert(newAssertionType.isBoolean());
@@ -264,9 +264,9 @@ void BoolToBV::visit(const TNode& n, bool allowIteIntroduction)
 
     updateCache(n,
                 nm->mkNode(Kind::ITE,
-                           fromCache(n),
+                           {fromCache(n),
                            bv::utils::mkOne(nm, 1),
-                           bv::utils::mkZero(nm, 1)));
+                           bv::utils::mkZero(nm, 1)}));
     Trace("bool-to-bv") << "BoolToBV::visit forcing " << n
                         << " =>\n"
                         << fromCache(n) << std::endl;
@@ -288,10 +288,12 @@ void BoolToBV::visit(const TNode& n, bool allowIteIntroduction)
     // needed to maintain the invariant that all boolean children
     // have been converted (even constants and variables) when forcing
     // with ITE introductions
+    Node one = bv::utils::mkOne(nm, 1);
+    Node zero = bv::utils::mkZero(nm, 1);
     updateCache(
         n,
         nm->mkNode(
-            Kind::ITE, n, bv::utils::mkOne(nm, 1), bv::utils::mkZero(nm, 1)));
+            Kind::ITE, n, one, zero));
     Trace("bool-to-bv") << "BoolToBV::visit forcing " << n
                         << " =>\n"
                         << fromCache(n) << std::endl;

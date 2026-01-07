@@ -45,7 +45,7 @@ PreprocessingPassResult FfDisjunctiveBit::applyInternal(
     if (var.has_value())
     {
       Trace("ff::disjunctive-bit") << "rw bit constr: " << *var << std::endl;
-      Node var2 = nm->mkNode(Kind::FINITE_FIELD_MULT, *var, *var);
+      Node var2 = nm->mkNode(Kind::FINITE_FIELD_MULT, {*var, *var});
       assertionsToPreprocess->replace(i,
                                       var2.eqNode(*var),
                                       nullptr,

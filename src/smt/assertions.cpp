@@ -150,7 +150,7 @@ void Assertions::addFormula(TNode n,
       {
         // The rewritten form is the rewritten body with original variable list.
         defRew = defRewBody.getNode();
-        defRew = nm->mkNode(Kind::LAMBDA, n[1][0], defRew);
+        defRew = nm->mkNode(Kind::LAMBDA, {n[1][0], TNode(defRew)});
       }
       if (!isFunDef && expr::hasSubterm(defRew, n[0]))
       {

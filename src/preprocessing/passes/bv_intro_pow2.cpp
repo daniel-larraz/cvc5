@@ -91,7 +91,7 @@ Node BvIntroPow2::rewritePowerOfTwo(TNode node)
   Node one = bv::utils::mkOne(nm, size);
   TNode x = diff == one ? a : b;
   Node sk = bv::utils::mkVar(nm, size);
-  Node sh = nm->mkNode(Kind::BITVECTOR_SHL, one, sk);
+  Node sh = nm->mkNode(Kind::BITVECTOR_SHL, {one, sk});
   Node x_eq_sh = nm->mkNode(Kind::EQUAL, x, sh);
   return x_eq_sh;
 }

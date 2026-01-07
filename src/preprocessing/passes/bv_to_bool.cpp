@@ -137,7 +137,7 @@ Node BVToBool::convertBvAtom(TNode node)
   Assert(bv::utils::getSize(node[1]) == 1);
   Node a = convertBvTerm(node[0]);
   Node b = convertBvTerm(node[1]);
-  Node result = nodeManager()->mkNode(Kind::EQUAL, a, b);
+  Node result = nodeManager()->mkNode(Kind::EQUAL, {a, b});
   Trace("bv-to-bool") << "BVToBool::convertBvAtom " << node << " => " << result
                       << "\n";
 
@@ -183,7 +183,7 @@ Node BVToBool::convertBvTerm(TNode node)
     Node cond = liftNode(node[0]);
     Node true_branch = convertBvTerm(node[1]);
     Node false_branch = convertBvTerm(node[2]);
-    Node result = nm->mkNode(Kind::ITE, cond, true_branch, false_branch);
+    Node result = nm->mkNode(Kind::ITE, {cond, true_branch, false_branch});
     addToBoolCache(node, result);
     Trace("bv-to-bool") << "BVToBool::convertBvTerm " << node << " => "
                         << result << "\n";
@@ -200,7 +200,7 @@ Node BVToBool::convertBvTerm(TNode node)
     for (unsigned i = 1; i < node.getNumChildren(); ++i)
     {
       Node converted = convertBvTerm(node[i]);
-      result = nm->mkNode(Kind::XOR, result, converted);
+      result = nm->mkNode(Kind::XOR, {result, converted});
     }
     Trace("bv-to-bool") << "BVToBool::convertBvTerm " << node << " => "
                         << result << "\n";
@@ -209,7 +209,7 @@ Node BVToBool::convertBvTerm(TNode node)
 
   if (kind == Kind::BITVECTOR_COMP)
   {
-    Node result = nm->mkNode(Kind::EQUAL, node[0], node[1]);
+    Node result = nm->mkNode(Kind::EQUAL, {node[0], node[1]});
     addToBoolCache(node, result);
     Trace("bv-to-bool") << "BVToBool::convertBvTerm " << node << " => "
                         << result << "\n";

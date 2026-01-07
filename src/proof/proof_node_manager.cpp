@@ -289,7 +289,7 @@ std::shared_ptr<ProofNode> ProofNodeManager::mkScope(
   }
   else
   {
-    minExpected = nm->mkNode(Kind::IMPLIES, exp, conc);
+    minExpected = nm->mkNode(Kind::IMPLIES, {exp, conc});
   }
   return mkNode(ProofRule::SCOPE, {pf}, assumps, minExpected);
 }

@@ -254,15 +254,17 @@ inline Node safeConstructNaryType(const TypeNode& tn,
 
 // Returns the multiplication of a and b.
 inline Node mkMult(Node a, Node b) {
-  return NodeManager::mkNode(Kind::MULT, a, b);
+  NodeManager* nm = a.getNodeManager();
+  return nm->mkNode(Kind::MULT, {a, b});
 }
 
 // Return a constraint that is equivalent to term being is in the range
 // [start, end). This includes start and excludes end.
 inline Node mkInRange(Node term, Node start, Node end) {
-  Node above_start = NodeManager::mkNode(Kind::LEQ, start, term);
-  Node below_end = NodeManager::mkNode(Kind::LT, term, end);
-  return NodeManager::mkNode(Kind::AND, above_start, below_end);
+  NodeManager* nm = term.getNodeManager();
+  Node above_start = nm->mkNode(Kind::LEQ, {start, term});
+  Node below_end = nm->mkNode(Kind::LT, {term, end});
+  return nm->mkNode(Kind::AND, {above_start, below_end});
 }
 
 // Creates an expression that constrains q to be equal to one of two expressions

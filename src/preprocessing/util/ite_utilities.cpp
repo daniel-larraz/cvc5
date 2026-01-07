@@ -1016,8 +1016,8 @@ Node ITESimplifier::attemptLiftEquality(TNode atom)
     NodeManager* nm = nodeManager();
     Node negRite = atom[1][1];
     Node rC = negRite[0];
-    Node rT = nm->mkNode(Kind::MULT, negOne, negRite[1]);
-    Node rE = nm->mkNode(Kind::MULT, negOne, negRite[2]);
+    Node rT = nm->mkNode(Kind::MULT, {negOne, negRite[1]});
+    Node rE = nm->mkNode(Kind::MULT, {negOne, negRite[2]});
 
     // (ite lC lT lE) = (ite rC rT rE)
     // (ite lc (= lT (ite rC rT rE) (= lE (ite rC rT rE))))

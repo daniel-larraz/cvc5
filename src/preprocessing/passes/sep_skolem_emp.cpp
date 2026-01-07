@@ -60,8 +60,8 @@ Node preSkolemEmp(NodeManager* nm,
             "ey", dataType, "skolem data for negated emp");
         return nm
             ->mkNode(Kind::SEP_STAR,
-                     nm->mkNode(Kind::SEP_PTO, x, y),
-                     nm->mkConst(true))
+                     {nm->mkNode(Kind::SEP_PTO, {x, y}),
+                     nm->mkConst(true)})
             .negate();
       }
     }

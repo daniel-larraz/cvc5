@@ -161,7 +161,7 @@ inline Node RewriteRule<SubEliminate>::apply(TNode node)
   Node negb = NodeManager::mkNode(Kind::BITVECTOR_NEG, node[1]);
   Node a = node[0];
 
-  return NodeManager::mkNode(Kind::BITVECTOR_ADD, a, negb);
+  return negb.getNodeManager()->mkNode(Kind::BITVECTOR_ADD, {a, negb});
 }
 
 template <>
@@ -310,20 +310,20 @@ inline Node RewriteRule<SdivEliminate>::apply(TNode node)
   unsigned size = utils::getSize(a);
 
   Node one = utils::mkConst(nm, 1, 1);
-  Node a_lt_0 = NodeManager::mkNode(
-      Kind::EQUAL, utils::mkExtract(a, size - 1, size - 1), one);
-  Node b_lt_0 = NodeManager::mkNode(
-      Kind::EQUAL, utils::mkExtract(b, size - 1, size - 1), one);
-  Node abs_a = NodeManager::mkNode(
-      Kind::ITE, a_lt_0, NodeManager::mkNode(Kind::BITVECTOR_NEG, a), a);
-  Node abs_b = NodeManager::mkNode(
-      Kind::ITE, b_lt_0, NodeManager::mkNode(Kind::BITVECTOR_NEG, b), b);
+  Node a_lt_0 = nm->mkNode(
+      Kind::EQUAL, {utils::mkExtract(a, size - 1, size - 1), one});
+  Node b_lt_0 = nm->mkNode(
+      Kind::EQUAL, {utils::mkExtract(b, size - 1, size - 1), one});
+  Node abs_a = nm->mkNode(
+      Kind::ITE, {TNode(a_lt_0), TNode(NodeManager::mkNode(Kind::BITVECTOR_NEG, a)), a});
+  Node abs_b = nm->mkNode(
+      Kind::ITE, {TNode(b_lt_0), TNode(NodeManager::mkNode(Kind::BITVECTOR_NEG, b)), b});
 
-  Node a_udiv_b = NodeManager::mkNode(Kind::BITVECTOR_UDIV, abs_a, abs_b);
+  Node a_udiv_b = nm->mkNode(Kind::BITVECTOR_UDIV, {abs_a, abs_b});
   Node neg_result = NodeManager::mkNode(Kind::BITVECTOR_NEG, a_udiv_b);
 
-  Node condition = NodeManager::mkNode(Kind::XOR, a_lt_0, b_lt_0);
-  Node result = NodeManager::mkNode(Kind::ITE, condition, neg_result, a_udiv_b);
+  Node condition = nm->mkNode(Kind::XOR, {a_lt_0, b_lt_0});
+  Node result = nm->mkNode(Kind::ITE, {condition, neg_result, a_udiv_b});
 
   return result;
 }
@@ -345,19 +345,19 @@ inline Node RewriteRule<SremEliminate>::apply(TNode node)
   unsigned size = utils::getSize(a);
 
   Node one = utils::mkConst(nm, 1, 1);
-  Node a_lt_0 = NodeManager::mkNode(
-      Kind::EQUAL, utils::mkExtract(a, size - 1, size - 1), one);
-  Node b_lt_0 = NodeManager::mkNode(
-      Kind::EQUAL, utils::mkExtract(b, size - 1, size - 1), one);
-  Node abs_a = NodeManager::mkNode(
-      Kind::ITE, a_lt_0, NodeManager::mkNode(Kind::BITVECTOR_NEG, a), a);
-  Node abs_b = NodeManager::mkNode(
-      Kind::ITE, b_lt_0, NodeManager::mkNode(Kind::BITVECTOR_NEG, b), b);
+  Node a_lt_0 = nm->mkNode(
+      Kind::EQUAL, {utils::mkExtract(a, size - 1, size - 1), one});
+  Node b_lt_0 = nm->mkNode(
+      Kind::EQUAL, {utils::mkExtract(b, size - 1, size - 1), one});
+  Node abs_a = nm->mkNode(
+      Kind::ITE, {TNode(a_lt_0), TNode(NodeManager::mkNode(Kind::BITVECTOR_NEG, a)), a});
+  Node abs_b = nm->mkNode(
+      Kind::ITE, {TNode(b_lt_0), TNode(NodeManager::mkNode(Kind::BITVECTOR_NEG, b)), b});
 
-  Node a_urem_b = NodeManager::mkNode(Kind::BITVECTOR_UREM, abs_a, abs_b);
+  Node a_urem_b = nm->mkNode(Kind::BITVECTOR_UREM, {abs_a, abs_b});
   Node neg_result = NodeManager::mkNode(Kind::BITVECTOR_NEG, a_urem_b);
 
-  Node result = NodeManager::mkNode(Kind::ITE, a_lt_0, neg_result, a_urem_b);
+  Node result = nm->mkNode(Kind::ITE, {a_lt_0, neg_result, a_urem_b});
 
   return result;
 }
@@ -405,7 +405,7 @@ inline Node RewriteRule<SmodEliminate>::apply(TNode node)
   Node abs_t = msb_t.eqNode(bit0).iteNode(
       t, NodeManager::mkNode(Kind::BITVECTOR_NEG, t));
 
-  Node u = NodeManager::mkNode(Kind::BITVECTOR_UREM, abs_s, abs_t);
+  Node u = nm->mkNode(Kind::BITVECTOR_UREM, {abs_s, abs_t});
   Node neg_u = NodeManager::mkNode(Kind::BITVECTOR_NEG, u);
 
   Node cond0 = u.eqNode(utils::mkConst(nm, size, 0));
@@ -499,10 +499,10 @@ inline Node RewriteRule<NegoEliminate>::apply(TNode node)
   Trace("bv-rewrite") << "RewriteRule<NegoEliminate>(" << node << ")"
                       << std::endl;
   NodeManager* nm = node.getNodeManager();
-  return NodeManager::mkNode(
+  return nm->mkNode(
       Kind::EQUAL,
-      node[0],
-      utils::mkMinSigned(nm, node[0].getType().getBitVectorSize()));
+      {node[0],
+      TNode(utils::mkMinSigned(nm, node[0].getType().getBitVectorSize()))});
 }
 
 template <>
@@ -521,13 +521,13 @@ inline Node RewriteRule<UaddoEliminate>::apply(TNode node)
   Node bvZero = utils::mkZero(nm, 1);
   Node bvOne = utils::mkOne(nm, 1);
 
-  Node add = NodeManager::mkNode(Kind::BITVECTOR_ADD,
-                                 utils::mkConcat(bvZero, node[0]),
-                                 utils::mkConcat(bvZero, node[1]));
+  Node add = nm->mkNode(Kind::BITVECTOR_ADD,
+                                 {utils::mkConcat(bvZero, node[0]),
+                                 utils::mkConcat(bvZero, node[1])});
 
   uint32_t size = add.getType().getBitVectorSize();
-  return NodeManager::mkNode(
-      Kind::EQUAL, utils::mkExtract(add, size - 1, size - 1), bvOne);
+  return nm->mkNode(
+      Kind::EQUAL, {utils::mkExtract(add, size - 1, size - 1), bvOne});
 }
 
 template <>
@@ -554,25 +554,25 @@ inline Node RewriteRule<SaddoEliminate>::apply(TNode node)
       nm->mkConst<BitVectorExtract>(BitVectorExtract(size - 1, size - 1));
   Node sign0 = nm->mkNode(extOp, node[0]);
   Node sign1 = nm->mkNode(extOp, node[1]);
-  Node add = NodeManager::mkNode(Kind::BITVECTOR_ADD, node[0], node[1]);
+  Node add = nm->mkNode(Kind::BITVECTOR_ADD, {node[0], node[1]});
   Node signa = nm->mkNode(extOp, add);
 
   Node both_neg =
-      NodeManager::mkNode(Kind::AND,
-                          NodeManager::mkNode(Kind::EQUAL, sign0, one),
-                          NodeManager::mkNode(Kind::EQUAL, sign1, one));
+      nm->mkNode(Kind::AND,
+                          {nm->mkNode(Kind::EQUAL, {sign0, one}),
+                          nm->mkNode(Kind::EQUAL, {sign1, one})});
   Node both_pos =
-      NodeManager::mkNode(Kind::AND,
-                          NodeManager::mkNode(Kind::EQUAL, sign0, zero),
-                          NodeManager::mkNode(Kind::EQUAL, sign1, zero));
+      nm->mkNode(Kind::AND,
+                          {nm->mkNode(Kind::EQUAL, {sign0, zero}),
+                          nm->mkNode(Kind::EQUAL, {sign1, zero})});
 
-  Node result_neg = NodeManager::mkNode(Kind::EQUAL, signa, one);
-  Node result_pos = NodeManager::mkNode(Kind::EQUAL, signa, zero);
+  Node result_neg = nm->mkNode(Kind::EQUAL, {signa, one});
+  Node result_pos = nm->mkNode(Kind::EQUAL, {signa, zero});
 
-  return NodeManager::mkNode(
+  return nm->mkNode(
       Kind::OR,
-      NodeManager::mkNode(Kind::AND, both_neg, result_pos),
-      NodeManager::mkNode(Kind::AND, both_pos, result_neg));
+      {nm->mkNode(Kind::AND, {both_neg, result_pos}),
+      nm->mkNode(Kind::AND, {both_pos, result_neg})});
 }
 
 template <>
@@ -608,10 +608,10 @@ inline Node RewriteRule<UmuloEliminate>::apply(TNode node)
   for (size_t i = 1; i < size; ++i)
   {
     tmp.push_back(
-        nm->mkNode(Kind::BITVECTOR_AND, utils::mkExtract(node[1], i, i), uppc));
+        nm->mkNode(Kind::BITVECTOR_AND, {utils::mkExtract(node[1], i, i), uppc}));
     uppc = nm->mkNode(Kind::BITVECTOR_OR,
-                      utils::mkExtract(node[0], size - 1 - i, size - 1 - i),
-                      uppc);
+                      {utils::mkExtract(node[0], size - 1 - i, size - 1 - i),
+                      uppc});
   }
   Node bvZero = utils::mkZero(nm, 1);
   Node zext_t1 = utils::mkConcat(bvZero, node[0]);

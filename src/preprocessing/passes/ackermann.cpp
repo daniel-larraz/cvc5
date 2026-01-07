@@ -65,7 +65,7 @@ void addLemmaForPair(TNode args1,
 
     for (unsigned i = 0, n = args1.getNumChildren(); i < n; ++i)
     {
-      eqs[i] = nm->mkNode(Kind::EQUAL, args1[i], args2[i]);
+      eqs[i] = nm->mkNode(Kind::EQUAL, {args1[i], args2[i]});
     }
     if (eqs.size() >= 2)
     {
@@ -83,11 +83,11 @@ void addLemmaForPair(TNode args1,
     Assert(args1.getNumChildren() == 2);
     Assert(args2.getNumChildren() == 2);
     args_eq = nm->mkNode(Kind::AND,
-                         nm->mkNode(Kind::EQUAL, args1[0], args2[0]),
-                         nm->mkNode(Kind::EQUAL, args1[1], args2[1]));
+                         {nm->mkNode(Kind::EQUAL, {args1[0], args2[0]}),
+                         nm->mkNode(Kind::EQUAL, {args1[1], args2[1]})});
   }
   Node func_eq = nm->mkNode(Kind::EQUAL, args1, args2);
-  Node lemma = nm->mkNode(Kind::IMPLIES, args_eq, func_eq);
+  Node lemma = nm->mkNode(Kind::IMPLIES, {args_eq, func_eq});
   assertionsToPreprocess->push_back(
       lemma, false, nullptr, TrustId::PREPROCESS_ACKERMANN_LEMMA);
 }

@@ -285,7 +285,7 @@ Node TheoryArrays::solveWrite(TNode term, bool solve1, bool solve2, bool ppCheck
       tmp = nm->mkNode(Kind::SELECT, l, right[1]);
       nb << tmp.eqNode(right[2]);
       tmp = nm->mkNode(Kind::SELECT, right[0], right[1]);
-      l = nm->mkNode(Kind::STORE, l, right[1], tmp);
+      l = nm->mkNode(Kind::STORE, {l, right[1], tmp});
       right = right[0];
     }
     nb << solveWrite(l.eqNode(right), solve1, solve2, ppCheck);
@@ -342,8 +342,8 @@ TrustNode TheoryArrays::ppRewrite(TNode term, std::vector<SkolemLemma>& lems)
       if (term[0].getKind() == Kind::STORE && (term[1] < term[0][1])
           && ppDisequal(term[1], term[0][1]))
       {
-        Node inner = nm->mkNode(Kind::STORE, term[0][0], term[1], term[2]);
-        Node outer = nm->mkNode(Kind::STORE, inner, term[0][1], term[0][2]);
+        Node inner = nm->mkNode(Kind::STORE, {term[0][0], term[1], term[2]});
+        Node outer = nm->mkNode(Kind::STORE, {inner, term[0][1], term[0][2]});
         ret = outer;
       }
       break;
@@ -1158,7 +1158,7 @@ bool TheoryArrays::collectModelValues(TheoryModel* m,
     vector<Node>& reads = selects[nrep];
     for (unsigned j = 0; j < reads.size(); ++j)
     {
-      rep = nm->mkNode(Kind::STORE, rep, reads[j][1], reads[j]);
+      rep = nm->mkNode(Kind::STORE, {rep, reads[j][1], reads[j]});
     }
     if (!m->assertEquality(n, rep, true))
     {

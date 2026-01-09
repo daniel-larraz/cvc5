@@ -389,7 +389,7 @@ Node CegisCoreConnective::Component::getSygusSolution(
     }
     else
     {
-      sol = NodeManager::mkNode(Kind::APPLY_CONSTRUCTOR, d_scons, s, sol);
+      sol = NodeManager::mkNode(Kind::APPLY_CONSTRUCTOR, {d_scons, s, sol});
     }
   }
   return sol;

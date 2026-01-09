@@ -214,7 +214,7 @@ SkolemCache::normalizeStringSkolem(StringSkolemId id, Node a, Node b)
   {
     // SK_FIRST_CTN_PRE(x,y) ---> SK_PREFIX(x, indexof(x,y,0))
     id = SK_PREFIX;
-    b = d_nm->mkNode(Kind::STRING_INDEXOF, a, b, d_zero);
+    b = d_nm->mkNode(Kind::STRING_INDEXOF, {a, b, d_zero});
   }
 
   if (id == SK_ID_V_UNIFIED_SPT || id == SK_ID_V_UNIFIED_SPT_REV)
@@ -229,7 +229,7 @@ SkolemCache::normalizeStringSkolem(StringSkolemId id, Node a, Node b)
     id = SK_PURIFY;
     // SK_ID_V_UNIFIED_SPT(x,y) --->
     //   ite(len(x) >= len(y), substr(x,0,str.len(y)), substr(y,0,str.len(x))
-    a = d_nm->mkNode(Kind::ITE, d_nm->mkNode(Kind::GEQ, la, lb), ta, tb);
+    a = d_nm->mkNode(Kind::ITE, {d_nm->mkNode(Kind::GEQ, la, lb), ta, tb});
     b = Node::null();
   }
 
@@ -251,19 +251,19 @@ SkolemCache::normalizeStringSkolem(StringSkolemId id, Node a, Node b)
   else if (id == RE_FIRST_MATCH_PRE)
   {
     id = SK_PURIFY;
-    Node idof = d_nm->mkNode(Kind::STRING_INDEXOF_RE, a, b, d_zero);
+    Node idof = d_nm->mkNode(Kind::STRING_INDEXOF_RE, {a, b, d_zero});
     a = utils::mkPrefix(a, idof);
     b = Node::null();
   }
   else if (id == RE_FIRST_MATCH)
   {
     id = SK_PURIFY;
-    Node idof = d_nm->mkNode(Kind::STRING_INDEXOF_RE, a, b, d_zero);
+    Node idof = d_nm->mkNode(Kind::STRING_INDEXOF_RE, {a, b, d_zero});
     Node occ = mkSkolemFun(d_nm, SkolemId::STRINGS_OCCUR_INDEX_RE, a, b);
     Node one = d_nm->mkConstInt(Rational(1));
     Node occ1 = d_nm->mkNode(Kind::APPLY_UF, occ, one);
-    a = d_nm->mkNode(
-        Kind::STRING_SUBSTR, a, idof, d_nm->mkNode(Kind::SUB, occ1, idof));
+    a = d_nm->mkNode(Kind::STRING_SUBSTR,
+                     {a, idof, d_nm->mkNode(Kind::SUB, occ1, idof)});
     b = Node::null();
   }
   else if (id == RE_FIRST_MATCH_POST)

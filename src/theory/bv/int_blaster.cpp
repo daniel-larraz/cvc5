@@ -355,9 +355,9 @@ Node IntBlaster::translateWithChildren(
           d_nm->mkNode(Kind::INTS_DIVISION_TOTAL, translated_children);
       returnNode = d_nm->mkNode(
           Kind::ITE,
-          d_nm->mkNode(Kind::EQUAL, translated_children[1], d_zero),
-          d_nm->mkNode(Kind::SUB, pow2BvSize, d_one),
-          divNode);
+          {d_nm->mkNode(Kind::EQUAL, translated_children[1], d_zero),
+           d_nm->mkNode(Kind::SUB, pow2BvSize, d_one),
+           divNode});
       break;
     }
     case Kind::BITVECTOR_UREM:
@@ -367,9 +367,9 @@ Node IntBlaster::translateWithChildren(
           d_nm->mkNode(Kind::INTS_MODULUS_TOTAL, translated_children);
       returnNode = d_nm->mkNode(
           Kind::ITE,
-          d_nm->mkNode(Kind::EQUAL, translated_children[1], d_zero),
-          translated_children[0],
-          modNode);
+          {d_nm->mkNode(Kind::EQUAL, translated_children[1], d_zero),
+           translated_children[0],
+           modNode});
       break;
     }
     case Kind::BITVECTOR_NOT:
@@ -467,7 +467,7 @@ Node IntBlaster::translateWithChildren(
           translated_children[1]};
       Node elseNode =
           createBVNotNode(createShiftNode(children, bvsize, false), bvsize);
-      returnNode = d_nm->mkNode(Kind::ITE, condition, thenNode, elseNode);
+      returnNode = d_nm->mkNode(Kind::ITE, {condition, thenNode, elseNode});
       break;
     }
     case Kind::BITVECTOR_ITE:
@@ -475,7 +475,7 @@ Node IntBlaster::translateWithChildren(
       // Lifted to a boolean ite.
       Node cond = d_nm->mkNode(Kind::EQUAL, translated_children[0], d_one);
       returnNode = d_nm->mkNode(
-          Kind::ITE, cond, translated_children[1], translated_children[2]);
+          Kind::ITE, {cond, translated_children[1], translated_children[2]});
       break;
     }
     case Kind::BITVECTOR_ZERO_EXTEND:
@@ -551,10 +551,9 @@ Node IntBlaster::translateWithChildren(
     }
     case Kind::BITVECTOR_ULTBV:
     {
-      returnNode = d_nm->mkNode(Kind::ITE,
-                                d_nm->mkNode(Kind::LT, translated_children),
-                                d_one,
-                                d_zero);
+      returnNode = d_nm->mkNode(
+          Kind::ITE,
+          {d_nm->mkNode(Kind::LT, translated_children), d_one, d_zero});
       break;
     }
     case Kind::BITVECTOR_SLTBV:
@@ -562,21 +561,21 @@ Node IntBlaster::translateWithChildren(
       uint32_t bvsize = original[0].getType().getBitVectorSize();
       returnNode =
           d_nm->mkNode(Kind::ITE,
-                       d_nm->mkNode(Kind::LT,
-                                    uts(translated_children[0], bvsize),
-                                    uts(translated_children[1], bvsize)),
-                       d_one,
-                       d_zero);
+                       {d_nm->mkNode(Kind::LT,
+                                     uts(translated_children[0], bvsize),
+                                     uts(translated_children[1], bvsize)),
+                        d_one,
+                        d_zero});
       break;
     }
     case Kind::BITVECTOR_COMP:
     {
       returnNode = d_nm->mkNode(
           Kind::ITE,
-          d_nm->mkNode(
-              Kind::EQUAL, translated_children[0], translated_children[1]),
-          d_one,
-          d_zero);
+          {d_nm->mkNode(
+               Kind::EQUAL, translated_children[0], translated_children[1]),
+           d_one,
+           d_zero});
       break;
     }
     case Kind::BITVECTOR_UADDO:
@@ -710,7 +709,7 @@ Node IntBlaster::uts(Node x, uint32_t bvsize)
 {
   Node signedMin = pow2(bvsize - 1);
   Node msbOne = d_nm->mkNode(Kind::LT, x, signedMin);
-  Node ite = d_nm->mkNode(Kind::ITE, msbOne, d_zero, pow2(bvsize));
+  Node ite = d_nm->mkNode(Kind::ITE, {msbOne, d_zero, pow2(bvsize)});
   Node result = d_nm->mkNode(Kind::SUB, x, ite);
   return result;
 }
@@ -760,7 +759,7 @@ Node IntBlaster::createSignExtendNode(Node x, uint32_t bvsize, uint32_t amount)
       Node mul = d_nm->mkNode(Kind::MULT, left, pow2(bvsize));
       Node sum = d_nm->mkNode(Kind::ADD, mul, x);
       Node elseResult = sum;
-      Node ite = d_nm->mkNode(Kind::ITE, condition, thenResult, elseResult);
+      Node ite = d_nm->mkNode(Kind::ITE, {condition, thenResult, elseResult});
       returnNode = ite;
     }
   }
@@ -1017,10 +1016,11 @@ Node IntBlaster::createShiftNode(std::vector<Node> children,
     }
     ite = d_nm->mkNode(
         Kind::ITE,
-        d_nm->mkNode(
-            Kind::EQUAL, y, d_nm->mkConstInt(Rational(Integer(i), Integer(1)))),
-        body,
-        ite);
+        {d_nm->mkNode(Kind::EQUAL,
+                      y,
+                      d_nm->mkConstInt(Rational(Integer(i), Integer(1)))),
+         body,
+         ite});
   }
   return ite;
 }
@@ -1102,7 +1102,7 @@ Node IntBlaster::createBVAndNode(Node x,
   if (d_mode == options::SolveBVAsIntMode::IAND)
   {
     Node iAndOp = d_nm->mkConst(IntAnd(bvsize));
-    returnNode = d_nm->mkNode(Kind::IAND, iAndOp, x, y);
+    returnNode = d_nm->mkNode(Kind::IAND, {iAndOp, x, y});
   }
   else if (d_mode == options::SolveBVAsIntMode::BV)
   {
@@ -1126,7 +1126,7 @@ Node IntBlaster::createBVAndNode(Node x,
     // Enforce semantics over individual bits with iextract and ites
 
     Node iAndOp = d_nm->mkConst(IntAnd(bvsize));
-    Node iAnd = d_nm->mkNode(Kind::IAND, iAndOp, x, y);
+    Node iAnd = d_nm->mkNode(Kind::IAND, {iAndOp, x, y});
     // get a skolem so the IAND solver knows not to do work
     returnNode = d_nm->getSkolemManager()->mkPurifySkolem(iAnd);
     addRangeConstraint(returnNode, bvsize, lemmas);

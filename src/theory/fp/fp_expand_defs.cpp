@@ -32,14 +32,14 @@ Node FpExpandDefs::minMaxUF(TNode node)
   Assert(type.getKind() == Kind::FLOATINGPOINT_TYPE);
 
   return d_nm->mkNode(Kind::APPLY_UF,
-                      d_nm->getSkolemManager()->mkSkolemFunction(
-                          kind == Kind::FLOATINGPOINT_MIN
-                                  || kind == Kind::FLOATINGPOINT_MIN_TOTAL
-                              ? SkolemId::FP_MIN_ZERO
-                              : SkolemId::FP_MAX_ZERO,
-                          {d_nm->mkConst(SortToTerm(type))}),
-                      node[0],
-                      node[1]);
+                      {d_nm->getSkolemManager()->mkSkolemFunction(
+                           kind == Kind::FLOATINGPOINT_MIN
+                                   || kind == Kind::FLOATINGPOINT_MIN_TOTAL
+                               ? SkolemId::FP_MIN_ZERO
+                               : SkolemId::FP_MAX_ZERO,
+                           {d_nm->mkConst(SortToTerm(type))}),
+                       node[0],
+                       node[1]});
 }
 
 Node FpExpandDefs::toUbvSbvUF(TNode node)
@@ -53,13 +53,13 @@ Node FpExpandDefs::toUbvSbvUF(TNode node)
 
   return d_nm->mkNode(
       Kind::APPLY_UF,
-      d_nm->getSkolemManager()->mkSkolemFunction(
-          kind == Kind::FLOATINGPOINT_TO_SBV ? SkolemId::FP_TO_SBV
-                                             : SkolemId::FP_TO_UBV,
-          {d_nm->mkConst(SortToTerm(node[1].getType())),
-           d_nm->mkConst(SortToTerm(type))}),
-      node[0],
-      node[1]);
+      {d_nm->getSkolemManager()->mkSkolemFunction(
+           kind == Kind::FLOATINGPOINT_TO_SBV ? SkolemId::FP_TO_SBV
+                                              : SkolemId::FP_TO_UBV,
+           {d_nm->mkConst(SortToTerm(node[1].getType())),
+            d_nm->mkConst(SortToTerm(type))}),
+       node[0],
+       node[1]});
 }
 
 Node FpExpandDefs::toRealUF(TNode node)
@@ -84,31 +84,27 @@ Node FpExpandDefs::expandDefinition(Node node)
   Kind kind = node.getKind();
   if (kind == Kind::FLOATINGPOINT_MIN)
   {
-    res = d_nm->mkNode(
-        Kind::FLOATINGPOINT_MIN_TOTAL, node[0], node[1], minMaxUF(node));
+    res = d_nm->mkNode(Kind::FLOATINGPOINT_MIN_TOTAL,
+                       {node[0], node[1], minMaxUF(node)});
   }
   else if (kind == Kind::FLOATINGPOINT_MAX)
   {
-    res = d_nm->mkNode(
-        Kind::FLOATINGPOINT_MAX_TOTAL, node[0], node[1], minMaxUF(node));
+    res = d_nm->mkNode(Kind::FLOATINGPOINT_MAX_TOTAL,
+                       {node[0], node[1], minMaxUF(node)});
   }
   else if (kind == Kind::FLOATINGPOINT_TO_UBV)
   {
     res = d_nm->mkNode(  // Kind::FLOATINGPOINT_TO_UBV_TOTAL,
         d_nm->mkConst(FloatingPointToUBVTotal(
             node.getOperator().getConst<FloatingPointToUBV>())),
-        node[0],
-        node[1],
-        toUbvSbvUF(node));
+        {node[0], node[1], toUbvSbvUF(node)});
   }
   else if (kind == Kind::FLOATINGPOINT_TO_SBV)
   {
     res = d_nm->mkNode(  // Kind::FLOATINGPOINT_TO_SBV_TOTAL,
         d_nm->mkConst(FloatingPointToSBVTotal(
             node.getOperator().getConst<FloatingPointToSBV>())),
-        node[0],
-        node[1],
-        toUbvSbvUF(node));
+        {node[0], node[1], toUbvSbvUF(node)});
   }
   else if (kind == Kind::FLOATINGPOINT_TO_REAL)
   {

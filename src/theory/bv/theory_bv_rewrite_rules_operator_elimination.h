@@ -58,7 +58,7 @@ inline Node RewriteRule<UgtEliminate>::apply(TNode node)
                       << std::endl;
   TNode a = node[0];
   TNode b = node[1];
-  Node result = NodeManager::mkNode(Kind::BITVECTOR_ULT, b, a);
+  Node result = NodeManager::mkNode(Kind::BITVECTOR_ULT, {b, a});
   return result;
 }
 
@@ -323,7 +323,8 @@ inline Node RewriteRule<SdivEliminate>::apply(TNode node)
   Node neg_result = NodeManager::mkNode(Kind::BITVECTOR_NEG, a_udiv_b);
 
   Node condition = NodeManager::mkNode(Kind::XOR, a_lt_0, b_lt_0);
-  Node result = NodeManager::mkNode(Kind::ITE, condition, neg_result, a_udiv_b);
+  Node result =
+      NodeManager::mkNode(Kind::ITE, {condition, neg_result, a_udiv_b});
 
   return result;
 }
@@ -357,7 +358,7 @@ inline Node RewriteRule<SremEliminate>::apply(TNode node)
   Node a_urem_b = NodeManager::mkNode(Kind::BITVECTOR_UREM, abs_a, abs_b);
   Node neg_result = NodeManager::mkNode(Kind::BITVECTOR_NEG, a_urem_b);
 
-  Node result = NodeManager::mkNode(Kind::ITE, a_lt_0, neg_result, a_urem_b);
+  Node result = NodeManager::mkNode(Kind::ITE, {a_lt_0, neg_result, a_urem_b});
 
   return result;
 }

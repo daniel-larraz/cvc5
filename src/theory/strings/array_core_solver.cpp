@@ -83,7 +83,7 @@ void ArrayCoreSolver::checkNth(const std::vector<Node>& nthTerms)
       Node unit = utils::mkUnit(tn, nth);
       Node body1 = nm->mkNode(Kind::EQUAL, n, unit);
       Node body2 = nm->mkNode(Kind::EQUAL, n, Word::mkEmptyWord(n.getType()));
-      Node lem = nm->mkNode(Kind::ITE, cond, body1, body2);
+      Node lem = nm->mkNode(Kind::ITE, {cond, body1, body2});
       sendInference(exp, lem, InferenceId::STRINGS_ARRAY_NTH_EXTRACT);
     }
   }
@@ -140,7 +140,7 @@ void ArrayCoreSolver::checkUpdate(const std::vector<Node>& updateTerms)
           nm->mkNode(Kind::LT, n[1], nm->mkNode(Kind::STRING_LENGTH, n[0])));
       Node body1 = nm->mkNode(Kind::SEQ_NTH, n[2], nm->mkConstInt(Rational(0)));
       Node body2 = nm->mkNode(Kind::SEQ_NTH, n[0], n[1]);
-      Node right = nm->mkNode(Kind::ITE, cond, body1, body2);
+      Node right = nm->mkNode(Kind::ITE, {cond, body1, body2});
       Node lem = nm->mkNode(Kind::EQUAL, left, right);
 
       std::vector<Node> exp;
@@ -160,9 +160,9 @@ void ArrayCoreSolver::checkUpdate(const std::vector<Node>& updateTerms)
           Kind::OR,
           nm->mkNode(
               Kind::AND,
-              left.eqNode(nm->mkNode(Kind::SEQ_NTH, n[0], n[1])).notNode(),
-              n.eqNode(n[0]).negate(),
-              cond),
+              {left.eqNode(nm->mkNode(Kind::SEQ_NTH, n[0], n[1])).notNode(),
+               n.eqNode(n[0]).negate(),
+               cond}),
           n.eqNode(n[0]));
       sendInference(exp, lem, InferenceId::STRINGS_ARRAY_UPDATE_BOUND, true);
     }
@@ -194,11 +194,10 @@ void ArrayCoreSolver::checkUpdate(const std::vector<Node>& updateTerms)
             nm->mkNode(Kind::LT, j, nm->mkNode(Kind::STRING_LENGTH, n[0])));
         Node idxEq = i.eqNode(j);
         Node updateVal = nm->mkNode(Kind::SEQ_NTH, n[2], nm->mkConstInt(0));
-        Node iteNthInBounds = nm->mkNode(Kind::ITE,
-                                         i.eqNode(j),
-                                         updateVal,
-                                         nm->mkNode(Kind::SEQ_NTH, n[0], j));
-        Node rhs = nm->mkNode(Kind::ITE, nthInBounds, iteNthInBounds, nth);
+        Node iteNthInBounds = nm->mkNode(
+            Kind::ITE,
+            {i.eqNode(j), updateVal, nm->mkNode(Kind::SEQ_NTH, n[0], j)});
+        Node rhs = nm->mkNode(Kind::ITE, {nthInBounds, iteNthInBounds, nth});
         Node lem = nth.eqNode(rhs);
 
         std::vector<Node> exp;

@@ -93,14 +93,14 @@ Node IAndUtils::createITEFromTable(
       // append the current value to the ite.
       ite = NodeManager::mkNode(
           Kind::ITE,
-          NodeManager::mkNode(
-              Kind::AND,
-              NodeManager::mkNode(
-                  Kind::EQUAL, x, d_nm->mkConstInt(Rational(i))),
-              NodeManager::mkNode(
-                  Kind::EQUAL, y, d_nm->mkConstInt(Rational(j)))),
-          d_nm->mkConstInt(Rational(table.at(std::make_pair(i, j)))),
-          ite);
+          {NodeManager::mkNode(
+               Kind::AND,
+               NodeManager::mkNode(
+                   Kind::EQUAL, x, d_nm->mkConstInt(Rational(i))),
+               NodeManager::mkNode(
+                   Kind::EQUAL, y, d_nm->mkConstInt(Rational(j)))),
+           d_nm->mkConstInt(Rational(table.at(std::make_pair(i, j)))),
+           ite});
     }
   }
   return ite;

@@ -763,11 +763,11 @@ Node CoreSolver::getConclusion(NodeManager* nm,
     // we can assume its length is greater than zero
     Node emp = Word::mkEmptyWord(sk.getType());
     conc = nm->mkNode(Kind::AND,
-                      conc,
-                      sk.eqNode(emp).negate(),
-                      nm->mkNode(Kind::GT,
-                                 nm->mkNode(Kind::STRING_LENGTH, sk),
-                                 nm->mkConstInt(Rational(0))));
+                      {conc,
+                       sk.eqNode(emp).negate(),
+                       nm->mkNode(Kind::GT,
+                                  nm->mkNode(Kind::STRING_LENGTH, sk),
+                                  nm->mkConstInt(Rational(0)))});
   }
   else if (rule == ProofRule::CONCAT_CSPLIT)
   {
@@ -863,8 +863,8 @@ Node CoreSolver::getExtensionalityConclusion(NodeManager* nm,
   {
     // substring of length 1
     Node one = nm->mkConstInt(Rational(1));
-    ss1 = nm->mkNode(Kind::STRING_SUBSTR, a, k, one);
-    ss2 = nm->mkNode(Kind::STRING_SUBSTR, b, k, one);
+    ss1 = nm->mkNode(Kind::STRING_SUBSTR, {a, k, one});
+    ss2 = nm->mkNode(Kind::STRING_SUBSTR, {b, k, one});
   }
   else
   {

@@ -496,7 +496,7 @@ Node mkNamedQuant(Kind k, Node bvl, Node body, const std::string& name)
   Node attr = nm->mkConst(String("qid"));
   Node ip = nm->mkNode(Kind::INST_ATTRIBUTE, attr, v);
   Node ipl = nm->mkNode(Kind::INST_PATTERN_LIST, ip);
-  return nm->mkNode(k, bvl, body, ipl);
+  return nm->mkNode(k, {bvl, body, ipl});
 }
 
 }  // namespace quantifiers

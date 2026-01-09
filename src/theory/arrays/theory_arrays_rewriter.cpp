@@ -156,7 +156,7 @@ Node TheoryArraysRewriter::computeNormalizeOp(const Node& n,
         Node rewTerm = ret;
         if (k == Kind::STORE)
         {
-          rewTerm = nm->mkNode(Kind::STORE, rewTerm, n[1], n[2]);
+          rewTerm = nm->mkNode(Kind::STORE, {rewTerm, n[1], n[2]});
         }
         Trace("array-norm-op-rcons")
             << "- rewrite " << currTerm << " -> " << rewTerm << std::endl;
@@ -208,8 +208,8 @@ Node TheoryArraysRewriter::computeNormalizeOp(const Node& n,
         Node rewTerm = currTerm;
         if (k == Kind::STORE)
         {
-          rewTerm =
-              nm->mkNode(Kind::STORE, rewTerm, prevTerm[0][1], prevTerm[0][2]);
+          rewTerm = nm->mkNode(Kind::STORE,
+                               {rewTerm, prevTerm[0][1], prevTerm[0][2]});
         }
         Trace("array-norm-op-rcons")
             << "- rewrite " << prevTerm << " -> " << rewTerm << std::endl;
@@ -232,11 +232,11 @@ Node TheoryArraysRewriter::computeNormalizeOp(const Node& n,
   Node ret;
   if (k == Kind::STORE)
   {
-    ret = nm->mkNode(Kind::STORE, arr, n[1], n[2]);
+    ret = nm->mkNode(Kind::STORE, {arr, n[1], n[2]});
     // add back those we traversed over
     while (!indices.empty())
     {
-      ret = nm->mkNode(Kind::STORE, ret, indices.back(), elems.back());
+      ret = nm->mkNode(Kind::STORE, {ret, indices.back(), elems.back()});
       indices.pop_back();
       elems.pop_back();
     }
@@ -473,7 +473,7 @@ Node TheoryArraysRewriter::normalizeConstant(NodeManager* nm,
   {
     if (itNew != it_end && (indices.empty() || (*itNew) < indices.back()))
     {
-      n = nm->mkNode(Kind::STORE, n, (*itNew), defaultValue);
+      n = nm->mkNode(Kind::STORE, {n, (*itNew), defaultValue});
       ++itNew;
     }
     else if (itNew == it_end || indices.back() < (*itNew))

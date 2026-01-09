@@ -148,7 +148,7 @@ inline Node RewriteRule<BvIteEqualCond>::apply(TNode node)
   Node e1 = node[2].getKind() == Kind::BITVECTOR_ITE && node[0] == node[2][0]
                 ? node[2][2]
                 : node[2];
-  return NodeManager::mkNode(Kind::BITVECTOR_ITE, node[0], t0, e1);
+  return NodeManager::mkNode(Kind::BITVECTOR_ITE, {node[0], t0, e1});
 }
 
 /* -------------------------------------------------------------------------- */
@@ -176,7 +176,7 @@ inline Node RewriteRule<BvIteMergeThenIf>::apply(TNode node)
       NodeManager::mkNode(Kind::BITVECTOR_AND,
                           node[0],
                           NodeManager::mkNode(Kind::BITVECTOR_NOT, node[1][0]));
-  return NodeManager::mkNode(Kind::BITVECTOR_ITE, cond, node[1][2], node[2]);
+  return NodeManager::mkNode(Kind::BITVECTOR_ITE, {cond, node[1][2], node[2]});
 }
 
 /* -------------------------------------------------------------------------- */
@@ -201,7 +201,7 @@ inline Node RewriteRule<BvIteMergeElseIf>::apply(TNode node)
                       << std::endl;
   Assert(node[1].getKind() == Kind::BITVECTOR_ITE);
   Node cond = NodeManager::mkNode(Kind::BITVECTOR_AND, node[0], node[1][0]);
-  return NodeManager::mkNode(Kind::BITVECTOR_ITE, cond, node[1][1], node[2]);
+  return NodeManager::mkNode(Kind::BITVECTOR_ITE, {cond, node[1][1], node[2]});
 }
 
 /* -------------------------------------------------------------------------- */
@@ -229,7 +229,7 @@ inline Node RewriteRule<BvIteMergeThenElse>::apply(TNode node)
       NodeManager::mkNode(Kind::BITVECTOR_AND,
                           NodeManager::mkNode(Kind::BITVECTOR_NOT, node[0]),
                           NodeManager::mkNode(Kind::BITVECTOR_NOT, node[2][0]));
-  return NodeManager::mkNode(Kind::BITVECTOR_ITE, cond, node[2][2], node[1]);
+  return NodeManager::mkNode(Kind::BITVECTOR_ITE, {cond, node[2][2], node[1]});
 }
 
 /* -------------------------------------------------------------------------- */
@@ -257,7 +257,7 @@ inline Node RewriteRule<BvIteMergeElseElse>::apply(TNode node)
       NodeManager::mkNode(Kind::BITVECTOR_AND,
                           NodeManager::mkNode(Kind::BITVECTOR_NOT, node[0]),
                           node[2][0]);
-  return NodeManager::mkNode(Kind::BITVECTOR_ITE, cond, node[2][1], node[1]);
+  return NodeManager::mkNode(Kind::BITVECTOR_ITE, {cond, node[2][1], node[1]});
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1709,7 +1709,7 @@ inline Node RewriteRule<MultSlice>::apply(TNode node)
       Kind::BITVECTOR_CONCAT,
       NodeManager::mkNode(Kind::BITVECTOR_MULT, top_a, bottom_b),
       zeros);
-  return NodeManager::mkNode(Kind::BITVECTOR_ADD, term1, term2, term3);
+  return NodeManager::mkNode(Kind::BITVECTOR_ADD, {term1, term2, term3});
 }
 
 /* -------------------------------------------------------------------------- */

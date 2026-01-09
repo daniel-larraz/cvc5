@@ -411,8 +411,8 @@ PreprocessingPassResult HoElim::applyInternal(
       Node x = NodeManager::mkBoundVar("x", uf);
       Node y = NodeManager::mkBoundVar("y", uf);
       Node z = NodeManager::mkBoundVar("z", ut);
-      Node eq = nm->mkNode(Kind::APPLY_UF, h, x, z)
-                    .eqNode(nm->mkNode(Kind::APPLY_UF, h, y, z));
+      Node eq = nm->mkNode(Kind::APPLY_UF, {h, x, z})
+                    .eqNode(nm->mkNode(Kind::APPLY_UF, {h, y, z}));
       Node antec =
           nm->mkNode(Kind::FORALL, nm->mkNode(Kind::BOUND_VAR_LIST, z), eq);
       Node conc = x.eqNode(y);
@@ -431,18 +431,19 @@ PreprocessingPassResult HoElim::applyInternal(
         Node v = NodeManager::mkBoundVar("v", uf);
         Node i = NodeManager::mkBoundVar("i", ut);
         Node ii = NodeManager::mkBoundVar("ii", ut);
-        Node huii = nm->mkNode(Kind::APPLY_UF, h, u, ii);
+        Node huii = nm->mkNode(Kind::APPLY_UF, {h, u, ii});
         Node e = NodeManager::mkBoundVar("e", huii.getType());
         Node store = nm->mkNode(
             Kind::FORALL,
-            nm->mkNode(Kind::BOUND_VAR_LIST, u, e, i),
-            nm->mkNode(Kind::EXISTS,
-                       nm->mkNode(Kind::BOUND_VAR_LIST, v),
-                       nm->mkNode(Kind::FORALL,
-                                  nm->mkNode(Kind::BOUND_VAR_LIST, ii),
-                                  nm->mkNode(Kind::APPLY_UF, h, v, ii)
-                                      .eqNode(nm->mkNode(
-                                          Kind::ITE, ii.eqNode(i), e, huii)))));
+            nm->mkNode(Kind::BOUND_VAR_LIST, {u, e, i}),
+            nm->mkNode(
+                Kind::EXISTS,
+                nm->mkNode(Kind::BOUND_VAR_LIST, v),
+                nm->mkNode(Kind::FORALL,
+                           nm->mkNode(Kind::BOUND_VAR_LIST, ii),
+                           nm->mkNode(Kind::APPLY_UF, {h, v, ii})
+                               .eqNode(nm->mkNode(Kind::ITE,
+                                                  {ii.eqNode(i), e, huii})))));
         axioms.push_back(store);
         Trace("ho-elim-ax") << "...store axiom : " << store << std::endl;
       }
@@ -458,14 +459,14 @@ PreprocessingPassResult HoElim::applyInternal(
       Node e = NodeManager::mkBoundVar("e", huii.getType());
       Node store = nm->mkNode(
           Kind::FORALL,
-          nm->mkNode(Kind::BOUND_VAR_LIST, u, e, i),
+          nm->mkNode(Kind::BOUND_VAR_LIST, {u, e, i}),
           nm->mkNode(Kind::EXISTS,
                      nm->mkNode(Kind::BOUND_VAR_LIST, v),
                      nm->mkNode(Kind::FORALL,
                                 nm->mkNode(Kind::BOUND_VAR_LIST, ii),
                                 nm->mkNode(Kind::HO_APPLY, v, ii)
                                     .eqNode(nm->mkNode(
-                                        Kind::ITE, ii.eqNode(i), e, huii)))));
+                                        Kind::ITE, {ii.eqNode(i), e, huii})))));
       axioms.push_back(store);
       Trace("ho-elim-ax") << "...store (ho_apply) axiom : " << store
                           << std::endl;

@@ -379,7 +379,7 @@ void PseudoBooleanProcessor::learnGeqSub(Node geq)
     Node xGeq1 = mkGeqOne(nm, x);
     Node yGeq1 = mkGeqOne(nm, y);
     Node zGeq1 = mkGeqOne(nm, z);
-    Node dis = nm->mkNode(Kind::OR, zGeq1.notNode(), xGeq1, yGeq1);
+    Node dis = nm->mkNode(Kind::OR, {zGeq1.notNode(), xGeq1, yGeq1});
     addSub(geq, dis);
   }
 }

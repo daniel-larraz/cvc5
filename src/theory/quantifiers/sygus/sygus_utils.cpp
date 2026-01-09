@@ -72,7 +72,7 @@ Node SygusUtils::mkSygusConjecture(NodeManager* nm,
   ipls.insert(ipls.end(), iattrs.begin(), iattrs.end());
   Node ipl = nm->mkNode(Kind::INST_PATTERN_LIST, ipls);
   Node bvl = nm->mkNode(Kind::BOUND_VAR_LIST, fs);
-  return nm->mkNode(Kind::FORALL, bvl, conj, ipl);
+  return nm->mkNode(Kind::FORALL, {bvl, conj, ipl});
 }
 
 Node SygusUtils::mkSygusConjecture(NodeManager* nm,

@@ -239,7 +239,7 @@ Node AletheNodeConverter::postConvert(Node n)
       }
       TypeNode fType = d_nm->mkFunctionType(childrenTypes, n.getType());
       Node choiceOp = mkInternalSymbol("choice", fType);
-      Node converted = d_nm->mkNode(Kind::APPLY_UF, choiceOp, n[0], n[1]);
+      Node converted = d_nm->mkNode(Kind::APPLY_UF, {choiceOp, n[0], n[1]});
       Trace("alethe-conv") << ".. converted to choice: " << converted << "\n";
       return converted;
     }

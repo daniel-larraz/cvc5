@@ -664,7 +664,7 @@ bool NlModel::simpleCheckModelLit(Node lit)
         Assert(a.isConst());
         int asgn = a.getConst<Rational>().sgn();
         Assert(asgn != 0);
-        Node t = nm->mkNode(Kind::MULT, a, v, v);
+        Node t = nm->mkNode(Kind::MULT, {a, v, v});
         Node b = d_zero;
         it = v_b.find(v);
         if (it != v_b.end())

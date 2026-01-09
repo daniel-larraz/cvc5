@@ -1203,7 +1203,7 @@ void TheorySetsPrivate::groupSameProjection(
   Node samePart = part_x.eqNode(part_y);
   Node part_x_is_B = part_x.eqNode(B);
   Node conclusion =
-      nm->mkNode(Kind::AND, sameProjection, samePart, part_x_is_B);
+      nm->mkNode(Kind::AND, {sameProjection, samePart, part_x_is_B});
   d_im.assertInference(
       conclusion, InferenceId::SETS_RELS_GROUP_SAME_PROJECTION, exp, 1);
 }
@@ -1244,7 +1244,7 @@ void TheorySetsPrivate::groupSamePart(Node n, Node B, Node x, Node y, Node part)
   part_y = registerAndAssertSkolemLemma(part_y);
   Node samePart = part_x.eqNode(part_y);
   Node part_x_is_B = part_x.eqNode(B);
-  Node conclusion = nm->mkNode(Kind::AND, member_y_B, samePart, part_x_is_B);
+  Node conclusion = nm->mkNode(Kind::AND, {member_y_B, samePart, part_x_is_B});
 
   d_im.assertInference(
       conclusion, InferenceId::SETS_RELS_GROUP_SAME_PART, exp, 1);

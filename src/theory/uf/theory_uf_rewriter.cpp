@@ -165,7 +165,7 @@ RewriteResponse TheoryUfRewriter::postRewrite(TNode node)
     Node ttm = nm->mkConstInt(Rational(Integer(2).pow(size)));
     Node ex = bv::utils::mkExtract(node[0], size - 1, size - 1);
     Node cond = nm->mkNode(Kind::EQUAL, ex, bv::utils::mkZero(nm, 1));
-    Node rite = nm->mkNode(Kind::ITE, cond, r, nm->mkNode(Kind::SUB, r, ttm));
+    Node rite = nm->mkNode(Kind::ITE, {cond, r, nm->mkNode(Kind::SUB, r, ttm)});
     return RewriteResponse(REWRITE_AGAIN_FULL, rite);
   }
   else if (k == Kind::DISTINCT)

@@ -679,7 +679,7 @@ Node BagsUtils::evaluateBagFilter(TNode n)
     Node multiplicity = nm->mkConstInt(count);
     Node bag = nm->mkNode(Kind::BAG_MAKE, e, multiplicity);
     Node pOfe = nm->mkNode(Kind::APPLY_UF, P, e);
-    Node ite = nm->mkNode(Kind::ITE, pOfe, bag, empty);
+    Node ite = nm->mkNode(Kind::ITE, {pOfe, bag, empty});
     bags.push_back(ite);
   }
   Node ret = computeDisjointUnion(bagType, bags);
@@ -712,7 +712,7 @@ Node BagsUtils::evaluateBagFold(TNode n)
     Assert(count.sgn() >= 0) << "negative multiplicity" << std::endl;
     while (!count.isZero())
     {
-      ret = NodeManager::mkNode(Kind::APPLY_UF, f, it->first, ret);
+      ret = NodeManager::mkNode(Kind::APPLY_UF, {f, it->first, ret});
       count = count - 1;
     }
     ++it;
@@ -770,7 +770,7 @@ Node BagsUtils::evaluateBagPartition(Rewriter* rewriter, TNode n)
     while (j != elements.end())
     {
       Node sameClass =
-          NodeManager::mkNode(Kind::APPLY_UF, r, i->first, j->first);
+          NodeManager::mkNode(Kind::APPLY_UF, {r, i->first, j->first});
       sameClass = rewriter->rewrite(sameClass);
       if (!sameClass.isConst())
       {

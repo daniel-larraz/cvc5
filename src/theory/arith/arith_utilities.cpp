@@ -357,7 +357,7 @@ Node eliminateBv2Nat(TNode node)
                    nm->mkNode(nm->mkConst(BitVectorExtract(bit, bit)), node[0]),
                    bvone);
     children.push_back(
-        nm->mkNode(Kind::ITE, cond, nm->mkConstInt(Rational(i)), z));
+        nm->mkNode(Kind::ITE, {cond, nm->mkConstInt(Rational(i)), z}));
   }
   // avoid plus with one child
   return children.size() == 1 ? children[0] : nm->mkNode(Kind::ADD, children);
@@ -379,7 +379,7 @@ Node eliminateInt2Bv(TNode node)
         nm->mkNode(
             Kind::INTS_MODULUS_TOTAL, node[0], nm->mkConstInt(Rational(i))),
         nm->mkConstInt(Rational(i, 2)));
-    v.push_back(nm->mkNode(Kind::ITE, cond, bvone, bvzero));
+    v.push_back(nm->mkNode(Kind::ITE, {cond, bvone, bvzero}));
     i *= 2;
   }
   if (v.size() == 1)

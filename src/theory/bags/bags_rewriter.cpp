@@ -564,7 +564,7 @@ BagsRewriteResponse BagsRewriter::postRewriteFilter(const TNode& n) const
       // (bag.filter p (bag x y)) = (ite (p x) (bag x y) (as bag.empty (Bag T)))
       Node empty = d_nm->mkConst(EmptyBag(t));
       Node pOfe = d_nm->mkNode(Kind::APPLY_UF, P, A[0]);
-      Node ret = d_nm->mkNode(Kind::ITE, pOfe, A, empty);
+      Node ret = d_nm->mkNode(Kind::ITE, {pOfe, A, empty});
       return BagsRewriteResponse(ret, Rewrite::FILTER_BAG_MAKE);
     }
 
@@ -691,8 +691,8 @@ BagsRewriteResponse BagsRewriter::postRewriteFold(const TNode& n) const
       //       (bag.fold f (bag.fold f t A) B) where A < B to break symmetry
       Node A = bag[0] < bag[1] ? bag[0] : bag[1];
       Node B = bag[0] < bag[1] ? bag[1] : bag[0];
-      Node foldA = d_nm->mkNode(Kind::BAG_FOLD, f, t, A);
-      Node fold = d_nm->mkNode(Kind::BAG_FOLD, f, foldA, B);
+      Node foldA = d_nm->mkNode(Kind::BAG_FOLD, {f, t, A});
+      Node fold = d_nm->mkNode(Kind::BAG_FOLD, {f, foldA, B});
       return BagsRewriteResponse(fold, Rewrite::FOLD_UNION_DISJOINT);
     }
     default: return BagsRewriteResponse(n, Rewrite::NONE);

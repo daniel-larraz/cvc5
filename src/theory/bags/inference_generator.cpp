@@ -130,7 +130,7 @@ InferInfo InferenceGenerator::bagMake(Node n, Node e)
   Node count = getMultiplicityTerm(e, skolem);
   Node equalC = d_nm->mkNode(Kind::EQUAL, count, c);
   Node equalZero = d_nm->mkNode(Kind::EQUAL, count, d_zero);
-  Node ite = d_nm->mkNode(Kind::ITE, andNode, equalC, equalZero);
+  Node ite = d_nm->mkNode(Kind::ITE, {andNode, equalC, equalZero});
   inferInfo.d_conclusion = ite;
   return inferInfo;
 }
@@ -215,7 +215,7 @@ InferInfo InferenceGenerator::unionMax(Node n, Node e)
   Node count = getMultiplicityTerm(e, skolem);
 
   Node gt = d_nm->mkNode(Kind::GT, countA, countB);
-  Node max = d_nm->mkNode(Kind::ITE, gt, countA, countB);
+  Node max = d_nm->mkNode(Kind::ITE, {gt, countA, countB});
   Node equal = count.eqNode(max);
 
   inferInfo.d_conclusion = equal;
@@ -237,7 +237,7 @@ InferInfo InferenceGenerator::intersection(Node n, Node e)
   Node count = getMultiplicityTerm(e, skolem);
 
   Node lt = d_nm->mkNode(Kind::LT, countA, countB);
-  Node min = d_nm->mkNode(Kind::ITE, lt, countA, countB);
+  Node min = d_nm->mkNode(Kind::ITE, {lt, countA, countB});
   Node equal = count.eqNode(min);
   inferInfo.d_conclusion = equal;
   return inferInfo;
@@ -260,7 +260,7 @@ InferInfo InferenceGenerator::differenceSubtract(Node n, Node e)
 
   Node subtract = d_nm->mkNode(Kind::SUB, countA, countB);
   Node gte = d_nm->mkNode(Kind::GEQ, countA, countB);
-  Node difference = d_nm->mkNode(Kind::ITE, gte, subtract, d_zero);
+  Node difference = d_nm->mkNode(Kind::ITE, {gte, subtract, d_zero});
   Node equal = count.eqNode(difference);
   inferInfo.d_conclusion = equal;
   return inferInfo;
@@ -282,7 +282,7 @@ InferInfo InferenceGenerator::differenceRemove(Node n, Node e)
   Node count = getMultiplicityTerm(e, skolem);
 
   Node notInB = d_nm->mkNode(Kind::LEQ, countB, d_zero);
-  Node difference = d_nm->mkNode(Kind::ITE, notInB, countA, d_zero);
+  Node difference = d_nm->mkNode(Kind::ITE, {notInB, countA, d_zero});
   Node equal = count.eqNode(difference);
   inferInfo.d_conclusion = equal;
   return inferInfo;
@@ -301,7 +301,7 @@ InferInfo InferenceGenerator::setof(Node n, Node e)
   Node count = getMultiplicityTerm(e, skolem);
 
   Node gte = d_nm->mkNode(Kind::GEQ, countA, d_one);
-  Node ite = d_nm->mkNode(Kind::ITE, gte, d_one, d_zero);
+  Node ite = d_nm->mkNode(Kind::ITE, {gte, d_one, d_zero});
   Node equal = count.eqNode(ite);
   inferInfo.d_conclusion = equal;
   return inferInfo;
@@ -907,7 +907,7 @@ InferInfo InferenceGenerator::groupSameProjection(
   Node samePart = part_x.eqNode(part_y);
   Node part_x_is_B = part_x.eqNode(B);
   inferInfo.d_conclusion =
-      d_nm->mkNode(Kind::AND, sameProjection, samePart, part_x_is_B);
+      d_nm->mkNode(Kind::AND, {sameProjection, samePart, part_x_is_B});
   return inferInfo;
 }
 
@@ -950,7 +950,7 @@ InferInfo InferenceGenerator::groupSamePart(
   Node samePart = part_x.eqNode(part_y);
   Node part_x_is_B = part_x.eqNode(B);
   inferInfo.d_conclusion =
-      d_nm->mkNode(Kind::AND, sameMultiplicity, samePart, part_x_is_B);
+      d_nm->mkNode(Kind::AND, {sameMultiplicity, samePart, part_x_is_B});
 
   return inferInfo;
 }

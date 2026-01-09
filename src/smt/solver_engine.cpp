@@ -629,7 +629,7 @@ void SolverEngine::defineFunctionsRec(
       func_app.setAttribute(fda, true);
       // make the quantified formula
       Node boundVars = nm->mkNode(Kind::BOUND_VAR_LIST, formals[i]);
-      lem = nm->mkNode(Kind::FORALL, boundVars, lem, aexpr);
+      lem = nm->mkNode(Kind::FORALL, {boundVars, lem, aexpr});
     }
     // Assert the quantified formula. Notice we don't call assertFormula
     // directly, since we should call a private member method since we have

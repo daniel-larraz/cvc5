@@ -314,12 +314,11 @@ Node FunDefFmf::simplifyFormula(
         {
           // always care about constraints on the head of the ITE, but only
           // care about one of the children depending on how it evaluates
-          branch_cond = nm->mkNode(Kind::AND,
-                                   branch_constraints[0],
-                                   nm->mkNode(Kind::ITE,
-                                              n[0],
-                                              branch_constraints[1],
-                                              branch_constraints[2]));
+          branch_cond = nm->mkNode(
+              Kind::AND,
+              branch_constraints[0],
+              nm->mkNode(Kind::ITE,
+                         {n[0], branch_constraints[1], branch_constraints[2]}));
         }
         else
         {
@@ -332,9 +331,9 @@ Node FunDefFmf::simplifyFormula(
             // recursive conditions
             branch_cond =
                 nm->mkNode(Kind::ITE,
-                           (n.getKind() == Kind::OR ? n[i] : n[i].negate()),
-                           branch_constraints[i],
-                           branch_cond);
+                           {(n.getKind() == Kind::OR ? n[i] : n[i].negate()),
+                            branch_constraints[i],
+                            branch_cond});
           }
         }
         Trace("fmf-fun-def-debug2")
@@ -428,7 +427,7 @@ void FunDefFmf::getConstraints(Node n,
     }
     if (!cs[0].isConst() || !cs[1].isConst())
     {
-      Node itec = nm->mkNode(Kind::ITE, n[0], cs[0], cs[1]);
+      Node itec = nm->mkNode(Kind::ITE, {n[0], cs[0], cs[1]});
       currConstraints.push_back(itec);
       Trace("fmf-fun-def-debug")
           << "---> add constraint " << itec << " for " << n << std::endl;

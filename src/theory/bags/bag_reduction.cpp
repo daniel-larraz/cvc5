@@ -68,7 +68,7 @@ Node BagReduction::reduceFoldOperator(Node node, std::vector<Node>& asserts)
   Node unionDisjoint_n = nm->mkNode(Kind::APPLY_UF, unionDisjoint, n);
   Node combine_0_equal = combine_0.eqNode(t);
   Node combine_i_equal = combine_i.eqNode(
-      nm->mkNode(Kind::APPLY_UF, f, elements_i, combine_iMinusOne));
+      nm->mkNode(Kind::APPLY_UF, {f, elements_i, combine_iMinusOne}));
   Node unionDisjoint_0_equal =
       unionDisjoint_0.eqNode(nm->mkConst(EmptyBag(A.getType())));
   Node singleton = nm->mkNode(Kind::BAG_MAKE, elements_i, one);
@@ -157,7 +157,8 @@ Node BagReduction::reduceCardOperator(Node node, std::vector<Node>& asserts)
   Node body_i = nm->mkNode(
       Kind::IMPLIES,
       interval_i,
-      nm->mkNode(Kind::AND, combine_i_equal, unionDisjoint_i_equal, forAll_j));
+      nm->mkNode(Kind::AND,
+                 {combine_i_equal, unionDisjoint_i_equal, forAll_j}));
   Node forAll_i =
       quantifiers::BoundedIntegers::mkBoundedForall(nm, iList, body_i);
   Node nonNegative = nm->mkNode(Kind::GEQ, n, zero);
@@ -187,7 +188,7 @@ Node BagReduction::reduceAggregateOperator(Node node)
   Node bag = bvm->mkBoundVar(
       BoundVarId::BAGS_FIRST_INDEX, group, "bag", nm->mkBagType(elementType));
   Node foldList = nm->mkNode(Kind::BOUND_VAR_LIST, bag);
-  Node foldBody = nm->mkNode(Kind::BAG_FOLD, function, initialValue, bag);
+  Node foldBody = nm->mkNode(Kind::BAG_FOLD, {function, initialValue, bag});
 
   Node fold = nm->mkNode(Kind::LAMBDA, foldList, foldBody);
   Node map = nm->mkNode(Kind::BAG_MAP, fold, group);

@@ -131,7 +131,7 @@ Node SygusQePreproc::preprocess(Node q)
           Kind::EXISTS, nm->mkNode(Kind::BOUND_VAR_LIST, nqe_vars), qeRes);
     }
     Assert(q.getNumChildren() == 3);
-    qeRes = nm->mkNode(Kind::FORALL, q[0], qeRes, q[2]);
+    qeRes = nm->mkNode(Kind::FORALL, {q[0], qeRes, q[2]});
     Trace("cegqi-qep") << "Converted conjecture after QE : " << qeRes
                        << std::endl;
     qeRes = rewrite(qeRes);

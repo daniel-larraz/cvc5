@@ -152,34 +152,33 @@ Node mkConcat(const std::vector<Node>& c, TypeNode tn)
 Node mkPrefix(Node t, Node n)
 {
   NodeManager* nm = t.getNodeManager();
-  return nm->mkNode(Kind::STRING_SUBSTR, t, nm->mkConstInt(Rational(0)), n);
+  return nm->mkNode(Kind::STRING_SUBSTR, {t, nm->mkConstInt(Rational(0)), n});
 }
 
 Node mkSuffix(Node t, Node n)
 {
   return NodeManager::mkNode(
       Kind::STRING_SUBSTR,
-      t,
-      n,
-      NodeManager::mkNode(
-          Kind::SUB, NodeManager::mkNode(Kind::STRING_LENGTH, t), n));
+      {t,
+       n,
+       NodeManager::mkNode(
+           Kind::SUB, NodeManager::mkNode(Kind::STRING_LENGTH, t), n)});
 }
 
 Node mkPrefixExceptLen(Node t, Node n)
 {
   NodeManager* nm = t.getNodeManager();
   Node lent = nm->mkNode(Kind::STRING_LENGTH, t);
-  return nm->mkNode(Kind::STRING_SUBSTR,
-                    t,
-                    nm->mkConstInt(Rational(0)),
-                    nm->mkNode(Kind::SUB, lent, n));
+  return nm->mkNode(
+      Kind::STRING_SUBSTR,
+      {t, nm->mkConstInt(Rational(0)), nm->mkNode(Kind::SUB, lent, n)});
 }
 
 Node mkSuffixOfLen(Node t, Node n)
 {
   Node lent = NodeManager::mkNode(Kind::STRING_LENGTH, t);
-  return NodeManager::mkNode(
-      Kind::STRING_SUBSTR, t, NodeManager::mkNode(Kind::SUB, lent, n), n);
+  return NodeManager::mkNode(Kind::STRING_SUBSTR,
+                             {t, NodeManager::mkNode(Kind::SUB, lent, n), n});
 }
 
 Node mkUnit(TypeNode tn, Node n)
@@ -237,7 +236,7 @@ Node mkSubstrChain(Node base,
 {
   for (unsigned i = 0, size = ss.size(); i < size; i++)
   {
-    base = NodeManager::mkNode(Kind::STRING_SUBSTR, base, ss[i], ls[i]);
+    base = NodeManager::mkNode(Kind::STRING_SUBSTR, {base, ss[i], ls[i]});
   }
   return base;
 }

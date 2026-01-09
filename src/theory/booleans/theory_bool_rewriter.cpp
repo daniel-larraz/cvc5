@@ -850,7 +850,7 @@ RewriteResponse TheoryBoolRewriter::preRewrite(TNode n) {
       {
         // ite(not(c), x, y) ---> ite(c, y, x)
         return RewriteResponse(REWRITE_AGAIN,
-                               nm->mkNode(Kind::ITE, n[0][0], n[2], n[1]));
+                               nm->mkNode(Kind::ITE, {n[0][0], n[2], n[1]}));
       }
 
       int parityTmp;

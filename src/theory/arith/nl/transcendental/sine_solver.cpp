@@ -160,16 +160,17 @@ Node SineSolver::getPhaseShiftLemma(const Node& x)
       nm->mkNode(Kind::GEQ, y, nm->mkNode(Kind::MULT, mone, pi)),
       nm->mkNode(Kind::LEQ, y, pi),
       nm->mkNode(Kind::IS_INTEGER, s),
-      nm->mkNode(Kind::ITE,
-                 nm->mkAnd(std::vector<Node>{
-                     nm->mkNode(Kind::GEQ, x, nm->mkNode(Kind::MULT, mone, pi)),
-                     nm->mkNode(Kind::LEQ, x, pi),
-                 }),
-                 x.eqNode(y),
-                 x.eqNode(nm->mkNode(
-                     Kind::ADD,
-                     y,
-                     nm->mkNode(Kind::MULT, nm->mkConstReal(2), s, pi)))),
+      nm->mkNode(
+          Kind::ITE,
+          {nm->mkAnd(std::vector<Node>{
+               nm->mkNode(Kind::GEQ, x, nm->mkNode(Kind::MULT, mone, pi)),
+               nm->mkNode(Kind::LEQ, x, pi),
+           }),
+           x.eqNode(y),
+           x.eqNode(nm->mkNode(
+               Kind::ADD,
+               y,
+               nm->mkNode(Kind::MULT, {nm->mkConstReal(2), s, pi})))}),
       nm->mkNode(Kind::SINE, y).eqNode(nm->mkNode(Kind::SINE, x))});
 }
 

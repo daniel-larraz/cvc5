@@ -146,7 +146,7 @@ Node FirstOrderModelFmc::getFunctionValue(Node op, const char* argPrefix)
 
       Trace("fmc-model-func")
           << "condition : " << cc << ", value : " << v << std::endl;
-      curr = nm->mkNode(Kind::ITE, cc, v, curr);
+      curr = nm->mkNode(Kind::ITE, {cc, v, curr});
     }
   }
   Trace("fmc-model") << "Made " << curr << " for " << op << std::endl;

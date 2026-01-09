@@ -533,7 +533,7 @@ Node DatatypesRewriter::expandMatch(Node in)
   // or all constructors are present in the match.
   for (size_t i = 1, ncases = cases.size(); i < ncases; i++)
   {
-    ret = nm->mkNode(Kind::ITE, cases[i], rets[i], ret);
+    ret = nm->mkNode(Kind::ITE, {cases[i], rets[i], ret});
   }
   return ret;
 }
@@ -1165,7 +1165,7 @@ Node DatatypesRewriter::expandUpdater(const Node& n)
   // tester will rewrite to true.
   // must be the right constructor to update
   Node tester = nm->mkNode(Kind::APPLY_TESTER, dc.getTester(), n[0]);
-  return nm->mkNode(Kind::ITE, tester, ret, n[0]);
+  return nm->mkNode(Kind::ITE, {tester, ret, n[0]});
 }
 Node DatatypesRewriter::expandNullableLift(Node n)
 {
@@ -1190,7 +1190,7 @@ Node DatatypesRewriter::expandNullableLift(Node n)
   Node elseNode = nm->mkNode(Kind::APPLY_CONSTRUCTOR,
                              dt[1].getConstructor(),
                              nm->mkNode(Kind::APPLY_UF, someArgs));
-  Node ret = nm->mkNode(Kind::ITE, condition, thenNode, elseNode);
+  Node ret = nm->mkNode(Kind::ITE, {condition, thenNode, elseNode});
   return ret;
 }
 

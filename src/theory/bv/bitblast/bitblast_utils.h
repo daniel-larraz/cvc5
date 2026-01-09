@@ -118,7 +118,7 @@ Node mkIff<Node>(Node a, Node b) {
 
 template <> inline
 Node mkIte<Node>(Node cond, Node a, Node b) {
-  return NodeManager::mkNode(Kind::ITE, cond, a, b);
+  return NodeManager::mkNode(Kind::ITE, {cond, a, b});
 }
 
 /*

@@ -93,9 +93,9 @@ Node UfModelTreeNode::getFunctionValue(const std::vector<Node>& args,
     {
       size_t ii = cargs - i - 1;
       retNode = NodeManager::mkNode(Kind::ITE,
-                                    args[index].eqNode(caseArgs[ii]),
-                                    caseValues[caseArgs[ii]],
-                                    retNode);
+                                    {args[index].eqNode(caseArgs[ii]),
+                                     caseValues[caseArgs[ii]],
+                                     retNode});
     }
     return retNode;
   }

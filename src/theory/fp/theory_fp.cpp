@@ -224,10 +224,10 @@ bool TheoryFp::refineAbstraction(TheoryModel *m, TNode abstract, TNode concrete)
       // Then the backwards constraints
       Node floatAboveAbstract = rewrite(
           nm->mkNode(Kind::FLOATINGPOINT_TO_FP_FROM_REAL,
-                     nm->mkConst(FloatingPointToFPReal(
-                         concrete[0].getType().getConst<FloatingPointSize>())),
-                     nm->mkConst(RoundingMode::ROUND_TOWARD_POSITIVE),
-                     abstractValue));
+                     {nm->mkConst(FloatingPointToFPReal(
+                          concrete[0].getType().getConst<FloatingPointSize>())),
+                      nm->mkConst(RoundingMode::ROUND_TOWARD_POSITIVE),
+                      abstractValue}));
 
       Node bg = nm->mkNode(
           Kind::IMPLIES,
@@ -241,10 +241,10 @@ bool TheoryFp::refineAbstraction(TheoryModel *m, TNode abstract, TNode concrete)
 
       Node floatBelowAbstract = rewrite(
           nm->mkNode(Kind::FLOATINGPOINT_TO_FP_FROM_REAL,
-                     nm->mkConst(FloatingPointToFPReal(
-                         concrete[0].getType().getConst<FloatingPointSize>())),
-                     nm->mkConst(RoundingMode::ROUND_TOWARD_NEGATIVE),
-                     abstractValue));
+                     {nm->mkConst(FloatingPointToFPReal(
+                          concrete[0].getType().getConst<FloatingPointSize>())),
+                      nm->mkConst(RoundingMode::ROUND_TOWARD_NEGATIVE),
+                      abstractValue}));
 
       Node bl = nm->mkNode(
           Kind::IMPLIES,
@@ -290,10 +290,10 @@ bool TheoryFp::refineAbstraction(TheoryModel *m, TNode abstract, TNode concrete)
     // Work out the actual value for those args
     Node evaluate =
         nm->mkNode(Kind::FLOATINGPOINT_TO_FP_FROM_REAL,
-                   nm->mkConst(FloatingPointToFPReal(
-                       concrete.getType().getConst<FloatingPointSize>())),
-                   rmValue,
-                   realValue);
+                   {nm->mkConst(FloatingPointToFPReal(
+                        concrete.getType().getConst<FloatingPointSize>())),
+                    rmValue,
+                    realValue});
     Node concreteValue = rewrite(evaluate);
     Assert(concreteValue.isConst());
 

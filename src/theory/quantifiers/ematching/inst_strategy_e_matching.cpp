@@ -578,9 +578,9 @@ void InstStrategyAutoGenTriggers::addTrigger( inst::Trigger * tr, Node q ) {
         d_qreg.substituteInstConstantsToBoundVariables(tr->getInstPattern(), q);
     Node ipl = nm->mkNode(Kind::INST_PATTERN_LIST, pat);
     Node qq = nm->mkNode(Kind::FORALL,
-                         d_vc_partition[1][q],
-                         nm->mkNode(Kind::FORALL, d_vc_partition[0][q], q[1]),
-                         ipl);
+                         {d_vc_partition[1][q],
+                          nm->mkNode(Kind::FORALL, d_vc_partition[0][q], q[1]),
+                          ipl});
     Trace("auto-gen-trigger-partial")
         << "Make partially specified user pattern: " << std::endl;
     Trace("auto-gen-trigger-partial") << "  " << qq << std::endl;

@@ -148,7 +148,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
       else
       {
         Node curr =
-            nm->mkNode(Kind::STRING_SUBSTR, x, currEnd, childLengths[i]);
+            nm->mkNode(Kind::STRING_SUBSTR, {x, currEnd, childLengths[i]});
         // We do not need to include memberships of the form
         //   (str.substr x n 1) in re.allchar
         // since we know that by construction, n < len( x ).
@@ -247,7 +247,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
       {
         // if the gap is exact, it is a substring constraint
         Node curr = prev_end;
-        Node ss = nm->mkNode(Kind::STRING_SUBSTR, x, curr, lensc);
+        Node ss = nm->mkNode(Kind::STRING_SUBSTR, {x, curr, lensc});
         conj.push_back(ss.eqNode(sc));
         prev_end = nm->mkNode(Kind::ADD, curr, lensc);
       }
@@ -271,7 +271,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
           non_greedy_find_vars.push_back(k);
           prev_end = nm->mkNode(Kind::ADD, prev_end, k);
         }
-        Node curr = nm->mkNode(Kind::STRING_INDEXOF, x, sc, prev_end);
+        Node curr = nm->mkNode(Kind::STRING_INDEXOF, {x, sc, prev_end});
         Node idofFind = curr.eqNode(nm->mkConstInt(Rational(-1))).negate();
         conj.push_back(idofFind);
         prev_end = nm->mkNode(Kind::ADD, curr, lensc);
@@ -299,7 +299,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
         Node lenSc = nm->mkNode(Kind::STRING_LENGTH, sc);
         Node loc =
             nm->mkNode(Kind::SUB, lenx, nm->mkNode(Kind::ADD, lenSc, cEnd));
-        Node scc = sc.eqNode(nm->mkNode(Kind::STRING_SUBSTR, x, loc, lenSc));
+        Node scc = sc.eqNode(nm->mkNode(Kind::STRING_SUBSTR, {x, loc, lenSc}));
         // We also must ensure that we fit. This constraint is necessary in
         // addition to the constraint above. Take this example:
         //     x in (re.++ "A" _ (re.* _) "B" _) --->
@@ -406,7 +406,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
       Node s = c[0];
       Node lens = nm->mkNode(Kind::STRING_LENGTH, s);
       Node sss = r == 0 ? zero : nm->mkNode(Kind::SUB, lenx, lens);
-      Node ss = nm->mkNode(Kind::STRING_SUBSTR, x, sss, lens);
+      Node ss = nm->mkNode(Kind::STRING_SUBSTR, {x, sss, lens});
       sConstraints.push_back(ss.eqNode(s));
       if (r == 0)
       {
@@ -435,7 +435,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
   }
   if (!sConstraints.empty())
   {
-    Node ss = nm->mkNode(Kind::STRING_SUBSTR, x, sStartIndex, sLength);
+    Node ss = nm->mkNode(Kind::STRING_SUBSTR, {x, sStartIndex, sLength});
     Assert(!rexpElimChildren.empty());
     Node regElim = utils::mkConcat(rexpElimChildren, nm->regExpType());
     sConstraints.push_back(nm->mkNode(Kind::STRING_IN_REGEXP, ss, regElim));
@@ -475,7 +475,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
             nm->mkNode(Kind::LEQ, k, nm->mkNode(Kind::SUB, lenx, lens)));
         echildren.push_back(bound);
       }
-      Node substrEq = nm->mkNode(Kind::STRING_SUBSTR, x, k, lens).eqNode(s);
+      Node substrEq = nm->mkNode(Kind::STRING_SUBSTR, {x, k, lens}).eqNode(s);
       echildren.push_back(substrEq);
       if (i > 0)
       {
@@ -484,7 +484,7 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
         Node rpn = utils::mkConcat(rprefix, nm->regExpType());
         Node substrPrefix =
             nm->mkNode(Kind::STRING_IN_REGEXP,
-                       nm->mkNode(Kind::STRING_SUBSTR, x, zero, k),
+                       nm->mkNode(Kind::STRING_SUBSTR, {x, zero, k}),
                        rpn);
         echildren.push_back(substrPrefix);
       }
@@ -494,11 +494,11 @@ Node RegExpElimination::eliminateConcat(Node atom, bool isAgg)
         rsuffix.insert(rsuffix.end(), children.begin() + i + 1, children.end());
         Node rps = utils::mkConcat(rsuffix, nm->regExpType());
         Node ks = nm->mkNode(Kind::ADD, k, lens);
-        Node substrSuffix = nm->mkNode(
-            Kind::STRING_IN_REGEXP,
-            nm->mkNode(
-                Kind::STRING_SUBSTR, x, ks, nm->mkNode(Kind::SUB, lenx, ks)),
-            rps);
+        Node substrSuffix =
+            nm->mkNode(Kind::STRING_IN_REGEXP,
+                       nm->mkNode(Kind::STRING_SUBSTR,
+                                  {x, ks, nm->mkNode(Kind::SUB, lenx, ks)}),
+                       rps);
         echildren.push_back(substrSuffix);
       }
       Node body = nm->mkNode(Kind::AND, echildren);
@@ -554,7 +554,7 @@ Node RegExpElimination::eliminateStar(Node atom, bool isAgg)
   Node index =
       bvm->mkBoundVar(BoundVarId::STRINGS_RE_ELIM_STAR_INDEX, atom, intType);
   Node substr_ch =
-      nm->mkNode(Kind::STRING_SUBSTR, x, index, nm->mkConstInt(Rational(1)));
+      nm->mkNode(Kind::STRING_SUBSTR, {x, index, nm->mkConstInt(Rational(1))});
   // handle the case where it is purely characters
   for (const Node& r : disj)
   {
@@ -622,9 +622,7 @@ Node RegExpElimination::eliminateStar(Node atom, bool isAgg)
                        index,
                        nm->mkNode(Kind::INTS_DIVISION_TOTAL, lenx, lens)));
         Node conc = nm->mkNode(Kind::STRING_SUBSTR,
-                               x,
-                               nm->mkNode(Kind::MULT, index, lens),
-                               lens)
+                               {x, nm->mkNode(Kind::MULT, index, lens), lens})
                         .eqNode(s);
         Node body = nm->mkNode(Kind::OR, bound.negate(), conc);
         Node bvl = nm->mkNode(Kind::BOUND_VAR_LIST, index);

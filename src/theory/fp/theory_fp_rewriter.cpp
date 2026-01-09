@@ -113,7 +113,7 @@ RewriteResponse convertSubtractionToAddition(NodeManager* nm,
   Assert(node.getKind() == Kind::FLOATINGPOINT_SUB);
   Node negation = nm->mkNode(Kind::FLOATINGPOINT_NEG, node[2]);
   Node addition =
-      nm->mkNode(Kind::FLOATINGPOINT_ADD, node[0], node[1], negation);
+      nm->mkNode(Kind::FLOATINGPOINT_ADD, {node[0], node[1], negation});
   return RewriteResponse(REWRITE_DONE, addition);
 }
 
@@ -272,7 +272,7 @@ RewriteResponse reorderBinaryOperation(NodeManager* nm,
 
   if (node[1] > node[2])
   {
-    Node normal = nm->mkNode(k, node[0], node[2], node[1]);
+    Node normal = nm->mkNode(k, {node[0], node[2], node[1]});
     return RewriteResponse(REWRITE_DONE, normal);
   }
   else
@@ -395,9 +395,9 @@ RewriteResponse toFPSignedBV(NodeManager* nm, TNode node, bool isPreRewrite)
     return RewriteResponse(
         REWRITE_AGAIN_FULL,
         nm->mkNode(Kind::ITE,
-                   node[1].eqNode(bv::utils::mkOne(nm, 1)),
-                   nm->mkNode(Kind::FLOATINGPOINT_NEG, fromubv),
-                   fromubv));
+                   {node[1].eqNode(bv::utils::mkOne(nm, 1)),
+                    nm->mkNode(Kind::FLOATINGPOINT_NEG, fromubv),
+                    fromubv}));
   }
   return RewriteResponse(REWRITE_DONE, node);
 }
@@ -1664,19 +1664,20 @@ RewriteResponse TheoryFpRewriter::postRewrite(TNode node)
           rs = REWRITE_AGAIN_FULL;
           rn = d_nm->mkNode(
               Kind::ITE,
-              d_nm->mkNode(Kind::EQUAL, rm, rne),
-              w_rne,
-              d_nm->mkNode(
-                  Kind::ITE,
-                  d_nm->mkNode(Kind::EQUAL, rm, rna),
-                  w_rna,
-                  d_nm->mkNode(Kind::ITE,
-                               d_nm->mkNode(Kind::EQUAL, rm, rtz),
-                               w_rtz,
-                               d_nm->mkNode(Kind::ITE,
-                                            d_nm->mkNode(Kind::EQUAL, rm, rtn),
-                                            w_rtn,
-                                            w_rtp))));
+              {d_nm->mkNode(Kind::EQUAL, rm, rne),
+               w_rne,
+               d_nm->mkNode(
+                   Kind::ITE,
+                   {d_nm->mkNode(Kind::EQUAL, rm, rna),
+                    w_rna,
+                    d_nm->mkNode(
+                        Kind::ITE,
+                        {d_nm->mkNode(Kind::EQUAL, rm, rtz),
+                         w_rtz,
+                         d_nm->mkNode(Kind::ITE,
+                                      {d_nm->mkNode(Kind::EQUAL, rm, rtn),
+                                       w_rtn,
+                                       w_rtp})})})});
         }
       }
       else

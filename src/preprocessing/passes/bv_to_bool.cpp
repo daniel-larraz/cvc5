@@ -183,7 +183,7 @@ Node BVToBool::convertBvTerm(TNode node)
     Node cond = liftNode(node[0]);
     Node true_branch = convertBvTerm(node[1]);
     Node false_branch = convertBvTerm(node[2]);
-    Node result = nm->mkNode(Kind::ITE, cond, true_branch, false_branch);
+    Node result = nm->mkNode(Kind::ITE, {cond, true_branch, false_branch});
     addToBoolCache(node, result);
     Trace("bv-to-bool") << "BVToBool::convertBvTerm " << node << " => "
                         << result << "\n";

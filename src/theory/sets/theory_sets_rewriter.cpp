@@ -923,7 +923,7 @@ RewriteResponse TheorySetsRewriter::postRewriteFilter(TNode n)
       //       (ite (p x) (set.singleton x) (as set.empty (Set T)))
       Node empty = nm->mkConst(EmptySet(n.getType()));
       Node condition = nm->mkNode(Kind::APPLY_UF, n[0], n[1][0]);
-      Node ret = nm->mkNode(Kind::ITE, condition, n[1], empty);
+      Node ret = nm->mkNode(Kind::ITE, {condition, n[1], empty});
       return RewriteResponse(REWRITE_AGAIN_FULL, ret);
     }
     case Kind::SET_UNION:
@@ -1033,7 +1033,7 @@ RewriteResponse TheorySetsRewriter::postRewriteFold(TNode n)
     {
       // (set.fold f t (set.singleton x)) = (f x t)
       Node x = n[2][0];
-      Node f_x_t = nm->mkNode(Kind::APPLY_UF, f, x, t);
+      Node f_x_t = nm->mkNode(Kind::APPLY_UF, {f, x, t});
       return RewriteResponse(REWRITE_AGAIN_FULL, f_x_t);
     }
     case Kind::SET_UNION:
@@ -1041,8 +1041,8 @@ RewriteResponse TheorySetsRewriter::postRewriteFold(TNode n)
       // (set.fold f t (set.union B C)) = (set.fold f (set.fold f t A) B))
       Node A = n[2][0];
       Node B = n[2][1];
-      Node foldA = nm->mkNode(Kind::SET_FOLD, f, t, A);
-      Node fold = nm->mkNode(Kind::SET_FOLD, f, foldA, B);
+      Node foldA = nm->mkNode(Kind::SET_FOLD, {f, t, A});
+      Node fold = nm->mkNode(Kind::SET_FOLD, {f, foldA, B});
       return RewriteResponse(REWRITE_AGAIN_FULL, fold);
     }
 

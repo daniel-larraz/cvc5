@@ -1051,10 +1051,9 @@ Node StringsEntail::rewriteViaMacroSubstrStripSymLength(const Node& node,
         Node cpulled = utils::mkConcat(ch2, stype);
         Node resultLen = nm->mkNode(
             Kind::SUB, node[2], nm->mkNode(Kind::STRING_LENGTH, cpulled));
-        chr.push_back(nm->mkNode(Kind::STRING_SUBSTR,
-                                 utils::mkConcat(ch1, stype),
-                                 node[1],
-                                 resultLen));
+        chr.push_back(
+            nm->mkNode(Kind::STRING_SUBSTR,
+                       {utils::mkConcat(ch1, stype), node[1], resultLen}));
       }
       Node ret = utils::mkConcat(chr, stype);
       rule = Rewrite::SS_LEN_INCLUDE;
@@ -1097,19 +1096,17 @@ Node StringsEntail::rewriteViaMacroSubstrStripSymLength(const Node& node,
           Node cskipped = utils::mkConcat(ch2, stype);
           Node resultStart = nm->mkNode(
               Kind::SUB, node[1], nm->mkNode(Kind::STRING_LENGTH, cskipped));
-          Node ret = nm->mkNode(Kind::STRING_SUBSTR,
-                                utils::mkConcat(ch1, stype),
-                                resultStart,
-                                node[2]);
+          Node ret =
+              nm->mkNode(Kind::STRING_SUBSTR,
+                         {utils::mkConcat(ch1, stype), resultStart, node[2]});
           rule = Rewrite::SS_STRIP_START_PT;
           return ret;
         }
         else
         {
-          Node ret = nm->mkNode(Kind::STRING_SUBSTR,
-                                utils::mkConcat(ch1, stype),
-                                node[1],
-                                node[2]);
+          Node ret =
+              nm->mkNode(Kind::STRING_SUBSTR,
+                         {utils::mkConcat(ch1, stype), node[1], node[2]});
           rule = Rewrite::SS_STRIP_END_PT;
           return ret;
         }

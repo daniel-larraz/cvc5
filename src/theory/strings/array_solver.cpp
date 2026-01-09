@@ -223,10 +223,9 @@ void ArraySolver::checkTerm(Node t, bool checkInv)
         if (k == Kind::STRING_UPDATE)
         {
           iid = InferenceId::STRINGS_ARRAY_UPDATE_UNIT;
-          eq = nm->mkNode(Kind::ITE,
-                          t[1].eqNode(d_zero),
-                          t.eqNode(t[2]),
-                          t.eqNode(nf.d_nf[0]));
+          eq = nm->mkNode(
+              Kind::ITE,
+              {t[1].eqNode(d_zero), t.eqNode(t[2]), t.eqNode(nf.d_nf[0])});
         }
         else
         {
@@ -318,7 +317,7 @@ void ArraySolver::checkTerm(Node t, bool checkInv)
       // component for the reverse form of the update inference is a fresh
       // variable, in particular, the purification variable for the substring
       // of the term we are updating.
-      Node sstr = nm->mkNode(Kind::STRING_SUBSTR, t[0], currSum, clen);
+      Node sstr = nm->mkNode(Kind::STRING_SUBSTR, {t[0], currSum, clen});
       cc = skc->mkSkolemCached(sstr, SkolemCache::SK_PURIFY, "z");
     }
     // If it is a constant of length one, then the update/nth is determined
@@ -332,7 +331,7 @@ void ArraySolver::checkTerm(Node t, bool checkInv)
       {
         if (k == Kind::STRING_UPDATE)
         {
-          cc = nm->mkNode(Kind::ITE, t[1].eqNode(d_zero), t[2], c);
+          cc = nm->mkNode(Kind::ITE, {t[1].eqNode(d_zero), t[2], c});
         }
         else
         {
@@ -345,7 +344,7 @@ void ArraySolver::checkTerm(Node t, bool checkInv)
     {
       if (k == Kind::STRING_UPDATE)
       {
-        cc = nm->mkNode(Kind::STRING_UPDATE, c, currIndex, t[2]);
+        cc = nm->mkNode(Kind::STRING_UPDATE, {c, currIndex, t[2]});
       }
       else
       {
@@ -366,7 +365,7 @@ void ArraySolver::checkTerm(Node t, bool checkInv)
     }
     else if (k == Kind::STRING_UPDATE && checkInv)
     {
-      Node ccu = nm->mkNode(Kind::STRING_UPDATE, cc, currIndex, t[2]);
+      Node ccu = nm->mkNode(Kind::STRING_UPDATE, {cc, currIndex, t[2]});
       Node eq = c.eqNode(ccu);
       Trace("seq-array-debug") << "......condition " << eq << std::endl;
       cond.push_back(eq);
@@ -409,7 +408,7 @@ void ArraySolver::checkTerm(Node t, bool checkInv)
     eq = t.eqNode(cchildren[0]);
     for (size_t i = 1, ncond = cond.size(); i < ncond; i++)
     {
-      eq = nm->mkNode(Kind::ITE, cond[i], t.eqNode(cchildren[i]), eq);
+      eq = nm->mkNode(Kind::ITE, {cond[i], t.eqNode(cchildren[i]), eq});
     }
     Node inBoundsCond =
         nm->mkNode(Kind::AND, nm->mkNode(Kind::GEQ, t[1], d_zero), cond[0]);

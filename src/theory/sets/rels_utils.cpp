@@ -77,8 +77,8 @@ void RelsUtils::computeTC(Node rel,
 Node RelsUtils::constructPair(Node rel, Node a, Node b)
 {
   const DType& dt = rel.getType().getSetElementType().getDType();
-  return NodeManager::mkNode(
-      Kind::APPLY_CONSTRUCTOR, dt[0].getConstructor(), a, b);
+  return NodeManager::mkNode(Kind::APPLY_CONSTRUCTOR,
+                             {dt[0].getConstructor(), a, b});
 }
 
 Node RelsUtils::evaluateGroup(TNode n)

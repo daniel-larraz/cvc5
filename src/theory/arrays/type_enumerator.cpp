@@ -83,10 +83,9 @@ Node ArrayEnumerator::operator*()
   Node n = d_arrayConst;
   for (size_t i = 0, size = d_indexVec.size(); i < size; ++i)
   {
-    n = d_nm->mkNode(Kind::STORE,
-                     n,
-                     d_indexVec[d_indexVec.size() - 1 - i],
-                     *(*(d_constituentVec[i])));
+    n = d_nm->mkNode(
+        Kind::STORE,
+        {n, d_indexVec[d_indexVec.size() - 1 - i], *(*(d_constituentVec[i]))});
     // Normalize the constant. We must do this every iteration of this loop,
     // since this utility requires all children of n to be constant, which
     // implies the first argument to STORE on the next iteration must be

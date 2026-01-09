@@ -929,7 +929,7 @@ void TheoryModel::assignFunctionDefaultHo(Node f) const
     }
     else
     {
-      curr = nodeManager()->mkNode(Kind::ITE, hni, hnv, curr);
+      curr = nodeManager()->mkNode(Kind::ITE, {hni, hnv, curr});
     }
   }
   // if curr was not set, we set it to currPre.

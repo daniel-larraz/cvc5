@@ -389,12 +389,12 @@ Node ran_to_node(const poly::AlgebraicNumber& an, const Node& ran_variable)
   // Construct witness:
   Node pred =
       nm->mkNode(Kind::AND,
-                 // poly(var) == 0
-                 nm->mkNode(Kind::EQUAL, poly, nm->mkConstReal(Rational(0))),
-                 // lower_bound < var
-                 nm->mkNode(Kind::LT, lower, ran_variable),
-                 // var < upper_bound
-                 nm->mkNode(Kind::LT, ran_variable, upper));
+                 {// poly(var) == 0
+                  nm->mkNode(Kind::EQUAL, poly, nm->mkConstReal(Rational(0))),
+                  // lower_bound < var
+                  nm->mkNode(Kind::LT, lower, ran_variable),
+                  // var < upper_bound
+                  nm->mkNode(Kind::LT, ran_variable, upper)});
   return nm->mkNode(
       Kind::WITNESS, nm->mkNode(Kind::BOUND_VAR_LIST, ran_variable), pred);
 }
@@ -574,13 +574,13 @@ Node excluding_interval_to_lemma(const Node& variable,
         Node poly = as_cvc_upolynomial(get_defining_polynomial(alg), variable);
         return nm->mkNode(
             Kind::OR,
-            nm->mkNode(Kind::DISTINCT, poly, nm->mkConstReal(Rational(0))),
-            nm->mkNode(Kind::LT,
-                       variable,
-                       nm->mkConstReal(poly_utils::toRationalBelow(lv))),
-            nm->mkNode(Kind::GT,
-                       variable,
-                       nm->mkConstReal(poly_utils::toRationalAbove(lv))));
+            {nm->mkNode(Kind::DISTINCT, poly, nm->mkConstReal(Rational(0))),
+             nm->mkNode(Kind::LT,
+                        variable,
+                        nm->mkConstReal(poly_utils::toRationalBelow(lv))),
+             nm->mkNode(Kind::GT,
+                        variable,
+                        nm->mkConstReal(poly_utils::toRationalAbove(lv)))});
       }
       return Node();
     }

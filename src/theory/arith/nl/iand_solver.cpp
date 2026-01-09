@@ -205,7 +205,7 @@ Node IAndSolver::mkIAnd(unsigned k, Node x, Node y) const
 {
   NodeManager* nm = nodeManager();
   Node iAndOp = nm->mkConst(IntAnd(k));
-  Node ret = nm->mkNode(Kind::IAND, iAndOp, x, y);
+  Node ret = nm->mkNode(Kind::IAND, {iAndOp, x, y});
   ret = rewrite(ret);
   return ret;
 }
@@ -239,7 +239,7 @@ Node IAndSolver::valueBasedLemma(Node i)
   valX = nm->mkNode(Kind::INTS_MODULUS, valX, twok);
   valY = nm->mkNode(Kind::INTS_MODULUS, valY, twok);
 
-  Node valC = nm->mkNode(Kind::IAND, i.getOperator(), valX, valY);
+  Node valC = nm->mkNode(Kind::IAND, {i.getOperator(), valX, valY});
   valC = rewrite(valC);
 
   Node xm = nm->mkNode(Kind::INTS_MODULUS, x, twok);

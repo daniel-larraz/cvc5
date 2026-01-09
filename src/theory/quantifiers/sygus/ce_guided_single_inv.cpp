@@ -218,7 +218,7 @@ Result CegSingleInv::solve()
     // get the INST_ATTRIBUTE term marking quantifier elimination
     n_attr = QuantAttributes::mkAttrQuantifierElimination(nm);
     n_attr = nm->mkNode(Kind::INST_PATTERN_LIST, n_attr);
-    siq = nm->mkNode(Kind::FORALL, siq[0], siq[1], n_attr);
+    siq = nm->mkNode(Kind::FORALL, {siq[0], siq[1], n_attr});
   }
   // solve the single invocation conjecture using a fresh copy of SMT engine
   std::unique_ptr<SolverEngine> siSmt;
@@ -406,7 +406,7 @@ Node CegSingleInv::getSolutionFromInst(size_t index)
       unsigned uindex = indices[j];
       Node cond = d_instConds[uindex];
       cond = TermUtil::simpleNegate(cond);
-      s = nm->mkNode(Kind::ITE, cond, d_inst[uindex][sol_index], s);
+      s = nm->mkNode(Kind::ITE, {cond, d_inst[uindex][sol_index], s});
     }
   }
   //simplify the solution using the extended rewriter

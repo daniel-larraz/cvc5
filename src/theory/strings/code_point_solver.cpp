@@ -138,7 +138,7 @@ void CodePointSolver::checkCodes()
     Node deq = c[0].eqNode(c[1]).negate();
     Node eqn = c[0][0].eqNode(c[1][0]);
     // str.code(x)==-1 V str.code(x)!=str.code(y) V x==y
-    Node inj_lem = nm->mkNode(Kind::OR, eq_no, deq, eqn);
+    Node inj_lem = nm->mkNode(Kind::OR, {eq_no, deq, eqn});
     deq = rewrite(deq);
     d_im.addPendingPhaseRequirement(deq, false);
     std::vector<Node> emptyVec;

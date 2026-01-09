@@ -333,7 +333,7 @@ void TheoryBV::ppStaticLearn(TNode in, std::vector<TrustNode>& learned)
           Node c_eq_0 = c.eqNode(zero);
           Node b_eq_c = b.eqNode(c);
 
-          Node dis = nodeManager()->mkNode(Kind::OR, b_eq_0, c_eq_0, b_eq_c);
+          Node dis = nodeManager()->mkNode(Kind::OR, {b_eq_0, c_eq_0, b_eq_c});
           Node imp = in.impNode(dis);
           TrustNode trn = TrustNode::mkTrustLemma(imp, nullptr);
           learned.emplace_back(trn);

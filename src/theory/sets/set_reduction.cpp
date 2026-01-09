@@ -64,8 +64,8 @@ Node SetReduction::reduceFoldOperator(Node node, std::vector<Node>& asserts)
   Node union_i = nm->mkNode(Kind::APPLY_UF, unionNode, i);
   Node union_n = nm->mkNode(Kind::APPLY_UF, unionNode, n);
   Node combine_0_equal = combine_0.eqNode(t);
-  Node combine_i_equal =
-      combine_i.eqNode(nm->mkNode(Kind::APPLY_UF, f, uf_i, combine_iMinusOne));
+  Node combine_i_equal = combine_i.eqNode(
+      nm->mkNode(Kind::APPLY_UF, {f, uf_i, combine_iMinusOne}));
   Node union_0_equal = union_0.eqNode(nm->mkConst(EmptySet(A.getType())));
   Node singleton = nm->mkNode(Kind::SET_SINGLETON, uf_i);
 
@@ -107,7 +107,7 @@ Node SetReduction::reduceAggregateOperator(Node node)
   Node set = bvm->mkBoundVar(
       BoundVarId::SETS_FIRST_INDEX, group, "set", nm->mkSetType(elementType));
   Node foldList = nm->mkNode(Kind::BOUND_VAR_LIST, set);
-  Node foldBody = nm->mkNode(Kind::SET_FOLD, function, initialValue, set);
+  Node foldBody = nm->mkNode(Kind::SET_FOLD, {function, initialValue, set});
 
   Node fold = nm->mkNode(Kind::LAMBDA, foldList, foldBody);
   Node map = nm->mkNode(Kind::SET_MAP, fold, group);

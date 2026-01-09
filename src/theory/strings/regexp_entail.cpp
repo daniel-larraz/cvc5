@@ -629,7 +629,7 @@ bool RegExpEntail::testConstStringInRegExpInternal(String& s,
               else
               {
                 Node num2 = nm->mkConstInt(cvc5::internal::Rational(u - 1));
-                Node r2 = nm->mkNode(Kind::REGEXP_LOOP, r[0], r[1], num2);
+                Node r2 = nm->mkNode(Kind::REGEXP_LOOP, {r[0], r[1], num2});
                 if (testConstStringInRegExpInternal(s, index_start + len, r2))
                 {
                   return true;
@@ -661,7 +661,7 @@ bool RegExpEntail::testConstStringInRegExpInternal(String& s,
             if (testConstStringInRegExpInternal(t, 0, r[0]))
             {
               Node num2 = nm->mkConstInt(cvc5::internal::Rational(l - 1));
-              Node r2 = nm->mkNode(Kind::REGEXP_LOOP, r[0], num2, num2);
+              Node r2 = nm->mkNode(Kind::REGEXP_LOOP, {r[0], num2, num2});
               if (testConstStringInRegExpInternal(s, index_start + len, r2))
               {
                 return true;

@@ -275,7 +275,7 @@ Node OperatorElim::eliminateOperators(NodeManager* nm,
         wasNonLinear = true;
         Node divByZeroNum = getArithSkolemApp(nm, num, SkolemId::DIV_BY_ZERO);
         Node denEq0 = nm->mkNode(Kind::EQUAL, den, mkZero(den.getType()));
-        ret = nm->mkNode(Kind::ITE, denEq0, divByZeroNum, ret);
+        ret = nm->mkNode(Kind::ITE, {denEq0, divByZeroNum, ret});
       }
       return ret;
       break;
@@ -293,7 +293,7 @@ Node OperatorElim::eliminateOperators(NodeManager* nm,
         Node intDivByZeroNum =
             getArithSkolemApp(nm, num, SkolemId::INT_DIV_BY_ZERO);
         Node denEq0 = nm->mkNode(Kind::EQUAL, den, nm->mkConstInt(Rational(0)));
-        ret = nm->mkNode(Kind::ITE, denEq0, intDivByZeroNum, ret);
+        ret = nm->mkNode(Kind::ITE, {denEq0, intDivByZeroNum, ret});
       }
       return ret;
       break;
@@ -310,7 +310,7 @@ Node OperatorElim::eliminateOperators(NodeManager* nm,
         wasNonLinear = true;
         Node modZeroNum = getArithSkolemApp(nm, num, SkolemId::MOD_BY_ZERO);
         Node denEq0 = nm->mkNode(Kind::EQUAL, den, nm->mkConstInt(Rational(0)));
-        ret = nm->mkNode(Kind::ITE, denEq0, modZeroNum, ret);
+        ret = nm->mkNode(Kind::ITE, {denEq0, modZeroNum, ret});
       }
       return ret;
       break;
@@ -320,11 +320,11 @@ Node OperatorElim::eliminateOperators(NodeManager* nm,
     {
       return nm->mkNode(
           Kind::ITE,
-          nm->mkNode(Kind::LT,
-                     node[0],
-                     nm->mkConstRealOrInt(node[0].getType(), Rational(0))),
-          nm->mkNode(Kind::NEG, node[0]),
-          node[0]);
+          {nm->mkNode(Kind::LT,
+                      node[0],
+                      nm->mkConstRealOrInt(node[0].getType(), Rational(0))),
+           nm->mkNode(Kind::NEG, node[0]),
+           node[0]});
       break;
     }
     case Kind::SQRT:

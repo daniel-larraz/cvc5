@@ -1118,7 +1118,7 @@ bool BasicRewriteRCons::ensureProofMacroSubstrStripSymLength(CDProof* cdp,
   Node eq3 = lhs[2].eqNode(lhs[2]);
   cdp->addStep(eq2, ProofRule::REFL, {}, {lhs[1]});
   cdp->addStep(eq3, ProofRule::REFL, {}, {lhs[2]});
-  Node lhsm = nm->mkNode(Kind::STRING_SUBSTR, cm, lhs[1], lhs[2]);
+  Node lhsm = nm->mkNode(Kind::STRING_SUBSTR, {cm, lhs[1], lhs[2]});
   Node eqLhs = lhs.eqNode(lhsm);
   cdp->addStep(eqLhs, cr, {eq1, eq2, eq3}, cargs);
   Node eqm = lhsm.eqNode(rhs);
@@ -1485,7 +1485,7 @@ bool BasicRewriteRCons::ensureProofMacroOverlap(ProofRewriteRule id,
     Node cmid = concat[nchildpre];
     std::vector<Node> childpost(concat.begin() + nchildpre + 1, concat.end());
     Node cpost = theory::strings::utils::mkConcat(childpost, stype);
-    Node cgroup = nm->mkNode(Kind::STRING_CONCAT, cpre, cmid, cpost);
+    Node cgroup = nm->mkNode(Kind::STRING_CONCAT, {cpre, cmid, cpost});
     if (concat != cgroup)
     {
       Node eqc = concat.eqNode(cgroup);
@@ -2646,10 +2646,9 @@ bool BasicRewriteRCons::ensureProofMacroQuantVarElimIneq(CDProof* cdp,
     }
     else
     {
-      iterm = nm->mkNode(Kind::ITE,
-                         nm->mkNode(isUpper ? Kind::LT : Kind::GEQ, itc, iterm),
-                         itc,
-                         iterm);
+      iterm = nm->mkNode(
+          Kind::ITE,
+          {nm->mkNode(isUpper ? Kind::LT : Kind::GEQ, itc, iterm), itc, iterm});
     }
   }
   Trace("brc-macro") << "Instantiation term is: " << iterm << std::endl;

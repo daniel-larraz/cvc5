@@ -385,9 +385,9 @@ std::shared_ptr<ProofNode> ArithStaticLearner::getProofFor(Node fact)
     // (>= (ite (< s t) t s) t) into (>= (ite (>= s t) s t) t)
     Kind crk = negateKind(cond.getKind());
     Node iteFlip = nm->mkNode(
-        Kind::ITE, nm->mkNode(crk, cond[0], cond[1]), conc[0][2], conc[0][1]);
+        Kind::ITE, {nm->mkNode(crk, cond[0], cond[1]), conc[0][2], conc[0][1]});
     Node iteFlipN =
-        nm->mkNode(Kind::ITE, cond.negate(), conc[0][2], conc[0][1]);
+        nm->mkNode(Kind::ITE, {cond.negate(), conc[0][2], conc[0][1]});
     Node eq1 = conc[0].eqNode(iteFlipN);
     // shown by RARE rule ite-not-cond
     cdp.addTrustedStep(eq1, TrustId::ARITH_STATIC_LEARN, {}, {});
@@ -529,11 +529,11 @@ std::shared_ptr<ProofNode> ArithStaticLearner::getProofFor(Node fact)
         return cdp.getProofFor(fact);
       }
     }
-    Node pullc = nm->mkNode(Kind::ITE, conc[0][0], branches[0], branches[1]);
+    Node pullc = nm->mkNode(Kind::ITE, {conc[0][0], branches[0], branches[1]});
     Node equiv = conc.eqNode(pullc);
     Trace("arith-static-pf") << "- subgoal " << equiv << std::endl;
     cdp.addTrustedStep(equiv, TrustId::ARITH_STATIC_LEARN, {}, {});
-    Node trueIte = nm->mkNode(Kind::ITE, conc[0][0], truen, truen);
+    Node trueIte = nm->mkNode(Kind::ITE, {conc[0][0], truen, truen});
     Node equiv2 = pullc.eqNode(trueIte);
     std::vector<Node> cargs;
     ProofRule cr = expr::getCongRule(pullc, cargs);

@@ -1132,7 +1132,7 @@ RewriteResponse ArithRewriter::postRewriteIAnd(TNode t)
   else if (t[0] > t[1])
   {
     // ((_ iand k) x y) ---> ((_ iand k) y x) if x > y by node ordering
-    Node ret = nm->mkNode(Kind::IAND, t.getOperator(), t[1], t[0]);
+    Node ret = nm->mkNode(Kind::IAND, {t.getOperator(), t[1], t[0]});
     return RewriteResponse(REWRITE_AGAIN, ret);
   }
   else if (t[0] == t[1])
@@ -1558,14 +1558,15 @@ Node ArithRewriter::rewriteIneqToBv(Kind kind,
     Node iToBvop = nm->mkConst(IntToBitVector(bvsize));
     Node ret = nm->mkNode(
         Kind::ITE,
-        ub,
-        nm->mkConst(!bv2natPol),
-        nm->mkNode(
-            Kind::ITE,
-            lb,
-            nm->mkConst(bv2natPol),
-            nm->mkNode(
-                bvKind, bvt, nm->mkNode(Kind::INT_TO_BITVECTOR, iToBvop, o))));
+        {ub,
+         nm->mkConst(!bv2natPol),
+         nm->mkNode(
+             Kind::ITE,
+             {lb,
+              nm->mkConst(bv2natPol),
+              nm->mkNode(bvKind,
+                         bvt,
+                         nm->mkNode(Kind::INT_TO_BITVECTOR, iToBvop, o))})});
     // E.g. (<= (bv2nat x) N) -->
     //      (ite (>= N 2^w) true (ite (< N 0) false (bvule x ((_ int2bv w) N))
     // or   (<= N (bv2nat x)) -->

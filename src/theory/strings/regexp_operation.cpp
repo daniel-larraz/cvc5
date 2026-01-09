@@ -286,7 +286,7 @@ int RegExpOpr::derivativeS(Node r, cvc5::internal::String c, Node& retNode)
     Node expNode;
     ret = delta( r, expNode );
     if(ret == 0) {
-      retNode = nodeManager()->mkNode(Kind::ITE, expNode, r, d_emptyRegexp);
+      retNode = nodeManager()->mkNode(Kind::ITE, {expNode, r, d_emptyRegexp});
     } else if(ret == 1) {
       retNode = r;
     }
@@ -370,7 +370,7 @@ int RegExpOpr::derivativeS(Node r, cvc5::internal::String c, Node& retNode)
             Node exp =
                 tmp.eqNode(nm->mkNode(Kind::STRING_CONCAT, nm->mkConst(c), sk));
             retNode =
-                rewrite(nm->mkNode(Kind::ITE, exp, retNode, d_emptyRegexp));
+                rewrite(nm->mkNode(Kind::ITE, {exp, retNode, d_emptyRegexp}));
           }
         }
         break;
@@ -404,7 +404,7 @@ int RegExpOpr::derivativeS(Node r, cvc5::internal::String c, Node& retNode)
                                  : nodeManager()->mkNode(Kind::REGEXP_CONCAT,
                                                          vec_nodes2);
             if(dnode != d_true) {
-              tmp = rewrite(nm->mkNode(Kind::ITE, dnode, tmp, d_emptyRegexp));
+              tmp = rewrite(nm->mkNode(Kind::ITE, {dnode, tmp, d_emptyRegexp}));
               ret = 0;
             }
             if(std::find(vec_nodes.begin(), vec_nodes.end(), tmp) == vec_nodes.end()) {
@@ -1125,7 +1125,7 @@ Node RegExpOpr::reduceRegExpPos(NodeManager* nm,
     Node emp = Word::mkEmptyWord(s.getType());
     Node se = s.eqNode(emp);
     Node sinr = nm->mkNode(Kind::STRING_IN_REGEXP, s, r[0]);
-    Node reExpand = nm->mkNode(Kind::REGEXP_CONCAT, r[0], r, r[0]);
+    Node reExpand = nm->mkNode(Kind::REGEXP_CONCAT, {r[0], r, r[0]});
     Node sinRExp = nm->mkNode(Kind::STRING_IN_REGEXP, s, reExpand);
     // We unfold `x in R*` by considering three cases: `x` is empty, `x`
     // is matched by `R`, or `x` is matched by two or more `R`s. For the
@@ -1148,12 +1148,12 @@ Node RegExpOpr::reduceRegExpPos(NodeManager* nm,
     //                          k1 in R ^ k2 in (re.* R) ^ k3 in R ^
     //                          k1 != ""  ^ k3 != "")
     conc = nm->mkNode(Kind::OR,
-                      se,
-                      sinr,
-                      nm->mkNode(Kind::AND,
-                                 sinRExp,
-                                 newSkolemsC[0].eqNode(emp).negate(),
-                                 newSkolemsC[2].eqNode(emp).negate()));
+                      {se,
+                       sinr,
+                       nm->mkNode(Kind::AND,
+                                  {sinRExp,
+                                   newSkolemsC[0].eqNode(emp).negate(),
+                                   newSkolemsC[2].eqNode(emp).negate()})});
   }
   else
   {

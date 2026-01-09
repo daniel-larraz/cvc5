@@ -449,7 +449,7 @@ Node StringProofRuleChecker::checkInternal(ProofRule id,
     Node eqNegOne = c1.eqNode(nm->mkConstInt(Rational(-1)));
     Node deq = c1.eqNode(c2).negate();
     Node eqn = args[0].eqNode(args[1]);
-    return nm->mkNode(Kind::OR, eqNegOne, deq, eqn);
+    return nm->mkNode(Kind::OR, {eqNegOne, deq, eqn});
   }
   else if (id == ProofRule::STRING_SEQ_UNIT_INJ)
   {

@@ -324,9 +324,9 @@ Node QuantifiersRewriter::rewriteViaRule(ProofRewriteRule id, const Node& n)
       if (!expr::hasSubterm(body[0], args))
       {
         return d_nm->mkNode(Kind::ITE,
-                            body[0],
-                            d_nm->mkNode(Kind::FORALL, n[0], body[1]),
-                            d_nm->mkNode(Kind::FORALL, n[0], body[2]));
+                            {body[0],
+                             d_nm->mkNode(Kind::FORALL, n[0], body[1]),
+                             d_nm->mkNode(Kind::FORALL, n[0], body[2])});
       }
     }
     break;
@@ -911,7 +911,7 @@ Node QuantifiersRewriter::computeProcessTerms2(
     // conditions
     for (int i = (iconds.size() - 1); i >= 0; i--)
     {
-      ret = nm->mkNode(Kind::ITE, iconds[i], elements[i], ret);
+      ret = nm->mkNode(Kind::ITE, {iconds[i], elements[i], ret});
     }
   }
   else if (ret.getKind() == Kind::HO_APPLY && !ret.getType().isFunction())
@@ -1326,10 +1326,10 @@ Node QuantifiersRewriter::getVarElimEqString(Node lit,
           Node tpostL = nm->mkNode(Kind::STRING_LENGTH, tpost);
           slv = nm->mkNode(
               Kind::STRING_SUBSTR,
-              slv,
-              tpreL,
-              nm->mkNode(
-                  Kind::SUB, slvL, nm->mkNode(Kind::ADD, tpreL, tpostL)));
+              {slv,
+               tpreL,
+               nm->mkNode(
+                   Kind::SUB, slvL, nm->mkNode(Kind::ADD, tpreL, tpostL))});
           // forall x. r ++ x ++ t = s => P( x )
           //   is equivalent to
           // r ++ s' ++ t = s => P( s' ) where

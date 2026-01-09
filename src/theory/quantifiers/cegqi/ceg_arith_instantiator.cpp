@@ -731,11 +731,11 @@ bool ArithInstantiator::postProcessInstantiationForVariable(
           sf.d_subs[index],
           nm->mkNode(
               Kind::ITE,
-              nm->mkNode(Kind::EQUAL,
-                         nm->mkNode(Kind::INTS_MODULUS_TOTAL, veq[1], veq_c),
-                         d_zero),
-              d_zero,
-              d_one));
+              {nm->mkNode(Kind::EQUAL,
+                          nm->mkNode(Kind::INTS_MODULUS_TOTAL, veq[1], veq_c),
+                          d_zero),
+               d_zero,
+               d_one}));
     }
   }
   Trace("cegqi-arith-debug") << "...normalize integers : " << sf.d_vars[index]

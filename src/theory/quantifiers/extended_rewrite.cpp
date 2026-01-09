@@ -402,7 +402,7 @@ Node ExtendedRewriter::extendedRewriteIte(Kind itek, Node n, bool full) const
   }
   if (!flip_cond.isNull())
   {
-    Node new_ret = nm->mkNode(Kind::ITE, flip_cond, n[2], n[1]);
+    Node new_ret = nm->mkNode(Kind::ITE, {flip_cond, n[2], n[1]});
     // only print debug trace if full=true
     if (full)
     {
@@ -504,7 +504,7 @@ Node ExtendedRewriter::extendedRewriteIte(Kind itek, Node n, bool full) const
             Node nc1 = i == 2 ? n[0].negate() : n[0];
             Node nc2 = j == 1 ? n[i][0].negate() : n[i][0];
             Node new_cond = nm->mkNode(Kind::AND, nc1, nc2);
-            new_ret = nm->mkNode(Kind::ITE, new_cond, n[i][3 - j], no);
+            new_ret = nm->mkNode(Kind::ITE, {new_cond, n[i][3 - j], no});
             ss_reason << "ITE merge branch";
             break;
           }
@@ -560,7 +560,7 @@ Node ExtendedRewriter::extendedRewriteIte(Kind itek, Node n, bool full) const
         }
         else if (full || nn.isConst())
         {
-          new_ret = nm->mkNode(itek, n[0], nn, t2);
+          new_ret = nm->mkNode(itek, {n[0], nn, t2});
           ss_reason << "ITE subs";
         }
       }
@@ -583,7 +583,7 @@ Node ExtendedRewriter::extendedRewriteIte(Kind itek, Node n, bool full) const
         }
         else if (full || nn.isConst())
         {
-          new_ret = nm->mkNode(itek, n[0], t1, nn);
+          new_ret = nm->mkNode(itek, {n[0], t1, nn});
           ss_reason << "ITE subs false";
         }
       }
@@ -682,7 +682,8 @@ Node ExtendedRewriter::extendedRewritePullIte(Kind itek, Node n) const
       {
         // always pull variable or constant with binary (theory) predicate
         // e.g. P( x, ite( A, t1, t2 ) ) ---> ite( A, P( x, t1 ), P( x, t2 ) )
-        Node new_ret = nm->mkNode(Kind::ITE, n[i][0], ite_c[i][0], ite_c[i][1]);
+        Node new_ret =
+            nm->mkNode(Kind::ITE, {n[i][0], ite_c[i][0], ite_c[i][1]});
         debugExtendedRewrite(n, new_ret, "ITE pull var predicate");
         return new_ret;
       }
@@ -709,7 +710,7 @@ Node ExtendedRewriter::extendedRewritePullIte(Kind itek, Node n) const
           }
           else
           {
-            new_ret = nm->mkNode(itek, n[i][0], ite_c[i][0], ite_c[i][1]);
+            new_ret = nm->mkNode(itek, {n[i][0], ite_c[i][0], ite_c[i][1]});
             debugExtendedRewrite(n, new_ret, "ITE single elim");
           }
           return new_ret;
@@ -724,7 +725,7 @@ Node ExtendedRewriter::extendedRewritePullIte(Kind itek, Node n) const
       Node nite = n[ip.first];
       Assert(nite.getKind() == itek);
       // now, simply pull the ITE and try ITE rewrites
-      Node pull_ite = nm->mkNode(itek, nite[0], ip.second[0], ip.second[1]);
+      Node pull_ite = nm->mkNode(itek, {nite[0], ip.second[0], ip.second[1]});
       pull_ite = d_rew.rewrite(pull_ite);
       if (pull_ite.getKind() == Kind::ITE)
       {
@@ -1940,7 +1941,8 @@ Node ExtendedRewriter::extendedRewriteStrings(const Node& node) const
             Node nn1 = strings::utils::mkConcat(emptyNodes, stype);
             if (node[1] != nn1)
             {
-              Node ret = d_nm->mkNode(Kind::STRING_REPLACE, node[0], nn1, node[2]);
+              Node ret =
+                  d_nm->mkNode(Kind::STRING_REPLACE, {node[0], nn1, node[2]});
               debugExtendedRewrite(node, ret, "RPL_X_Y_X_SIMP");
               return ret;
             }
@@ -1991,7 +1993,7 @@ Node ExtendedRewriter::extendedRewriteStrings(const Node& node) const
           Node nn1 = strings::utils::mkConcat(emptyNodesList, stype);
           if (nn1 != node[1] || nn2 != node[2])
           {
-            Node res = d_nm->mkNode(Kind::STRING_REPLACE, node[0], nn1, nn2);
+            Node res = d_nm->mkNode(Kind::STRING_REPLACE, {node[0], nn1, nn2});
             debugExtendedRewrite(node, res, "RPL_EMP_CNTS_SUBSTS");
             return res;
           }
@@ -1999,7 +2001,8 @@ Node ExtendedRewriter::extendedRewriteStrings(const Node& node) const
 
         if (nn2 != node[2])
         {
-          Node res = d_nm->mkNode(Kind::STRING_REPLACE, node[0], node[1], nn2);
+          Node res =
+              d_nm->mkNode(Kind::STRING_REPLACE, {node[0], node[1], nn2});
           debugExtendedRewrite(node, res, "RPL_CNTS_SUBSTS");
           return res;
         }
@@ -2033,10 +2036,10 @@ Node ExtendedRewriter::extendedRewriteStrings(const Node& node) const
         Node ctn = se.checkContains(node[0][2], node[1]);
         if (!ctn.isNull() && !ctn.getConst<bool>())
         {
-          Node ret = d_nm->mkNode(
-              Kind::STRING_CONTAINS,
-              d_nm->mkNode(Kind::STRING_REPLACE, node[0][0], node[0][1], empty),
-              node[1]);
+          Node ret = d_nm->mkNode(Kind::STRING_CONTAINS,
+                                  d_nm->mkNode(Kind::STRING_REPLACE,
+                                               {node[0][0], node[0][1], empty}),
+                                  node[1]);
           debugExtendedRewrite(node, ret, "CTN_REPL_SIMP_REPL");
           return ret;
         }

@@ -89,7 +89,7 @@ Node TermRegistry::eagerReduce(Node t, SkolemCache* sc, uint32_t alphaCard)
     Node code_len = len.eqNode(nm->mkConstInt(Rational(1)));
     Node code_eq_neg1 = t.eqNode(nm->mkConstInt(Rational(-1)));
     Node code_range = utils::mkCodeRange(t, alphaCard);
-    lemma = nm->mkNode(Kind::ITE, code_len, code_range, code_eq_neg1);
+    lemma = nm->mkNode(Kind::ITE, {code_len, code_range, code_eq_neg1});
   }
   else if (tk == Kind::SEQ_NTH)
   {
@@ -106,7 +106,8 @@ Node TermRegistry::eagerReduce(Node t, SkolemCache* sc, uint32_t alphaCard)
       Node code_range = utils::mkCodeRange(t, alphaCard);
       // the lemma for `seq.nth`
       lemma = nm->mkNode(
-          Kind::ITE, cond, code_range, t.eqNode(nm->mkConstInt(Rational(-1))));
+          Kind::ITE,
+          {cond, code_range, t.eqNode(nm->mkConstInt(Rational(-1)))});
       // IF: n >=0 AND n < len( s )
       // THEN: 0 <= (seq.nth s n) < |A|
       // ELSE: (seq.nth s n) = -1
@@ -138,8 +139,8 @@ Node TermRegistry::eagerReduce(Node t, SkolemCache* sc, uint32_t alphaCard)
         sc->mkSkolemCached(t[0], t[1], SkolemCache::SK_FIRST_CTN_PRE, "sc1");
     Node sk2 =
         sc->mkSkolemCached(t[0], t[1], SkolemCache::SK_FIRST_CTN_POST, "sc2");
-    lemma = t[0].eqNode(nm->mkNode(Kind::STRING_CONCAT, sk1, t[1], sk2));
-    lemma = nm->mkNode(Kind::ITE, t, lemma, t[0].eqNode(t[1]).notNode());
+    lemma = t[0].eqNode(nm->mkNode(Kind::STRING_CONCAT, {sk1, t[1], sk2}));
+    lemma = nm->mkNode(Kind::ITE, {t, lemma, t[0].eqNode(t[1]).notNode()});
   }
   else if (tk == Kind::STRING_IN_REGEXP)
   {
@@ -162,10 +163,9 @@ Node TermRegistry::eagerReduce(Node t, SkolemCache* sc, uint32_t alphaCard)
                            nm->mkNode(Kind::LEQ, nm->mkConstInt(0), tc),
                            nm->mkNode(Kind::LT, tc, card));
     Node emp = Word::mkEmptyWord(t.getType());
-    lemma = nm->mkNode(Kind::ITE,
-                       cond,
-                       tc.eqNode(nm->mkNode(Kind::STRING_TO_CODE, k)),
-                       k.eqNode(emp));
+    lemma = nm->mkNode(
+        Kind::ITE,
+        {cond, tc.eqNode(nm->mkNode(Kind::STRING_TO_CODE, k)), k.eqNode(emp)});
   }
   return lemma;
 }
@@ -759,7 +759,7 @@ Node TermRegistry::mkNConcat(Node n1, Node n2) const
 
 Node TermRegistry::mkNConcat(Node n1, Node n2, Node n3) const
 {
-  return rewrite(NodeManager::mkNode(Kind::STRING_CONCAT, n1, n2, n3));
+  return rewrite(NodeManager::mkNode(Kind::STRING_CONCAT, {n1, n2, n3}));
 }
 
 Node TermRegistry::mkNConcat(const std::vector<Node>& c, TypeNode tn) const

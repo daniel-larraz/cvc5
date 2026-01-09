@@ -1205,7 +1205,7 @@ NodeTemplate<true>
 NodeTemplate<ref_count>::iteNode(const NodeTemplate<ref_count2>& thenpart,
                                  const NodeTemplate<ref_count3>& elsepart) const {
   assertTNodeNotExpired();
-  return d_nv->getNodeManager()->mkNode(Kind::ITE, *this, thenpart, elsepart);
+  return d_nv->getNodeManager()->mkNode(Kind::ITE, {*this, thenpart, elsepart});
 }
 
 template <bool ref_count>

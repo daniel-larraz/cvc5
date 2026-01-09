@@ -109,13 +109,14 @@ void PIAndSolver::checkInitialRefine()
 
       // x is an upper bound: x > 0 && x < 2^k && y = 2^k -1 -> piand(k,x,y) = x
       Node y_modpow2_eq_max = nm->mkNode(Kind::EQUAL, y, twok_minus_one);
-      Node assum_max = nm->mkNode(Kind::AND, k_gt_0, y_modpow2_eq_max, x_range);
+      Node assum_max =
+          nm->mkNode(Kind::AND, {k_gt_0, y_modpow2_eq_max, x_range});
       conj.push_back(nm->mkNode(Kind::IMPLIES, assum_max, i.eqNode(x)));
 
       // y is an upper bound: y > 0 && y < 2^k && x = 2^k -1 -> piand(k,x,y) = y
       Node x_modpow2_eq_max = nm->mkNode(Kind::EQUAL, x, twok_minus_one);
       Node assum_max_x =
-          nm->mkNode(Kind::AND, k_gt_0, x_modpow2_eq_max, y_range);
+          nm->mkNode(Kind::AND, {k_gt_0, x_modpow2_eq_max, y_range});
       conj.push_back(nm->mkNode(Kind::IMPLIES, assum_max_x, i.eqNode(y)));
 
       // min-y: y = 0 -> piand(k,x,y) = 0
@@ -128,11 +129,11 @@ void PIAndSolver::checkInitialRefine()
 
       // idempotence: k > 0 && x > 0 && x < 2^k && x = y -> piand(k,x,y) = x
       Node eq_y_x = nm->mkNode(Kind::EQUAL, y, x);
-      Node assum_idempotence = nm->mkNode(Kind::AND, k_gt_0, eq_y_x, x_range);
+      Node assum_idempotence = nm->mkNode(Kind::AND, {k_gt_0, eq_y_x, x_range});
       conj.push_back(nm->mkNode(Kind::IMPLIES, assum_idempotence, i.eqNode(x)));
 
       // symmetry: piand(k,x,y) = piand(k,y,x)
-      Node piand_y_x = nm->mkNode(Kind::PIAND, k, y, x);
+      Node piand_y_x = nm->mkNode(Kind::PIAND, {k, y, x});
       conj.push_back(nm->mkNode(Kind::EQUAL, i, piand_y_x));
 
       // range1: 0 <= piand(k,x,y)
@@ -224,7 +225,7 @@ void PIAndSolver::checkFullRefine()
       {
         Node x_equal_one = nm->mkNode(Kind::EQUAL, x, d_one);
         Node y_equal_one = nm->mkNode(Kind::EQUAL, y, d_one);
-        Node assum = nm->mkNode(Kind::AND, k_gt_0, x_equal_one, y_equal_one);
+        Node assum = nm->mkNode(Kind::AND, {k_gt_0, x_equal_one, y_equal_one});
         Node piand_one = nm->mkNode(Kind::EQUAL, i, d_one);
         Node xy_one_lem = nm->mkNode(Kind::IMPLIES, assum, piand_one);
         d_im.addPendingLemma(xy_one_lem,
@@ -269,14 +270,13 @@ void PIAndSolver::checkFullRefine()
               && model_y == model_y2 && model_piand == model_x2
               && model_piand2 == model_x)
           {
-            Node noneqx = nm->mkNode(Kind::AND,
-                                     k.eqNode(k2),
-                                     (x.eqNode(x2)).notNode(),
-                                     y.eqNode(y2));
+            Node noneqx = nm->mkNode(
+                Kind::AND,
+                {k.eqNode(k2), (x.eqNode(x2)).notNode(), y.eqNode(y2)});
             Node ranges_assum =
-                nm->mkNode(Kind::AND, x_range, x2_range, y_range);
+                nm->mkNode(Kind::AND, {x_range, x2_range, y_range});
             Node assum_difference =
-                nm->mkNode(Kind::AND, k_gt_0, noneqx, ranges_assum);
+                nm->mkNode(Kind::AND, {k_gt_0, noneqx, ranges_assum});
             Node difference = nm->mkNode(
                 Kind::OR, i.eqNode(x2).notNode(), n.eqNode(x).notNode());
             Node diff_lemm =
@@ -292,7 +292,7 @@ void PIAndSolver::checkFullRefine()
               && model_piand != model_piand2)
           {
             Node assum_sym = nm->mkNode(
-                Kind::AND, k.eqNode(k2), (x.eqNode(y2)), y.eqNode(x2));
+                Kind::AND, {k.eqNode(k2), (x.eqNode(y2)), y.eqNode(x2)});
             Node sym_lemm = nm->mkNode(Kind::IMPLIES, assum_sym, i.eqNode(n));
             d_im.addPendingLemma(sym_lemm,
                                  InferenceId::ARITH_NL_PIAND_SYMETRY_REFINE,

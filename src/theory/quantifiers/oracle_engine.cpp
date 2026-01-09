@@ -333,7 +333,7 @@ Node OracleEngine::mkOracleInterface(const std::vector<Node>& inputs,
   }
   Node bvl = nm->mkNode(Kind::BOUND_VAR_LIST, vars);
   Node body = nm->mkNode(Kind::ORACLE_FORMULA_GEN, assume, constraint);
-  return nm->mkNode(Kind::FORALL, bvl, body, ipl);
+  return nm->mkNode(Kind::FORALL, {bvl, body, ipl});
 }
 
 bool OracleEngine::getOracleInterface(Node q,

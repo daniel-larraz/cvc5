@@ -143,8 +143,8 @@ TEST_F(TestUtilBlackBooleanSimplification, simplifyClause)
   out = in;
   test_nodes_equal(out, BooleanSimplification::simplifyClause(in));
 
-  in = d_nodeManager->mkNode(Kind::OR, d_a, d_d.orNode(d_b));
-  out = d_nodeManager->mkNode(Kind::OR, d_a, d_d, d_b);
+  in = d_nodeManager->mkNode(Kind::OR, {d_a, d_d.orNode(d_b)});
+  out = d_nodeManager->mkNode(Kind::OR, {d_a, d_d, d_b});
   test_nodes_equal(out, BooleanSimplification::simplifyClause(in));
 
   in = d_nodeManager->mkNode(
@@ -188,14 +188,15 @@ TEST_F(TestUtilBlackBooleanSimplification, simplifyHornClause)
                              d_ga.orNode(d_c).notNode(),
                              d_hfc.orNode(d_ac),
                              d_d.andNode(d_b)}));
-  out = d_nodeManager->mkNode(Kind::OR,
-                              d_a.notNode(),
-                              d_b.notNode(),
-                              d_nodeManager->mkNode(Kind::AND,
-                                                    {d_fa,
-                                                     d_ga.orNode(d_c).notNode(),
-                                                     d_hfc.orNode(d_ac),
-                                                     d_d.andNode(d_b)}));
+  out =
+      d_nodeManager->mkNode(Kind::OR,
+                            {d_a.notNode(),
+                             d_b.notNode(),
+                             d_nodeManager->mkNode(Kind::AND,
+                                                   {d_fa,
+                                                    d_ga.orNode(d_c).notNode(),
+                                                    d_hfc.orNode(d_ac),
+                                                    d_d.andNode(d_b)})});
   test_nodes_equal(out, BooleanSimplification::simplifyHornClause(in));
 
   in = d_a.andNode(d_b).impNode(
@@ -224,8 +225,8 @@ TEST_F(TestUtilBlackBooleanSimplification, simplifyConflict)
   out = in;
   test_nodes_equal(out, BooleanSimplification::simplifyConflict(in));
 
-  in = d_nodeManager->mkNode(Kind::AND, d_a, d_d.andNode(d_b));
-  out = d_nodeManager->mkNode(Kind::AND, d_a, d_d, d_b);
+  in = d_nodeManager->mkNode(Kind::AND, {d_a, d_d.andNode(d_b)});
+  out = d_nodeManager->mkNode(Kind::AND, {d_a, d_d, d_b});
   test_nodes_equal(out, BooleanSimplification::simplifyConflict(in));
 
   in = d_nodeManager->mkNode(Kind::AND,

@@ -79,7 +79,7 @@ TEST_F(TestTheoryWhiteEngine, rewriter_simple)
   // make the expression (ADD x y (MULT z 0))
   Node zero = d_nodeManager->mkConstInt(Rational("0"));
   Node zTimesZero = d_nodeManager->mkNode(Kind::MULT, z, zero);
-  Node n = d_nodeManager->mkNode(Kind::ADD, x, y, zTimesZero);
+  Node n = d_nodeManager->mkNode(Kind::ADD, {x, y, zTimesZero});
 
   Node nExpected = n;
   Node nOut;
@@ -167,7 +167,7 @@ TEST_F(TestTheoryWhiteEngine, rewrite_rules)
   // Try to apply MultSlice to a multiplication of two and three different
   // variables, expect different results (x * y and x * y * z should not get
   // rewritten to the same term).
-  expr = d_nodeManager->mkNode(Kind::BITVECTOR_MULT, x, y, z);
+  expr = d_nodeManager->mkNode(Kind::BITVECTOR_MULT, {x, y, z});
   result = expr;
   Node expr2 = d_nodeManager->mkNode(Kind::BITVECTOR_MULT, x, y);
   Node result2 = expr;

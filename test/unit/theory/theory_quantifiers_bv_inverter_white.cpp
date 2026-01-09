@@ -163,7 +163,7 @@ class TestTheoryWhiteQuantifiersBvInverter : public TestSmtNoFinishInit
       x = d_nodeManager->mkBoundVar(s2.getType());
       sk = d_skolemManager->mkDummySkolem("sk", s1.getType());
       t = d_nodeManager->mkVar("t", d_nodeManager->mkBitVectorType(12));
-      sv_t = d_nodeManager->mkNode(Kind::BITVECTOR_CONCAT, s1, x, s2);
+      sv_t = d_nodeManager->mkNode(Kind::BITVECTOR_CONCAT, {s1, x, s2});
       sc = getICBvConcat(pol, litk, 1, sk, sv_t, t);
     }
 

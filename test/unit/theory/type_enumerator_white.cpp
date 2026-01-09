@@ -207,49 +207,51 @@ TEST_F(TestTheoryWhiteTypeEnumerator, dtypes_infinite)
                                       ctCons[2]->getConstructor());
   ASSERT_EQ(*te, nil);
   ASSERT_EQ(*++te,
-            d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, red, nil));
+            d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, {cons, red, nil}));
   ASSERT_FALSE(te.isFinished());
   ASSERT_EQ(
       *++te,
       d_nodeManager->mkNode(
           Kind::APPLY_CONSTRUCTOR,
-          cons,
-          red,
-          d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, red, nil)));
+          {cons,
+           red,
+           d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, {cons, red, nil})}));
   ASSERT_FALSE(te.isFinished());
-  ASSERT_EQ(*++te,
-            d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, orange, nil));
+  ASSERT_EQ(
+      *++te,
+      d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, {cons, orange, nil}));
   ASSERT_FALSE(te.isFinished());
   ASSERT_EQ(
       *++te,
       d_nodeManager->mkNode(
           Kind::APPLY_CONSTRUCTOR,
-          cons,
-          red,
-          d_nodeManager->mkNode(
-              Kind::APPLY_CONSTRUCTOR,
-              cons,
-              red,
-              d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, red, nil))));
+          {cons,
+           red,
+           d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR,
+                                 {cons,
+                                  red,
+                                  d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR,
+                                                        {cons, red, nil})})}));
   ASSERT_FALSE(te.isFinished());
   ASSERT_EQ(
       *++te,
       d_nodeManager->mkNode(
           Kind::APPLY_CONSTRUCTOR,
-          cons,
-          orange,
-          d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, red, nil)));
-  ASSERT_FALSE(te.isFinished());
-  ASSERT_EQ(*++te,
-            d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, yellow, nil));
+          {cons,
+           orange,
+           d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, {cons, red, nil})}));
   ASSERT_FALSE(te.isFinished());
   ASSERT_EQ(
       *++te,
-      d_nodeManager->mkNode(
-          Kind::APPLY_CONSTRUCTOR,
-          cons,
-          red,
-          d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, cons, orange, nil)));
+      d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, {cons, yellow, nil}));
+  ASSERT_FALSE(te.isFinished());
+  ASSERT_EQ(
+      *++te,
+      d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR,
+                            {cons,
+                             red,
+                             d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR,
+                                                   {cons, orange, nil})}));
   ASSERT_FALSE(te.isFinished());
 }
 
@@ -292,38 +294,39 @@ TEST_F(TestTheoryWhiteTypeEnumerator, arrays_infinite)
   Node five = d_nodeManager->mkConstInt(Rational(5));
   Node eleven = d_nodeManager->mkConstInt(Rational(11));
 
-  ASSERT_EQ(elts.find(d_nodeManager->mkNode(Kind::STORE, ones, zero, zero)),
+  ASSERT_EQ(elts.find(d_nodeManager->mkNode(Kind::STORE, {ones, zero, zero})),
             elts.end());
 
   // the arrays enumerator is currently not a fair enumerator -- when it is,
   // these should be flipped
-  ASSERT_EQ(elts.find(d_nodeManager->mkNode(Kind::STORE, tens, four, five)),
+  ASSERT_EQ(elts.find(d_nodeManager->mkNode(Kind::STORE, {tens, four, five})),
             elts.end());
   ASSERT_EQ(elts.find(d_nodeManager->mkNode(
                 Kind::STORE,
-                d_nodeManager->mkNode(
-                    Kind::STORE,
-                    d_nodeManager->mkNode(Kind::STORE, fours, eleven, two),
-                    two,
-                    one),
-                zero,
-                two)),
+                {d_nodeManager->mkNode(
+                     Kind::STORE,
+                     {d_nodeManager->mkNode(Kind::STORE, {fours, eleven, two}),
+                      two,
+                      one}),
+                 zero,
+                 two})),
             elts.end());
   ASSERT_EQ(elts.find(threes), elts.end());
-  ASSERT_EQ(elts.find(d_nodeManager->mkNode(
-                Kind::STORE,
-                d_nodeManager->mkNode(
+  ASSERT_EQ(
+      elts.find(d_nodeManager->mkNode(
+          Kind::STORE,
+          {d_nodeManager->mkNode(
+               Kind::STORE,
+               {d_nodeManager->mkNode(
                     Kind::STORE,
-                    d_nodeManager->mkNode(
-                        Kind::STORE,
-                        d_nodeManager->mkNode(Kind::STORE, twos, three, zero),
-                        two,
-                        zero),
-                    one,
-                    zero),
-                zero,
-                zero)),
-            elts.end());
+                    {d_nodeManager->mkNode(Kind::STORE, {twos, three, zero}),
+                     two,
+                     zero}),
+                one,
+                zero}),
+           zero,
+           zero})),
+      elts.end());
 }
 
 TEST_F(TestTheoryWhiteTypeEnumerator, bv)

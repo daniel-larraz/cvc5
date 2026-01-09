@@ -149,7 +149,7 @@ TEST_F(TestPropWhiteCnfStream, and)
   Node b = d_nodeManager->mkVar(d_nodeManager->booleanType());
   Node c = d_nodeManager->mkVar(d_nodeManager->booleanType());
   d_cnfStream->convertAndAssert(
-      d_nodeManager->mkNode(Kind::AND, a, b, c), false, false);
+      d_nodeManager->mkNode(Kind::AND, {a, b, c}), false, false);
   ASSERT_TRUE(d_satSolver->addClauseCalled());
 }
 
@@ -219,7 +219,7 @@ TEST_F(TestPropWhiteCnfStream, or)
   Node b = d_nodeManager->mkVar(d_nodeManager->booleanType());
   Node c = d_nodeManager->mkVar(d_nodeManager->booleanType());
   d_cnfStream->convertAndAssert(
-      d_nodeManager->mkNode(Kind::OR, a, b, c), false, false);
+      d_nodeManager->mkNode(Kind::OR, {a, b, c}), false, false);
   ASSERT_TRUE(d_satSolver->addClauseCalled());
 }
 

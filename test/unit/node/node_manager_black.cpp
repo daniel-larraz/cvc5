@@ -58,7 +58,7 @@ TEST_F(TestNodeBlackNodeManager, mkNode_three_children)
   Node x = d_skolemManager->mkDummySkolem("x", d_nodeManager->booleanType());
   Node y = d_skolemManager->mkDummySkolem("y", d_nodeManager->booleanType());
   Node z = d_skolemManager->mkDummySkolem("z", d_nodeManager->booleanType());
-  Node n = d_nodeManager->mkNode(Kind::AND, x, y, z);
+  Node n = d_nodeManager->mkNode(Kind::AND, {x, y, z});
   ASSERT_EQ(n.getNumChildren(), 3u);
   ASSERT_EQ(n.getKind(), Kind::AND);
   ASSERT_EQ(n[0], x);

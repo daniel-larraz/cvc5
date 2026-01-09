@@ -178,7 +178,7 @@ TEST_F(TestTheoryWhiteBagsRewriter, bag_count)
   RewriteResponse response2 = d_rewriter->postRewrite(n2);
 
   Node geq = d_nodeManager->mkNode(Kind::GEQ, three, one);
-  Node ite = d_nodeManager->mkNode(Kind::ITE, geq, three, zero);
+  Node ite = d_nodeManager->mkNode(Kind::ITE, {geq, three, zero});
   ASSERT_TRUE(response2.d_status == REWRITE_AGAIN_FULL
               && response2.d_node == three);
 }
@@ -720,7 +720,7 @@ TEST_F(TestTheoryWhiteBagsRewriter, fold)
 
   // f(x,y) = 0 for all x, y
   Node f = d_nodeManager->mkNode(Kind::LAMBDA, xy, zero);
-  Node node1 = d_nodeManager->mkNode(Kind::BAG_FOLD, f, one, emptybag);
+  Node node1 = d_nodeManager->mkNode(Kind::BAG_FOLD, {f, one, emptybag});
   RewriteResponse response1 = d_rewriter->postRewrite(node1);
   ASSERT_TRUE(response1.d_node == one
               && response1.d_status == REWRITE_AGAIN_FULL);
@@ -730,17 +730,17 @@ TEST_F(TestTheoryWhiteBagsRewriter, fold)
   Node xSkolem = d_nodeManager->getSkolemManager()->mkDummySkolem(
       "x", d_nodeManager->integerType());
   Node bag = d_nodeManager->mkNode(Kind::BAG_MAKE, xSkolem, n);
-  Node node2 = d_nodeManager->mkNode(Kind::BAG_FOLD, f, one, bag);
-  Node apply_f_once = d_nodeManager->mkNode(Kind::APPLY_UF, f, xSkolem, one);
+  Node node2 = d_nodeManager->mkNode(Kind::BAG_FOLD, {f, one, bag});
+  Node apply_f_once = d_nodeManager->mkNode(Kind::APPLY_UF, {f, xSkolem, one});
   Node apply_f_twice =
-      d_nodeManager->mkNode(Kind::APPLY_UF, f, xSkolem, apply_f_once);
+      d_nodeManager->mkNode(Kind::APPLY_UF, {f, xSkolem, apply_f_once});
   RewriteResponse response2 = d_rewriter->postRewrite(node2);
   ASSERT_TRUE(response2.d_node == apply_f_twice
               && response2.d_status == REWRITE_AGAIN_FULL);
 
   // (bag.fold (lambda ((x Int)(y Int)) (+ x y)) 1 (bag 10 2)) = 21
   bag = d_nodeManager->mkNode(Kind::BAG_MAKE, ten, n);
-  Node node3 = d_nodeManager->mkNode(Kind::BAG_FOLD, f, one, bag);
+  Node node3 = d_nodeManager->mkNode(Kind::BAG_FOLD, {f, one, bag});
   Node result3 = d_nodeManager->mkConstInt(Rational(21));
   Node response3 = rr->rewrite(node3);
   ASSERT_TRUE(response3 == result3);
@@ -753,9 +753,9 @@ TEST_F(TestTheoryWhiteBagsRewriter, fold)
   Node B =
       d_nodeManager->getSkolemManager()->mkDummySkolem("B", bagIntegerType);
   Node disjoint = d_nodeManager->mkNode(Kind::BAG_UNION_DISJOINT, A, B);
-  Node node4 = d_nodeManager->mkNode(Kind::BAG_FOLD, f, one, disjoint);
-  Node foldA = d_nodeManager->mkNode(Kind::BAG_FOLD, f, one, A);
-  Node fold = d_nodeManager->mkNode(Kind::BAG_FOLD, f, foldA, B);
+  Node node4 = d_nodeManager->mkNode(Kind::BAG_FOLD, {f, one, disjoint});
+  Node foldA = d_nodeManager->mkNode(Kind::BAG_FOLD, {f, one, A});
+  Node fold = d_nodeManager->mkNode(Kind::BAG_FOLD, {f, foldA, B});
   RewriteResponse response4 = d_rewriter->postRewrite(node4);
   ASSERT_TRUE(response4.d_node == fold
               && response2.d_status == REWRITE_AGAIN_FULL);

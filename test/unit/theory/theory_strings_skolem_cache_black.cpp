@@ -40,10 +40,8 @@ TEST_F(TestTheoryBlackStringsSkolemCache, mkSkolemCached)
   Node d = d_skolemManager->mkDummySkolem("d", d_nodeManager->stringType());
   Node sa = d_nodeManager->mkNode(
       Kind::STRING_SUBSTR,
-      a,
-      zero,
-      d_nodeManager->mkNode(Kind::STRING_INDEXOF, a, b, zero));
-  Node sc = d_nodeManager->mkNode(Kind::STRING_SUBSTR, c, zero, n);
+      {a, zero, d_nodeManager->mkNode(Kind::STRING_INDEXOF, {a, b, zero})});
+  Node sc = d_nodeManager->mkNode(Kind::STRING_SUBSTR, {c, zero, n});
 
   SkolemCache sk(d_nodeManager.get(), nullptr);
 

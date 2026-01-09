@@ -517,7 +517,7 @@ TEST_F(TestNodeBlackNode, kinded_iterator)
   Node x = d_skolemManager->mkDummySkolem("x", integerType);
   Node y = d_skolemManager->mkDummySkolem("y", integerType);
   Node z = d_skolemManager->mkDummySkolem("z", integerType);
-  Node plus_x_y_z = d_nodeManager->mkNode(Kind::ADD, x, y, z);
+  Node plus_x_y_z = d_nodeManager->mkNode(Kind::ADD, {x, y, z});
   Node x_minus_y = d_nodeManager->mkNode(Kind::SUB, x, y);
 
   {  // iterator
@@ -737,23 +737,21 @@ TEST_F(TestNodeBlackNode, isConst)
   Node x = d_skolemManager->mkDummySkolem("x", d_nodeManager->integerType());
   Node cons_x_nil = d_nodeManager->mkNode(
       Kind::APPLY_CONSTRUCTOR,
-      cons,
-      x,
-      d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil));
+      {cons, x, d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil)});
   Node cons_1_nil = d_nodeManager->mkNode(
       Kind::APPLY_CONSTRUCTOR,
-      cons,
-      d_nodeManager->mkConstInt(Rational(1)),
-      d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil));
+      {cons,
+       d_nodeManager->mkConstInt(Rational(1)),
+       d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil)});
   Node cons_1_cons_2_nil = d_nodeManager->mkNode(
       Kind::APPLY_CONSTRUCTOR,
-      cons,
-      d_nodeManager->mkConstInt(Rational(1)),
-      d_nodeManager->mkNode(
-          Kind::APPLY_CONSTRUCTOR,
-          cons,
-          d_nodeManager->mkConstInt(Rational(2)),
-          d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil)));
+      {cons,
+       d_nodeManager->mkConstInt(Rational(1)),
+       d_nodeManager->mkNode(
+           Kind::APPLY_CONSTRUCTOR,
+           {cons,
+            d_nodeManager->mkConstInt(Rational(2)),
+            d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil)})});
   ASSERT_TRUE(d_nodeManager->mkNode(Kind::APPLY_CONSTRUCTOR, nil).isConst());
   ASSERT_FALSE(cons_x_nil.isConst());
   ASSERT_TRUE(cons_1_nil.isConst());
@@ -766,13 +764,13 @@ TEST_F(TestNodeBlackNode, isConst)
   Node storeAll = d_nodeManager->mkConst(ArrayStoreAll(arrType, zero));
   ASSERT_TRUE(storeAll.isConst());
 
-  Node arr = d_nodeManager->mkNode(Kind::STORE, storeAll, zero, zero);
+  Node arr = d_nodeManager->mkNode(Kind::STORE, {storeAll, zero, zero});
   ASSERT_FALSE(arr.isConst());
-  arr = d_nodeManager->mkNode(Kind::STORE, storeAll, zero, one);
+  arr = d_nodeManager->mkNode(Kind::STORE, {storeAll, zero, one});
   ASSERT_TRUE(arr.isConst());
-  Node arr2 = d_nodeManager->mkNode(Kind::STORE, arr, one, zero);
+  Node arr2 = d_nodeManager->mkNode(Kind::STORE, {arr, one, zero});
   ASSERT_FALSE(arr2.isConst());
-  arr2 = d_nodeManager->mkNode(Kind::STORE, arr, zero, one);
+  arr2 = d_nodeManager->mkNode(Kind::STORE, {arr, zero, one});
   ASSERT_FALSE(arr2.isConst());
 
   arrType = d_nodeManager->mkArrayType(d_nodeManager->mkBitVectorType(1),
@@ -782,15 +780,15 @@ TEST_F(TestNodeBlackNode, isConst)
   storeAll = d_nodeManager->mkConst(ArrayStoreAll(arrType, zero));
   ASSERT_TRUE(storeAll.isConst());
 
-  arr = d_nodeManager->mkNode(Kind::STORE, storeAll, zero, zero);
+  arr = d_nodeManager->mkNode(Kind::STORE, {storeAll, zero, zero});
   ASSERT_FALSE(arr.isConst());
-  arr = d_nodeManager->mkNode(Kind::STORE, storeAll, zero, one);
+  arr = d_nodeManager->mkNode(Kind::STORE, {storeAll, zero, one});
   ASSERT_TRUE(arr.isConst());
-  arr2 = d_nodeManager->mkNode(Kind::STORE, arr, one, zero);
+  arr2 = d_nodeManager->mkNode(Kind::STORE, {arr, one, zero});
   ASSERT_FALSE(arr2.isConst());
-  arr2 = d_nodeManager->mkNode(Kind::STORE, arr, one, one);
+  arr2 = d_nodeManager->mkNode(Kind::STORE, {arr, one, one});
   ASSERT_FALSE(arr2.isConst());
-  arr2 = d_nodeManager->mkNode(Kind::STORE, arr, zero, one);
+  arr2 = d_nodeManager->mkNode(Kind::STORE, {arr, zero, one});
   ASSERT_FALSE(arr2.isConst());
 }
 

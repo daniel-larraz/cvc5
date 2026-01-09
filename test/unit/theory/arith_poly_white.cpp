@@ -58,7 +58,7 @@ TEST_F(TestTheoryWhiteArithPolyNorm, check_poly_norm_int)
       Kind::ADD, y, d_nodeManager->mkNode(Kind::MULT, one, x));
   ASSERT_TRUE(PolyNorm::isArithPolyNorm(t1, t2));
 
-  t2 = d_nodeManager->mkNode(Kind::ADD, x, x, y);
+  t2 = d_nodeManager->mkNode(Kind::ADD, {x, x, y});
   ASSERT_FALSE(PolyNorm::isArithPolyNorm(t1, t2));
 
   t1 = d_nodeManager->mkNode(
@@ -116,8 +116,8 @@ TEST_F(TestTheoryWhiteArithPolyNorm, check_poly_norm_real)
 
   Node t1, t2;
 
-  t1 = d_nodeManager->mkNode(Kind::ADD, x, y, y);
-  t2 = d_nodeManager->mkNode(Kind::ADD, y, x, y);
+  t1 = d_nodeManager->mkNode(Kind::ADD, {x, y, y});
+  t2 = d_nodeManager->mkNode(Kind::ADD, {y, x, y});
   ASSERT_TRUE(PolyNorm::isArithPolyNorm(t1, t2));
 
   t1 = one;

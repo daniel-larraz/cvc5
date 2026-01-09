@@ -70,9 +70,10 @@ TEST_F(TestTheoryBlackRegexpOperation, basic)
                                  d_nodeManager->mkConst(String("c")));
   Node abc = d_nodeManager->mkNode(Kind::STRING_TO_REGEXP,
                                    d_nodeManager->mkConst(String("abc")));
-  Node sigma3 = d_nodeManager->mkNode(Kind::REGEXP_CONCAT, sigma, sigma, sigma);
-  Node asc = d_nodeManager->mkNode(Kind::REGEXP_CONCAT, a, sigma, c);
-  Node asw = d_nodeManager->mkNode(Kind::REGEXP_CONCAT, a, sigma, sigmaStar);
+  Node sigma3 =
+      d_nodeManager->mkNode(Kind::REGEXP_CONCAT, {sigma, sigma, sigma});
+  Node asc = d_nodeManager->mkNode(Kind::REGEXP_CONCAT, {a, sigma, c});
+  Node asw = d_nodeManager->mkNode(Kind::REGEXP_CONCAT, {a, sigma, sigmaStar});
 
   includes(sigma3, abc);
   doesNotInclude(abc, sigma3);
@@ -100,7 +101,7 @@ TEST_F(TestTheoryBlackRegexpOperation, star_wildcards)
                                    d_nodeManager->mkConst(String("abc")));
 
   Node _abc_ =
-      d_nodeManager->mkNode(Kind::REGEXP_CONCAT, sigmaStar, abc, sigmaStar);
+      d_nodeManager->mkNode(Kind::REGEXP_CONCAT, {sigmaStar, abc, sigmaStar});
   Node _asc_ = d_nodeManager->mkNode(Kind::REGEXP_CONCAT,
                                      {sigmaStar, a, sigma, c, sigmaStar});
   Node _sc_ = rr->rewrite(d_nodeManager->mkNode(

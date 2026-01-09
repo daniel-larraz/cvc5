@@ -199,7 +199,7 @@ TEST_F(TestTheoryWhiteBvIntblaster, intblaster_with_children)
 
   // extract + BV ITE
   Node extract = theory::bv::utils::mkExtract(v1, 0, 0);
-  original = d_nodeManager->mkNode(Kind::BITVECTOR_ITE, extract, v2, v1);
+  original = d_nodeManager->mkNode(Kind::BITVECTOR_ITE, {extract, v2, v1});
   Node intExtract = intBlaster.translateWithChildren(extract, {i1}, lemmas);
   result =
       intBlaster.translateWithChildren(original, {intExtract, i1, i2}, lemmas);

@@ -55,7 +55,7 @@ TEST_F(TestTheoryWhiteStringsUtils, collect_empty_eqs)
             expected);
 
   std::tie(allEmptyEqs, emptyNodes) = utils::collectEmptyEqs(
-      d_nodeManager->mkNode(Kind::AND, emptyEqX, xEqA, emptyEqA));
+      d_nodeManager->mkNode(Kind::AND, {emptyEqX, xEqA, emptyEqA}));
   ASSERT_FALSE(allEmptyEqs);
   ASSERT_EQ(std::unordered_set<Node>(emptyNodes.begin(), emptyNodes.end()),
             expected);

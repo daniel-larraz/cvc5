@@ -300,9 +300,9 @@ TEST_F(TestNodeBlackNodeBuilder, append)
   Node x = d_skolemManager->mkDummySkolem("x", *d_boolTypeNode);
   Node y = d_skolemManager->mkDummySkolem("y", *d_boolTypeNode);
   Node z = d_skolemManager->mkDummySkolem("z", *d_boolTypeNode);
-  Node m = d_nodeManager->mkNode(Kind::AND, y, z, x);
-  Node n = d_nodeManager->mkNode(
-      Kind::OR, d_nodeManager->mkNode(Kind::NOT, x), y, z);
+  Node m = d_nodeManager->mkNode(Kind::AND, {y, z, x});
+  Node n = d_nodeManager->mkNode(Kind::OR,
+                                 {d_nodeManager->mkNode(Kind::NOT, x), y, z});
   Node o = d_nodeManager->mkNode(Kind::XOR, y, x);
 
   Node r = d_skolemManager->mkDummySkolem("r", *d_realTypeNode);
@@ -312,13 +312,13 @@ TEST_F(TestNodeBlackNodeBuilder, append)
   Node p = d_nodeManager->mkNode(
       Kind::EQUAL,
       d_nodeManager->mkConst<Rational>(Kind::CONST_RATIONAL, 0),
-      d_nodeManager->mkNode(
-          Kind::ADD, r, d_nodeManager->mkNode(Kind::NEG, s), t));
-  Node q = d_nodeManager->mkNode(
-      Kind::AND, x, z, d_nodeManager->mkNode(Kind::NOT, y));
+      d_nodeManager->mkNode(Kind::ADD,
+                            {r, d_nodeManager->mkNode(Kind::NEG, s), t}));
+  Node q = d_nodeManager->mkNode(Kind::AND,
+                                 {x, z, d_nodeManager->mkNode(Kind::NOT, y)});
 
 #ifdef CVC5_ASSERTIONS
-  ASSERT_DEATH(d_nodeManager->mkNode(Kind::XOR, y, x, x),
+  ASSERT_DEATH(d_nodeManager->mkNode(Kind::XOR, {y, x, x}),
                "Nodes with kind `xor` must have at most 2 children");
 #endif
 
@@ -408,9 +408,9 @@ TEST_F(TestNodeBlackNodeBuilder, leftist_building)
   ASSERT_EQ(n[2].getType(), *d_realTypeNode);
 
   Node nota = d_nodeManager->mkNode(Kind::NOT, a);
-  Node nota_or_b_or_c = d_nodeManager->mkNode(Kind::OR, nota, b, c);
-  Node n0 = d_nodeManager->mkNode(Kind::AND, nota_or_b_or_c, c, a);
-  Node nexpected = d_nodeManager->mkNode(Kind::ITE, n0, d, e);
+  Node nota_or_b_or_c = d_nodeManager->mkNode(Kind::OR, {nota, b, c});
+  Node n0 = d_nodeManager->mkNode(Kind::AND, {nota_or_b_or_c, c, a});
+  Node nexpected = d_nodeManager->mkNode(Kind::ITE, {n0, d, e});
 
   ASSERT_EQ(nexpected, n);
 }

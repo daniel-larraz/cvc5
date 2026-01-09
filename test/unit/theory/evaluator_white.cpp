@@ -53,7 +53,7 @@ TEST_F(TestTheoryWhiteEvaluator, simple)
       (unsigned int)0b0000000100000101001110111001101000101110011101011011110011100111));
 
   Node t = d_nodeManager->mkNode(
-      Kind::ITE, d_nodeManager->mkNode(Kind::EQUAL, y, one), x, w);
+      Kind::ITE, {d_nodeManager->mkNode(Kind::EQUAL, y, one), x, w});
 
   std::vector<Node> args = {w, x, y, z};
   std::vector<Node> vals = {c1, zero, one, c1};
@@ -111,25 +111,25 @@ TEST_F(TestTheoryWhiteEvaluator, strIdOf)
   Evaluator eval(rr);
 
   {
-    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, a, empty, one);
+    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, {a, empty, one});
     Node r = eval.eval(n, args, vals);
     ASSERT_EQ(r, rr->rewrite(n));
   }
 
   {
-    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, a, a, one);
+    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, {a, a, one});
     Node r = eval.eval(n, args, vals);
     ASSERT_EQ(r, rr->rewrite(n));
   }
 
   {
-    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, a, empty, two);
+    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, {a, empty, two});
     Node r = eval.eval(n, args, vals);
     ASSERT_EQ(r, rr->rewrite(n));
   }
 
   {
-    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, a, a, two);
+    Node n = d_nodeManager->mkNode(Kind::STRING_INDEXOF, {a, a, two});
     Node r = eval.eval(n, args, vals);
     ASSERT_EQ(r, rr->rewrite(n));
   }

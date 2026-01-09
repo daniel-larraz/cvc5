@@ -51,7 +51,7 @@ TEST_F(TestNodeWhiteNode, iterators)
   Node two = d_nodeManager->mkConstInt(Rational(2));
   Node x_times_2 = d_nodeManager->mkNode(Kind::MULT, x, two);
 
-  Node n = d_nodeManager->mkNode(Kind::ADD, x_times_2, x_plus_y, y);
+  Node n = d_nodeManager->mkNode(Kind::ADD, {x_times_2, x_plus_y, y});
 
   Node::iterator i;
 

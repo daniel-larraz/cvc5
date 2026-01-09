@@ -174,7 +174,7 @@ TEST_F(TestNodeBlackNodeAlgorithm, match)
   // should return false for similar operators
   ASSERT_FALSE(match(n1, n2, subs));
 
-  n2 = d_nodeManager->mkNode(Kind::MULT, two, a, one);
+  n2 = d_nodeManager->mkNode(Kind::MULT, {two, a, one});
 
   // should return false for different number of arguments
   ASSERT_FALSE(match(n1, n2, subs));

@@ -30,7 +30,7 @@ Parser::Parser(Solver* solver, SymManager* sm)
 {
 }
 
-void Parser::setLogic(const std::string& name) {}
+void Parser::setLogic([[maybe_unused]] const std::string& name) {}
 
 void Parser::setFileInput(const std::string& filename)
 {

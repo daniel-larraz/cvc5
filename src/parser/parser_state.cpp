@@ -91,7 +91,11 @@ Term ParserState::getExpressionForNameAndType(const std::string& name, Sort t)
   return expr;
 }
 
-bool ParserState::getTesterName(Term cons, std::string& name) { return false; }
+bool ParserState::getTesterName([[maybe_unused]] Term cons,
+                                [[maybe_unused]] std::string& name)
+{
+  return false;
+}
 
 Kind ParserState::getKindForFunction(Term fun)
 {

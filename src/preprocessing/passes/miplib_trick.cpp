@@ -327,9 +327,8 @@ PreprocessingPassResult MipLibTrick::applyInternal(
         const Node pos = nodeManager()->mkNode(Kind::AND, posv);
         const TNode var = ((*j1)[1][0].isConst()) ? (*j1)[1][1] : (*j1)[1][0];
         const pair<Node, Node> pos_var(pos, var);
-        const Rational& constant = ((*j1)[1][0].isConst())
-                                       ? (*j1)[1][0].getConst<Rational>()
-                                       : (*j1)[1][1].getConst<Rational>();
+        const TNode const_tn = ((*j1)[1][0].isConst()) ? (*j1)[1][0] : (*j1)[1][1];
+        const Rational& constant = const_tn.getConst<Rational>();
         uint64_t mark = 0;
         unsigned countneg = 0, thepos = 0;
         for (unsigned ii = 0; ii < pos.getNumChildren(); ++ii)
@@ -398,9 +397,8 @@ PreprocessingPassResult MipLibTrick::applyInternal(
         Trace("miplib") << "  x:" << x << "  " << xneg << endl;
         const TNode var = ((*j1)[1][0].isConst()) ? (*j1)[1][1] : (*j1)[1][0];
         const pair<Node, Node> x_var(x, var);
-        const Rational& constant = ((*j1)[1][0].isConst())
-                                       ? (*j1)[1][0].getConst<Rational>()
-                                       : (*j1)[1][1].getConst<Rational>();
+        const TNode const_tn = ((*j1)[1][0].isConst()) ? (*j1)[1][0] : (*j1)[1][1];
+        const Rational& constant = const_tn.getConst<Rational>();
         unsigned mark = (xneg ? 0 : 1);
         if ((marks[x_var] & (1u << mark)) != 0)
         {

@@ -3636,8 +3636,9 @@ std::pair<Sort, uint32_t> Term::getCardinalityConstraint() const
       *d_node)
       << "Upper bound for cardinality constraint does not fit uint32_t";
   //////// all checks before this line
+  const TNode op = d_node->getOperator();
   const internal::CardinalityConstraint& cc =
-      d_node->getOperator().getConst<internal::CardinalityConstraint>();
+      op.getConst<internal::CardinalityConstraint>();
   return std::make_pair(Sort(d_tm, cc.getType()),
                         cc.getUpperBound().getUnsignedInt());
   ////////
@@ -3672,8 +3673,9 @@ Term Term::getRealAlgebraicNumberDefiningPolynomial(const Term& v) const
 #endif
   //////// all checks before this line
 #ifdef CVC5_POLY_IMP
+  const TNode op = d_node->getOperator();
   const internal::RealAlgebraicNumber& ran =
-      d_node->getOperator().getConst<internal::RealAlgebraicNumber>();
+      op.getConst<internal::RealAlgebraicNumber>();
   return Term(d_tm,
               internal::PolyConverter::ran_to_defining_polynomial(
                   ran, *v.d_node.get()));
@@ -3699,8 +3701,9 @@ Term Term::getRealAlgebraicNumberLowerBound() const
 #endif
   //////// all checks before this line
 #ifdef CVC5_POLY_IMP
+  const TNode op = d_node->getOperator();
   const internal::RealAlgebraicNumber& ran =
-      d_node->getOperator().getConst<internal::RealAlgebraicNumber>();
+      op.getConst<internal::RealAlgebraicNumber>();
   return Term(d_tm,
               internal::PolyConverter::ran_to_lower(d_tm->d_nm.get(), ran));
 #else
@@ -3725,8 +3728,9 @@ Term Term::getRealAlgebraicNumberUpperBound() const
 #endif
   //////// all checks before this line
 #ifdef CVC5_POLY_IMP
+  const TNode op = d_node->getOperator();
   const internal::RealAlgebraicNumber& ran =
-      d_node->getOperator().getConst<internal::RealAlgebraicNumber>();
+      op.getConst<internal::RealAlgebraicNumber>();
   return Term(d_tm,
               internal::PolyConverter::ran_to_upper(d_tm->d_nm.get(), ran));
 #else

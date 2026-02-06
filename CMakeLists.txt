@@ -199,6 +199,9 @@ set(GPL_LIBS "")
 
 if(ENABLE_CLANG_TIDY)
   set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+  if(TREAT_WARNING_AS_ERROR)
+    set(CMAKE_CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY};-warnings-as-errors=*")
+  endif()
 endif()
 
 #-----------------------------------------------------------------------------#

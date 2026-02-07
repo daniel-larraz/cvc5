@@ -17,7 +17,7 @@ jobs:
           - name: ubuntu:clang-tidy
             os: ubuntu-latest
             use-clang: true
-            config: production --auto-download --clang-tidy
+            config: production --auto-download --assertions --clang-tidy
             strip-bin: strip
 
     steps:

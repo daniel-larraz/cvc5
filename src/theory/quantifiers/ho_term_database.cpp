@@ -168,7 +168,7 @@ bool HoTermDb::checkCongruentDisequal(TNode a, TNode b, std::vector<Node>& exp)
     }
     else
     {
-      Assert(false);
+      AssertFalse();
       return false;
     }
   }

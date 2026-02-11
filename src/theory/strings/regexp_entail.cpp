@@ -457,7 +457,7 @@ bool RegExpEntail::testConstStringInRegExpInternal(String& s,
       {
         return (s2 == r[0].getConst<String>());
       }
-      Assert(false) << "RegExp contains variables";
+      AssertFalse() << "RegExp contains variables";
       return false;
     }
     case Kind::REGEXP_CONCAT:

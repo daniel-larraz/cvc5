@@ -76,7 +76,7 @@ void SygusUnifRl::initializeCandidate(
 void SygusUnifRl::notifyEnumeration(Node e, Node v, std::vector<Node>& lemmas)
 {
   // we do not use notify enumeration
-  Assert(false);
+  AssertFalse();
 }
 
 Node SygusUnifRl::purifyLemma(Node n,

@@ -1906,7 +1906,7 @@ bool TermGenerator::getNextMatch( TermGenEnv * s, TNode eqc, std::map< TypeNode,
       }
     }
   }
-  Assert(false);
+  AssertFalse();
   return false;
 }
 
@@ -1977,7 +1977,7 @@ Node TermGenerator::getTerm( TermGenEnv * s ) {
       return s->d_cg->nodeManager()->mkNode(s->d_func_kind[f], children);
     }
   }else{
-    Assert(false);
+    AssertFalse();
   }
   return Node::null();
 }

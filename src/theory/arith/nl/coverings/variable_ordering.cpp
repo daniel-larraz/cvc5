@@ -124,7 +124,7 @@ std::vector<poly::Variable> VariableOrdering::operator()(
     case VariableOrderingStrategy::BROWN: return sortBrown(d_polyCtx, polys);
     case VariableOrderingStrategy::TRIANGULAR:
       return sortTriangular(d_polyCtx, polys);
-    default: Assert(false) << "Unsupported variable ordering.";
+    default: AssertFalse() << "Unsupported variable ordering.";
   }
   return {};
 }

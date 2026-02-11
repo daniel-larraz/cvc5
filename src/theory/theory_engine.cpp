@@ -576,7 +576,7 @@ void TheoryEngine::check(Theory::Effort effort) {
             {
               setModelUnsound(theoryId,
                               IncompleteId::UNPROCESSED_THEORY_CONFLICT);
-              Assert(false) << "Unprocessed theory conflict from " << theoryId;
+              AssertFalse() << "Unprocessed theory conflict from " << theoryId;
               break;
             }
           }
@@ -2045,7 +2045,7 @@ TrustNode TheoryEngine::getExplanation(
       }
       else
       {
-        Assert(false)
+        AssertFalse()
             << "TheoryEngine::getExplanation: no step found for conclusion "
             << conclusion;
       }

@@ -602,7 +602,7 @@ const char* toString(InferenceId i)
     case InferenceId::UNKNOWN: return "?";
 
     default:
-      Assert(false) << "No print for inference id " << static_cast<size_t>(i);
+      AssertFalse() << "No print for inference id " << static_cast<size_t>(i);
       return "?Unhandled";
   }
 }

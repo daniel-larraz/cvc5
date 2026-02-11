@@ -128,6 +128,12 @@ class OstreamVoider
   CVC5_FATAL_IF(false, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 #endif
 
+#ifdef CVC5_STATIC_ANALYSIS
+#define AssertFalse() (void)0
+#else
+#define AssertFalse() Assert(false)
+#endif
+
 class AssertArgumentException : public Exception
 {
  protected:

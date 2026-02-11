@@ -129,7 +129,7 @@ class OstreamVoider
 #endif
 
 #ifdef CVC5_STATIC_ANALYSIS
-#define AssertFalse() (void)0
+#define AssertFalse() Assert(true)
 #else
 #define AssertFalse() Assert(false)
 #endif

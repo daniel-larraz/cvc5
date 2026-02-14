@@ -2648,13 +2648,13 @@ void CoreSolver::checkLengthsEqc()
         << "Process length constraints for " << d_strings_eqc[i] << std::endl;
     // check if there is a length term for this equivalence class
     EqcInfo* ei = d_state.getOrMakeEqcInfo(d_strings_eqc[i], false);
-    Node llt = ei ? ei->d_lengthTerm : Node::null();
-    if (llt.isNull())
+    if (ei == nullptr)
     {
       Trace("strings-process-debug")
           << "No length term for eqc " << d_strings_eqc[i] << std::endl;
       continue;
     }
+    Node llt = ei->d_lengthTerm;
     // now, check if length normalization has occurred
     if (ei->d_normalizedLength.get().isNull())
     {

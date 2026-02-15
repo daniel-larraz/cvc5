@@ -56,4 +56,10 @@
 #define CVC5_NORETURN [[noreturn]]
 #define CVC5_WARN_UNUSED_RESULT [[nodiscard]]
 
+#if defined(__GNUC__) && __GNUC__ >= 13
+#define CVC5_NO_DANGLING [[gnu::no_dangling]]
+#else
+#define CVC5_NO_DANGLING
+#endif
+
 #endif /* CVC5_PUBLIC_H */

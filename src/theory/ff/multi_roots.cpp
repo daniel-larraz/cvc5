@@ -163,7 +163,8 @@ bool allVarsAssigned(const CoCoA::ideal& ideal)
 
 std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
 {
-  CoCoA::ring polyRing = ideal->myRing();
+  CoCoA::ring ring = ideal->myRing();
+  CoCoA::PolyRing polyRing(ring);
   Assert(!isUnsat(ideal));
   // first, we look for super-linear univariate polynomials.
   Assert(CoCoA::HasGBasis(ideal));
@@ -176,14 +177,13 @@ std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
       return factorEnumerator(p);
     }
   }
-  auto vars = CoCoA::indets(polyRing);
   // now, we check the dimension
   if (CoCoA::IsZeroDim(ideal))
   {
     // If zero-dimensional, we compute a minimal polynomial in some unset
     // variable.
     std::unordered_set<std::string> alreadySet = assignedVars(ideal);
-    for (const auto& var : vars)
+    for (const auto& var : CoCoA::indets(polyRing))
     {
       std::string varName = ostring(var);
       if (!alreadySet.count(ostring(var)))
@@ -203,7 +203,7 @@ std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
     // TODO(aozdemir): better model construction (cvc5-wishues/issues/138)
     std::unordered_set<std::string> alreadySet = assignedVars(ideal);
     std::vector<CoCoA::RingElem> toGuess{};
-    for (const auto& var : vars)
+    for (const auto& var : CoCoA::indets(polyRing))
     {
       std::string varName = ostring(var);
       if (!alreadySet.count(ostring(var)))
@@ -212,7 +212,7 @@ std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
       }
     }
     return std::make_unique<RoundRobinEnumerator>(toGuess,
-                                                  polyRing->myBaseRing());
+                                                  ring->myBaseRing());
   }
 }
 

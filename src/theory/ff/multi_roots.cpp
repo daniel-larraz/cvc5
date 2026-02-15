@@ -163,8 +163,7 @@ bool allVarsAssigned(const CoCoA::ideal& ideal)
 
 std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
 {
-  CoCoA::ring ring = ideal->myRing();
-  CoCoA::PolyRing polyRing(ring);
+  CoCoA::PolyRing polyRing(ideal->myRing());
   Assert(!isUnsat(ideal));
   // first, we look for super-linear univariate polynomials.
   Assert(CoCoA::HasGBasis(ideal));
@@ -212,7 +211,7 @@ std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
       }
     }
     return std::make_unique<RoundRobinEnumerator>(toGuess,
-                                                  ring->myBaseRing());
+                                                  polyRing->myBaseRing());
   }
 }
 

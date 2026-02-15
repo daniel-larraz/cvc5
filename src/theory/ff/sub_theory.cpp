@@ -113,7 +113,7 @@ Result SubTheory::postCheck(Theory::Effort e)
                           enc.bitsumPolys().end());
         if (options().ff.ffFieldPolys)
         {
-          const auto& vars = CoCoA::indets(enc.polyRing());
+          auto vars = CoCoA::indets(enc.polyRing());
           for (const auto& var : vars)
           {
             CoCoA::BigInt characteristic = CoCoA::characteristic(coeffRing());

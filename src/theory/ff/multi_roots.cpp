@@ -176,7 +176,7 @@ std::unique_ptr<AssignmentEnumerator> applyRule(const CoCoA::ideal& ideal)
       return factorEnumerator(p);
     }
   }
-  const auto& vars = CoCoA::indets(polyRing);
+  auto vars = CoCoA::indets(polyRing);
   // now, we check the dimension
   if (CoCoA::IsZeroDim(ideal))
   {

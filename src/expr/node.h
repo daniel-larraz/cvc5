@@ -564,7 +564,7 @@ public:
    * If this is a CONST_* Node, extract the constant from it.
    */
   template <class T>
-  inline const T& getConst() const;
+  [[gnu::no_dangling]] inline const T& getConst() const;
 
   /**
    * @return true if this is a skolem function.

@@ -259,6 +259,12 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
+    - name: Set GCC 14 as the compiler
+      if: matrix.build.name == 'ubuntu:production-dbg'
+      run: |
+        echo "CC=gcc-14" >> $GITHUB_ENV
+        echo "CXX=g++-14" >> $GITHUB_ENV
+
     # Ensure that the Java bindings, Java API tests, and Java examples are compatible
     # with the minimum required Java version (currently Java 8).
     - uses: actions/setup-java@v5

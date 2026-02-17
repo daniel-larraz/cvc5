@@ -917,7 +917,7 @@ bool tryBindToTerm(SymManager* sm,
                    bool doOverload,
                    std::ostream* out = nullptr)
 {
-  if (!sm->bind(sym, t, true))
+  if (!sm->bind(sym, t, doOverload))
   {
     if (out)
     {

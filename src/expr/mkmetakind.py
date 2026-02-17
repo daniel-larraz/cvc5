@@ -133,9 +133,10 @@ template <>
   // To support non-inlined CONSTANT-kinded NodeValues (those that are
   // "constructed" when initially checking them against the NodeManager
   // pool), we must check d_nchildren here.
-  return d_nchildren == 0
-    ? *reinterpret_cast<{class_name} const*>(d_children)
-    : *reinterpret_cast<{class_name} const*>(d_children[0]);
+  if (d_nchildren == 0) {
+    return *reinterpret_cast<{class_name} const*>(d_children);
+  }
+  return *reinterpret_cast<{class_name} const*>(d_children[0]);
 }}
 
 // re-enable the warning

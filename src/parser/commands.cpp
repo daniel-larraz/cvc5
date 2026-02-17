@@ -468,7 +468,7 @@ cvc5::Sort DeclareSygusVarCommand::getSort() const { return d_sort; }
 void DeclareSygusVarCommand::invoke(cvc5::Solver* solver, SymManager* sm)
 {
   Term var = solver->declareSygusVar(d_symbol, d_sort);
-  if (!bindToTerm(sm, var))
+  if (!bindToTerm(sm, var, true))
   {
     return;
   }
@@ -518,7 +518,7 @@ void SynthFunCommand::invoke(cvc5::Solver* solver, SymManager* sm)
   {
     fun = solver->synthFun(d_symbol, d_vars, d_sort);
   }
-  if (!bindToTerm(sm, fun))
+  if (!bindToTerm(sm, fun, true))
   {
     return;
   }
@@ -914,6 +914,7 @@ std::string DeclarationDefinitionCommand::getSymbol() const { return d_symbol; }
 bool tryBindToTerm(SymManager* sm,
                    const std::string& sym,
                    Term t,
+                   bool doOverload,
                    std::ostream* out = nullptr)
 {
   if (!sm->bind(sym, t, true))
@@ -928,12 +929,14 @@ bool tryBindToTerm(SymManager* sm,
   return true;
 }
 
-bool DeclarationDefinitionCommand::bindToTerm(SymManager* sm, Term t)
+bool DeclarationDefinitionCommand::bindToTerm(SymManager* sm,
+                                              Term t,
+                                              bool doOverload)
 {
-  if (!tryBindToTerm(sm, d_symbol, t))
+  if (!tryBindToTerm(sm, d_symbol, t, doOverload))
   {
     std::stringstream ss;
-    tryBindToTerm(sm, d_symbol, t, &ss);
+    tryBindToTerm(sm, d_symbol, t, doOverload, &ss);
     d_commandStatus = new CommandFailure(ss.str());
     return false;
   }
@@ -960,7 +963,7 @@ void DeclareFunctionCommand::invoke(cvc5::Solver* solver, SymManager* sm)
   // determine if this will be a fresh declaration
   bool fresh = sm->getFreshDeclarations();
   Term fun = solver->declareFun(d_symbol, d_argSorts, d_sort, fresh);
-  if (!bindToTerm(sm, fun))
+  if (!bindToTerm(sm, fun, true))
   {
     return;
   }
@@ -1005,7 +1008,7 @@ const std::vector<cvc5::Term>& DeclarePoolCommand::getInitialValue() const
 void DeclarePoolCommand::invoke(cvc5::Solver* solver, SymManager* sm)
 {
   Term pool = solver->declarePool(d_symbol, d_sort, d_initValue);
-  if (!bindToTerm(sm, pool))
+  if (!bindToTerm(sm, pool, true))
   {
     return;
   }
@@ -1218,7 +1221,7 @@ void DefineFunctionCommand::invoke(cvc5::Solver* solver, SymManager* sm)
     bool global = sm->getGlobalDeclarations();
     cvc5::Term fun =
         solver->defineFun(d_symbol, d_formals, d_sort, d_formula, global);
-    if (!bindToTerm(sm, fun))
+    if (!bindToTerm(sm, fun, true))
     {
       return;
     }
@@ -1290,10 +1293,10 @@ void DefineFunctionRecCommand::invoke(cvc5::Solver* solver, SymManager* sm)
     {
       Assert(f.hasSymbol());
       const std::string s = f.getSymbol();
-      if (!tryBindToTerm(sm, s, f))
+      if (!tryBindToTerm(sm, s, f, true))
       {
         std::stringstream ss;
-        tryBindToTerm(sm, s, f, &ss);
+        tryBindToTerm(sm, s, f, true, &ss);
         d_commandStatus = new CommandFailure(ss.str());
         return;
       }

@@ -29,7 +29,7 @@ namespace theory {
 namespace datatypes {
 
 
-class DatatypesEnumerator final : public TypeEnumeratorBase<DatatypesEnumerator> {
+class DatatypesEnumerator : public TypeEnumeratorBase<DatatypesEnumerator> {
   /** type properties */
   TypeEnumeratorProperties * d_tep;
   /** The datatype we're enumerating */
@@ -80,6 +80,11 @@ class DatatypesEnumerator final : public TypeEnumeratorBase<DatatypesEnumerator>
   bool increment( unsigned index );
 
   Node getCurrentTerm( unsigned index );
+
+  bool isEnumerationComplete()
+  {
+    return d_ctor >= d_has_debruijn+d_datatype.getNumConstructors();
+  }
 
   void init();
 
@@ -157,7 +162,7 @@ class DatatypesEnumerator final : public TypeEnumeratorBase<DatatypesEnumerator>
 
   bool isFinished() override
   {
-    return d_ctor >= d_has_debruijn+d_datatype.getNumConstructors();
+    return isEnumerationComplete();
   }
 
 };/* DatatypesEnumerator */

@@ -1,7 +1,9 @@
 Checks: >
   -*,
-  clang-analyzer-deadcode.*,
-  clang-analyzer-core.uninitialized.Assign
+  clang-analyzer-core.CallAndMessage,
+  clang-analyzer-core.uninitialized.Assign,
+  clang-analyzer-core.uninitialized.UndefReturn,
+  clang-analyzer-deadcode.*
 HeaderFilterRegex: '.*'
 # Use .clang-format for formatting changes
 FormatStyle: file

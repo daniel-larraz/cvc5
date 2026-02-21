@@ -599,7 +599,7 @@ void TheoryArrays::weakEquivAddSecondary(TNode index, TNode arrayFrom, TNode arr
   }
 }
 
-void TheoryArrays::checkWeakEquiv() {
+void TheoryArrays::checkWeakEquiv(bool arraysMerged) {
   eq::EqClassesIterator eqcs_i = eq::EqClassesIterator(&d_mayEqualEqualityEngine);
   for (; !eqcs_i.isFinished(); ++eqcs_i) {
     Node eqc = (*eqcs_i);
@@ -789,7 +789,7 @@ void TheoryArrays::preRegisterTermInternal(TNode node)
         d_infoMap.setWeakEquivPointer(node, node[0]);
         d_infoMap.setWeakEquivIndex(node, node[1]);
 #ifdef CVC5_ASSERTIONS
-        checkWeakEquiv();
+        checkWeakEquiv(false);
 #endif
     }
 
@@ -1234,11 +1234,11 @@ void TheoryArrays::postCheck(Effort level)
         d_infoMap.setWeakEquivIndex(b, TNode());
       }
 #ifdef CVC5_ASSERTIONS
-      checkWeakEquiv(;
+      checkWeakEquiv(false);
 #endif
     }
 #ifdef CVC5_ASSERTIONS
-    checkWeakEquiv();
+    checkWeakEquiv(true);
 #endif
 
     d_readTableContext->push();

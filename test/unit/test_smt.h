@@ -112,7 +112,7 @@ class DummyOutputChannel : public theory::OutputChannel
   ~DummyOutputChannel() override {}
 
   void safePoint(CVC5_UNUSED Resource r) override {}
-  void conflict(TNode n, theory::InferenceId id) override { push(CONFLICT, n); }
+  void conflict(TNode n, CVC5_UNUSED theory::InferenceId id) override { push(CONFLICT, n); }
 
   void trustedConflict(TrustNode n, CVC5_UNUSED theory::InferenceId id) override
   {

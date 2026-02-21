@@ -170,7 +170,7 @@ class TestBlackOptions : public TestApi
               [this, &name](const OptionInfo::VoidInfo&) {
                 d_solver->setOption(name, "");
               },
-              [this, &name](const OptionInfo::ValueInfo<bool>& v) {
+              [this, &name](const OptionInfo::ValueInfo<bool>&) {
                 d_solver->setOption(name, "false");
               },
               [this, &name](const OptionInfo::ValueInfo<std::string>&) {

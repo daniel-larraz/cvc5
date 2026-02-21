@@ -311,7 +311,7 @@ void RepSetIterator::getCurrentTerms(std::vector<Node>& terms) const
   }
 }
 
-void RepSetIterator::debugPrint(const char* c)
+void RepSetIterator::debugPrint(CVC5_UNUSED const char* c)
 {
   for (size_t v = 0, isize = d_index.size(); v < isize; v++)
   {
@@ -319,7 +319,7 @@ void RepSetIterator::debugPrint(const char* c)
   }
 }
 
-void RepSetIterator::debugPrintSmall(const char* c)
+void RepSetIterator::debugPrintSmall(CVC5_UNUSED const char* c)
 {
   Trace(c) << "RI: ";
   for (size_t v = 0, isize = d_index.size(); v < isize; v++)

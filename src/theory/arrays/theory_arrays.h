@@ -286,7 +286,7 @@ class TheoryArrays : public Theory {
   void weakEquivMakeRep(TNode node);
   void weakEquivMakeRepIndex(TNode node);
   void weakEquivAddSecondary(TNode index, TNode arrayFrom, TNode arrayTo, TNode reason);
-  void checkWeakEquiv(bool arraysMerged);
+  void checkWeakEquiv();
 
   // NotifyClass: template helper class for d_equalityEngine - handles call-back from congruence closure module
   class NotifyClass : public eq::EqualityEngineNotify {

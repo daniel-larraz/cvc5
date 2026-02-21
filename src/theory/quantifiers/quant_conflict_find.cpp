@@ -1137,7 +1137,7 @@ void QuantInfo::revertMatch(const std::vector<size_t>& assigned)
   }
 }
 
-void QuantInfo::debugPrintMatch(const char* c) const
+void QuantInfo::debugPrintMatch(CVC5_UNUSED const char* c) const
 {
   for (size_t i = 0, nvars = getNumVars(); i < nvars; i++)
   {
@@ -2157,7 +2157,7 @@ bool MatchGen::doMatching()
   return !d_qn.empty();
 }
 
-void MatchGen::debugPrintType(const char* c, short typ)
+void MatchGen::debugPrintType(CVC5_UNUSED const char* c, short typ)
 {
   switch (typ)
   {
@@ -2566,7 +2566,7 @@ void QuantConflictFind::checkQuantifiedFormula(Node q,
 
 //-------------------------------------------------- debugging
 
-void QuantConflictFind::debugPrint(const char* c) const
+void QuantConflictFind::debugPrint(CVC5_UNUSED const char* c) const
 {
   //print the equivalance classes
   Trace(c) << "----------EQ classes" << std::endl;
@@ -2591,7 +2591,7 @@ void QuantConflictFind::debugPrint(const char* c) const
   }
 }
 
-void QuantConflictFind::debugPrintQuant(const char* c, Node q) const
+void QuantConflictFind::debugPrintQuant(CVC5_UNUSED const char* c, Node q) const
 {
   std::map<Node, size_t>::const_iterator it = d_quant_id.find(q);
   if (it == d_quant_id.end())

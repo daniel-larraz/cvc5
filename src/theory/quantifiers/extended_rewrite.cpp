@@ -1054,7 +1054,7 @@ Node ExtendedRewriter::extendedRewriteFactoring(Kind andk,
 }
 
 Node ExtendedRewriter::extendedRewriteEqRes(Kind andk,
-                                            Kind ork,
+                                            CVC5_UNUSED Kind ork,
                                             Kind eqk,
                                             Kind notk,
                                             std::map<Kind, bool>& bcp_kinds,
@@ -1655,7 +1655,7 @@ Node ExtendedRewriter::partialSubstitute(
   return partialSubstitute(n, assign, rkinds);
 }
 
-Node ExtendedRewriter::solveEquality(Node n) const
+Node ExtendedRewriter::solveEquality(CVC5_UNUSED Node n) const
 {
   // TODO (#1706) : implement
   Assert(n.getKind() == Kind::EQUAL);

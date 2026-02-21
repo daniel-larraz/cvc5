@@ -321,7 +321,7 @@ struct LazardEvaluationState
    * - store the minimal polynomial p_i in d_p
    * - construct K_{i+1} = R_i/<p_i>
    */
-  void addK(const poly::Variable& var, const CoCoA::RingElem& p)
+  void addK(const CoCoA::RingElem& p)
   {
     d_direct.emplace_back();
     d_p.emplace_back(p);
@@ -338,7 +338,7 @@ struct LazardEvaluationState
    * - store a dummy minimal polynomial in d_p
    * - construct K_{i+1} as copy of K_i
    */
-  void addKRational(const poly::Variable& var, const CoCoA::RingElem& r)
+  void addKRational(const CoCoA::RingElem& r)
   {
     d_direct.emplace_back(r);
     d_p.emplace_back();
@@ -637,8 +637,7 @@ void LazardEvaluation::add(const poly::Variable& var, const poly::Value& val)
 
     if (rational)
     {
-      d_state->addKRational(var,
-                            CoCoA::RingElem(d_state->d_K.back(), *rational));
+      d_state->addKRational(CoCoA::RingElem(d_state->d_K.back(), *rational));
       d_state->d_stats.d_directAssignments++;
       return;
     }
@@ -661,13 +660,13 @@ void LazardEvaluation::add(const poly::Variable& var, const poly::Value& val)
           Trace("nl-cov::lazard") << "Using linear factor " << f << " -> "
                                   << stream_variable(d_state->d_polyCtx, var)
                                   << " = " << rat << std::endl;
-          d_state->addKRational(var, rat);
+          d_state->addKRational(rat);
           d_state->d_stats.d_directAssignments++;
         }
         else
         {
           Trace("nl-cov::lazard") << "Using nonlinear factor " << f << std::endl;
-          d_state->addK(var, f);
+          d_state->addK(f);
           d_state->d_stats.d_ranAssignments++;
         }
         used_factor = true;

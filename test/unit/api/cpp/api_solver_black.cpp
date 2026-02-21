@@ -2351,7 +2351,7 @@ TEST_F(TestApiBlackSolver, declareOracleFunError)
       "f",
       {d_int},
       d_int,
-      [&](const std::vector<Term>& input) { return d_tm.mkInteger(0); });
+      [&](const std::vector<Term>&) { return d_tm.mkInteger(0); });
                , CVC5ApiException);
   d_solver->setOption("oracles", "true");
   Sort nullSort;
@@ -2360,7 +2360,7 @@ TEST_F(TestApiBlackSolver, declareOracleFunError)
       "f",
       {nullSort},
       d_int,
-      [&](const std::vector<Term>& input) { return d_tm.mkInteger(0); });
+      [&](const std::vector<Term>&) { return d_tm.mkInteger(0); });
                , CVC5ApiException);
 }
 

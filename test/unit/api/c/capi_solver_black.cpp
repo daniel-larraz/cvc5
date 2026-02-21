@@ -2670,7 +2670,7 @@ TEST_F(TestCApiBlackSolver, declare_oracle_fun_unsat)
                    sorts2.data(),
                    d_int,
                    tm,
-                   [](size_t size, const Cvc5Term* input, void* state) {
+                   [](size_t, const Cvc5Term* input, void* state) {
                      Cvc5TermManager* ctm =
                          static_cast<Cvc5TermManager*>(state);
                      if (cvc5_term_is_uint32_value(input[0]))

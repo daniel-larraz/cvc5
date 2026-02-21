@@ -111,10 +111,10 @@ class DummyOutputChannel : public theory::OutputChannel
   }
   ~DummyOutputChannel() override {}
 
-  void safePoint(Resource r) override {}
+  void safePoint(CVC5_UNUSED Resource r) override {}
   void conflict(TNode n, theory::InferenceId id) override { push(CONFLICT, n); }
 
-  void trustedConflict(TrustNode n, theory::InferenceId id) override
+  void trustedConflict(TrustNode n, CVC5_UNUSED theory::InferenceId id) override
   {
     push(CONFLICT, n.getNode());
   }
@@ -126,22 +126,22 @@ class DummyOutputChannel : public theory::OutputChannel
   }
 
   void lemma(TNode n,
-             theory::InferenceId id,
-             theory::LemmaProperty p = theory::LemmaProperty::NONE) override
+             CVC5_UNUSED theory::InferenceId id,
+             CVC5_UNUSED theory::LemmaProperty p = theory::LemmaProperty::NONE) override
   {
     push(LEMMA, n);
   }
 
   void trustedLemma(TrustNode n,
-                    theory::InferenceId id,
-                    theory::LemmaProperty p) override
+                    CVC5_UNUSED theory::InferenceId id,
+                    CVC5_UNUSED theory::LemmaProperty p) override
   {
     push(LEMMA, n.getNode());
   }
 
   void preferPhase(TNode, bool) override {}
-  void setModelUnsound(theory::IncompleteId id) override {}
-  void setRefutationUnsound(theory::IncompleteId id) override {}
+  void setModelUnsound(CVC5_UNUSED theory::IncompleteId id) override {}
+  void setRefutationUnsound(CVC5_UNUSED theory::IncompleteId id) override {}
 
   void clear() { d_callHistory.clear(); }
 
@@ -195,12 +195,12 @@ class DummyProofRuleChecker : public ProofRuleChecker
 {
  public:
   DummyProofRuleChecker(NodeManager* nm) : ProofRuleChecker(nm) {}
-  void registerTo(ProofChecker* pc) override {}
+  void registerTo(CVC5_UNUSED ProofChecker* pc) override {}
 
  protected:
-  Node checkInternal(ProofRule id,
-                     const std::vector<Node>& children,
-                     const std::vector<Node>& args) override
+  Node checkInternal(CVC5_UNUSED ProofRule id,
+                     CVC5_UNUSED const std::vector<Node>& children,
+                     CVC5_UNUSED const std::vector<Node>& args) override
   {
     return Node::null();
   }

@@ -871,7 +871,7 @@ JNIEXPORT jboolean JNICALL Java_io_github_cvc5_Term_isFloatingPointValue(
  * Signature: (J)Lio/github/cvc5/Triplet;
  */
 JNIEXPORT jobject JNICALL Java_io_github_cvc5_Term_getFloatingPointValue(
-    JNIEnv* env, jobject thisObject, jlong pointer)
+    JNIEnv* env, jobject, jlong pointer)
 {
   CVC5_JAVA_API_TRY_CATCH_BEGIN;
   Term* current = reinterpret_cast<Term*>(pointer);

@@ -239,16 +239,16 @@ class DummyTheory : public theory::Theory
   }
 
   void presolve() override { Unimplemented(); }
-  void preRegisterTerm(TNode n) override { Unimplemented(); }
-  void propagate(Effort level) override { Unimplemented(); }
+  void preRegisterTerm(CVC5_UNUSED TNode n) override { Unimplemented(); }
+  void propagate(CVC5_UNUSED Effort level) override { Unimplemented(); }
   bool preNotifyFact(
-      TNode atom, bool pol, TNode fact, bool isPrereg, bool isInternal) override
+      CVC5_UNUSED TNode atom, CVC5_UNUSED bool pol, CVC5_UNUSED TNode fact, CVC5_UNUSED bool isPrereg, CVC5_UNUSED bool isInternal) override
   {
     // do not assert to equality engine, since this theory does not use one
     return true;
   }
-  TrustNode explain(TNode n) override { return TrustNode::null(); }
-  Node getValue(TNode n) { return Node::null(); }
+  TrustNode explain(CVC5_UNUSED TNode n) override { return TrustNode::null(); }
+  Node getValue(CVC5_UNUSED TNode n) { return Node::null(); }
   std::string identify() const override { return "DummyTheory" + d_id; }
 
   std::set<Node> d_registered;

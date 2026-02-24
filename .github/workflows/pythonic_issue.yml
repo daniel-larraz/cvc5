@@ -8,6 +8,9 @@ jobs:
     name: ${{ matrix.name }}
     if: (github.repository == 'cvc5/cvc5') || (github.event_name != 'schedule')
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: 'msys2 {0}'
     strategy:
       matrix:
         include:
@@ -36,7 +39,6 @@ jobs:
         shell: ${{ matrix.shell }}
 
     - name: Run failing test
-      shell: ${{ matrix.shell }}
       run: |
         BUILD_DIR="${{ steps.configure-and-build.outputs.shared-build-dir }}"
         cd $BUILD_DIR

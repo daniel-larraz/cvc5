@@ -46,12 +46,12 @@ jobs:
         PYTHON_MODULE_PATH="$(dirname $(dirname $(find $BUILD_DIR/install -name 'cvc5_python_base*')))"
         export PYTHONPATH="$PYTHONPATH;$(cygpath -w $PYTHON_MODULE_PATH)"
         echo Test1
-        python3 examples/api/python/pythonic/bitvectors_and_arrays.py
+        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
         echo Test2
-        python3 examples/api/python/pythonic/bitvectors_and_arrays.py
+        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
         echo Test3
-        python3 examples/api/python/pythonic/bitvectors_and_arrays.py
+        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
         echo Test4
-        python3 examples/api/python/pythonic/bitvectors_and_arrays.py
+        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
         echo Test5
-        python3 examples/api/python/pythonic/bitvectors_and_arrays.py
+        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py

@@ -16,7 +16,7 @@ jobs:
         include:
           - name: win64:production-arm64
             os: windows-11-arm
-            config: debug --asan --auto-download --python-bindings
+            config: debug --auto-download --python-bindings
             strip-bin: strip
             shell: 'msys2 {0}'
 

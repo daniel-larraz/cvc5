@@ -16,7 +16,7 @@ jobs:
         include:
           - name: win64:production-arm64
             os: windows-11-arm
-            config: debug --auto-download --python-bindings
+            config: production --auto-download --python-bindings
             strip-bin: strip
             shell: 'msys2 {0}'
 
@@ -45,13 +45,7 @@ jobs:
         make -j${{ env.num_proc }} install
         PYTHON_MODULE_PATH="$(dirname $(dirname $(find $BUILD_DIR/install -name 'cvc5_python_base*')))"
         export PYTHONPATH="$PYTHONPATH;$(cygpath -w $PYTHON_MODULE_PATH)"
-        echo Test1
-        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
-        echo Test2
-        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
-        echo Test3
-        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
-        echo Test4
-        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
-        echo Test5
-        python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
+        for i in {1..20}; do
+          echo "Test $i"
+          python3 ../examples/api/python/pythonic/bitvectors_and_arrays.py
+        done

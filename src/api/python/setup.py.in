@@ -72,7 +72,9 @@ else:
         "-std=c++17",
         "-fno-var-tracking",
         # Suppress deprecation warnings for deprecated members of OptionInfo
-        "-Wno-deprecated-declarations"
+        "-Wno-deprecated-declarations",
+        "-fsanitize=address",
+        "-fno-omit-frame-pointer"
     ]
 
     if sys.platform == 'win32':

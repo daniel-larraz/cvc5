@@ -38,7 +38,7 @@ std::string Exception::toString() const
 
 void Exception::toStream(std::ostream& os) const { os << d_msg; }
 
-thread_local LastExceptionBuffer* LastExceptionBuffer::s_currentBuffer = nullptr;
+static thread_local LastExceptionBuffer* s_currentBuffer = nullptr;
 
 LastExceptionBuffer::LastExceptionBuffer() : d_contents(nullptr) {}
 
@@ -48,6 +48,9 @@ LastExceptionBuffer::~LastExceptionBuffer() {
     d_contents = nullptr;
   }
 }
+
+LastExceptionBuffer* LastExceptionBuffer::getCurrent() { return s_currentBuffer; }
+void LastExceptionBuffer::setCurrent(LastExceptionBuffer* buffer) { s_currentBuffer = buffer; }
 
 void LastExceptionBuffer::setContents(const char* string) {
   if(d_contents != nullptr){

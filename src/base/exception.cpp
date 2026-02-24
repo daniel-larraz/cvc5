@@ -38,31 +38,6 @@ std::string Exception::toString() const
 
 void Exception::toStream(std::ostream& os) const { os << d_msg; }
 
-static thread_local LastExceptionBuffer* s_currentBuffer = nullptr;
-
-LastExceptionBuffer::LastExceptionBuffer() : d_contents(nullptr) {}
-
-LastExceptionBuffer::~LastExceptionBuffer() {
-  if(d_contents != nullptr){
-    free(d_contents);
-    d_contents = nullptr;
-  }
-}
-
-LastExceptionBuffer* LastExceptionBuffer::getCurrent() { return s_currentBuffer; }
-void LastExceptionBuffer::setCurrent(LastExceptionBuffer* buffer) { s_currentBuffer = buffer; }
-
-void LastExceptionBuffer::setContents(const char* string) {
-  if(d_contents != nullptr){
-    free(d_contents);
-    d_contents = nullptr;
-  }
-
-  if(string != nullptr){
-    d_contents = strdup(string);
-  }
-}
-
 const char* IllegalArgumentException::s_header = "Illegal argument detected";
 
 std::string IllegalArgumentException::formatVariadic() {
@@ -139,15 +114,6 @@ void IllegalArgumentException::construct(const char* header, const char* extra,
   }
 
   setMessage(string(buf));
-
-#ifdef CVC5_DEBUG
-  LastExceptionBuffer* buffer = LastExceptionBuffer::getCurrent();
-  if(buffer != nullptr){
-    if(buffer->getContents() == nullptr) {
-      buffer->setContents(buf);
-    }
-  }
-#endif /* CVC5_DEBUG */
   delete [] buf;
 }
 
@@ -180,15 +146,6 @@ void IllegalArgumentException::construct(const char* header, const char* extra,
   }
 
   setMessage(string(buf));
-
-#ifdef CVC5_DEBUG
-  LastExceptionBuffer* buffer = LastExceptionBuffer::getCurrent();
-  if(buffer != nullptr){
-    if(buffer->getContents() == nullptr) {
-      buffer->setContents(buf);
-    }
-  }
-#endif /* CVC5_DEBUG */
   delete [] buf;
 }
 

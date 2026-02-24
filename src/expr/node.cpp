@@ -33,23 +33,6 @@ TypeCheckingExceptionPrivate::TypeCheckingExceptionPrivate(TNode node,
                                                            std::string message)
     : Exception(message), d_node(new Node(node))
 {
-#ifdef CVC5_DEBUG
-  std::stringstream ss;
-  LastExceptionBuffer* current = LastExceptionBuffer::getCurrent();
-  if(current != NULL){
-    // Since this node is malformed, we cannot use toString().
-    // Instead, we print the kind and the children.
-    ss << "node kind: " << node.getKind() << ". children: ";
-    int i = 0;
-    for (const TNode& child : node)
-    {
-      ss << "child[" << i << "]: " << child << ". ";
-      i++;
-    }
-    string ssstring = ss.str();
-    current->setContents(ssstring.c_str());
-  }
-#endif /* CVC5_DEBUG */
 }
 
 TypeCheckingExceptionPrivate::~TypeCheckingExceptionPrivate() { delete d_node; }

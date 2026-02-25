@@ -152,7 +152,7 @@ jobs:
 
           - name: win64:production-arm64
             os: windows-11-arm
-            config: debug --auto-download --all-bindings
+            config: production --assertions --auto-download --all-bindings
             cache-key: production-win64-native-arm64
             strip-bin: strip
             python-bindings: true

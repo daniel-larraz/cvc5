@@ -79,8 +79,7 @@ public:
   public:
    const_iterator(const typename super::const_iterator& it) : d_it(it) {}
 
-   // Default constructor
-   const_iterator() {}
+   const_iterator() = default;
 
    // (Dis)equality
    bool operator==(const const_iterator& i) const { return d_it == i.d_it; }

@@ -11,5 +11,5 @@ set(CVC5_WHEEL_VERSION "${CVC5_LAST_RELEASE}")
 set(CVC5_MAVEN_VERSION "${CVC5_LAST_RELEASE}")
 set(CVC5_GIT_INFO "")
 
-# Shared library versioning. Increment SOVERSION for every new cvc5 release.
-set(CVC5_SOVERSION 1)
+# Shared library versioning.
+set(CVC5_SOVERSION "${CVC5_LAST_RELEASE}")

@@ -64,7 +64,6 @@ runs:
         echo "::endgroup::"
 
     - name: Store to latest
-      if: ${{ github.ref == 'refs/heads/main' && inputs.dry-run != 'true' }}
       uses: ./.github/actions/store-to-latest
       with:
         asset-filename: ${{ inputs.package-name }}.zip

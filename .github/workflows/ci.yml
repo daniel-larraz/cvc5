@@ -40,7 +40,7 @@ jobs:
     strategy:
       matrix:
         gpl-build:
-          - ${{ startsWith(github.ref, 'refs/tags/') || (github.event_name == 'schedule') }}
+          - true
         build:
           - name: ubuntu:production
             os: ubuntu-22.04

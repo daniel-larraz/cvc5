@@ -25,7 +25,7 @@ void test_get_info(Cvc5* solver, const char* s)
   size_t len = strlen(s) + strlen("(get-info )") + 1;
   char* str = malloc(len * sizeof(char));
   assert(str != NULL);
-  snprintf(str, len, "(get-info %s)", s);
+  snprintf_s(str, len, len, "(get-info %s)", s);
   cvc5_parser_set_str_input(
       parser, CVC5_INPUT_LANGUAGE_SMT_LIB_2_6, str, "<internal>");
   Cvc5Command cmd;

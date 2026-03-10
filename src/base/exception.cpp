@@ -106,7 +106,7 @@ std::string IllegalArgumentException::format_extra(const char* condStr, const ch
 void IllegalArgumentException::construct(const char* header, const char* extra,
                                          const char* function, const char* tail) {
   // try building the exception msg with a smallish buffer first,
-  // then with a larger one if sprintf tells us to.
+  // then with a larger one if snprintf tells us to.
   int n = 512;
   char* buf;
 
@@ -148,7 +148,7 @@ void IllegalArgumentException::construct(const char* header, const char* extra,
 void IllegalArgumentException::construct(const char* header, const char* extra,
                                          const char* function) {
   // try building the exception msg with a smallish buffer first,
-  // then with a larger one if sprintf tells us to.
+  // then with a larger one if snprintf tells us to.
   int n = 256;
   char* buf;
 

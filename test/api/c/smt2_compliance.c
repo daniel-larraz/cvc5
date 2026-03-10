@@ -22,8 +22,10 @@ void test_get_info(Cvc5* solver, const char* s)
   Cvc5SymbolManager* sm = cvc5_symbol_manager_new(cvc5_get_tm(solver));
   Cvc5InputParser* parser = cvc5_parser_new(solver, sm);
 
-  char* str = malloc((strlen(s) + strlen("(get-info )") + 1) * sizeof(char));
-  sprintf(str, "(get-info %s)", s);
+  size_t len = strlen(s) + strlen("(get-info )") + 1;
+  char* str = malloc(len * sizeof(char));
+  assert(str != NULL);
+  snprintf(str, len, "(get-info %s)", s);
   cvc5_parser_set_str_input(
       parser, CVC5_INPUT_LANGUAGE_SMT_LIB_2_6, str, "<internal>");
   Cvc5Command cmd;

@@ -46,7 +46,7 @@ void AssertArgumentException::construct(const char* header,
                                         va_list args)
 {
   // try building the exception msg with a smallish buffer first,
-  // then with a larger one if sprintf tells us to.
+  // then with a larger one if snprintf tells us to.
   int n = 512;
   char* buf;
   buf = new char[n];
@@ -114,7 +114,7 @@ void AssertArgumentException::construct(const char* header,
                                         unsigned line)
 {
   // try building the exception msg with a smallish buffer first,
-  // then with a larger one if sprintf tells us to.
+  // then with a larger one if snprintf tells us to.
   int n = 256;
   char* buf;
 

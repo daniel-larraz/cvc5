@@ -669,6 +669,24 @@ install(DIRECTORY include/cvc5 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 add_subdirectory(src)
 
+add_custom_target(gen-source-files
+  DEPENDS
+    gen-expr
+    gen-versioninfo
+    gen-options
+    gen-rewrites
+    gen-tags
+    gen-theory
+    gen-tokens
+  COMMENT "Building all generated source files for cvc5"
+)
+
+add_custom_target(deps-and-gen-src
+  DEPENDS
+    deps
+    gen-source-files
+)
+
 if(BUILD_BINDINGS_PYTHON AND NOT BUILD_SHARED_LIBS)
   message(STATUS "Python bindings can only be built in a shared build.")
   set(BUILD_BINDINGS_PYTHON OFF)

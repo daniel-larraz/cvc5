@@ -311,8 +311,10 @@ Node HoElim::eliminateHo(Node n)
         {
           TypeNode tnr = ret.getType();
           tnr = getUSort(tnr);
-          Node hoa =
-              getHoApplyUf(children[0].getType(), children[1].getType(), tnr);
+          // Use child0Type and child1Type to ensure deterministic node ID assignments
+          TypeNode child0Type = children[0].getType();
+          TypeNode child1Type = children[1].getType();
+          Node hoa = getHoApplyUf(child0Type, child1Type, tnr);
           std::vector<Node> hchildren;
           hchildren.push_back(hoa);
           hchildren.push_back(children[0]);

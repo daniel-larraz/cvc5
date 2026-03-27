@@ -204,8 +204,10 @@ inline Node RewriteRule<RotateLeftEliminate>::apply(TNode node)
     return a; 
   }
 
-  Node left   = utils::mkExtract(a, utils::getSize(a)-1 - amount, 0);
-  Node right  = utils::mkExtract(a, utils::getSize(a) -1, utils::getSize(a) - amount);
+  // Use aSize to ensure deterministic node ID assignments
+  unsigned aSize = utils::getSize(a);
+  Node left   = utils::mkExtract(a, aSize - 1 - amount, 0);
+  Node right  = utils::mkExtract(a, aSize - 1, aSize - amount);
   Node result = utils::mkConcat(left, right);
 
   return result;
@@ -415,9 +417,9 @@ inline Node RewriteRule<SmodEliminate>::apply(TNode node)
       cond1.iteNode(
           u,
           cond2.iteNode(
-              NodeManager::mkNode(Kind::BITVECTOR_ADD, neg_u, t),
+              {NodeManager::mkNode(Kind::BITVECTOR_ADD, neg_u, t),
               cond3.iteNode(NodeManager::mkNode(Kind::BITVECTOR_ADD, u, t),
-                            neg_u))));
+                            neg_u)})));
 
   return result;
 }

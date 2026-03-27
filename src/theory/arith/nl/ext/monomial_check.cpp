@@ -817,11 +817,11 @@ Node MonomialCheck::mkLit(Node a, Node b, int status, bool isAbsolute) const
       Node b_is_nonnegative = nm->mkNode(Kind::GEQ, b, zero);
       Node negate_a = nm->mkNode(Kind::NEG, a);
       Node negate_b = nm->mkNode(Kind::NEG, b);
-      ret = a_is_nonnegative.iteNode(
-          b_is_nonnegative.iteNode(nm->mkNode(k, a, b),
-                                   nm->mkNode(k, a, negate_b)),
-          b_is_nonnegative.iteNode(nm->mkNode(k, negate_a, b),
-                                   nm->mkNode(k, negate_a, negate_b)));
+      ret = a_is_nonnegative.iteNode({
+          b_is_nonnegative.iteNode({nm->mkNode(k, a, b),
+                                   nm->mkNode(k, a, negate_b)}),
+          b_is_nonnegative.iteNode({nm->mkNode(k, negate_a, b),
+                                   nm->mkNode(k, negate_a, negate_b)})});
     }
   }
   return ret;

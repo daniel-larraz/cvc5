@@ -256,16 +256,14 @@ include(Config${CMAKE_BUILD_TYPE})
 
 add_check_c_cxx_flag("-O${OPTIMIZATION_LEVEL}")
 add_check_c_cxx_flag("-Wall")
+add_check_c_cxx_flag("-Wextra")
+add_check_c_cxx_suppression_flag_if_compiler("-Wno-dangling-reference" "GNU" 13)
 add_check_c_flag("-fexceptions")
-add_check_cxx_flag("-Wdeprecated-copy")
 add_check_cxx_flag("-Wsuggest-override")
 add_check_cxx_flag("-Wnon-virtual-dtor")
-add_check_c_cxx_flag("-Wignored-qualifiers")
 add_check_c_cxx_flag("-Wimplicit-fallthrough")
-add_check_c_cxx_flag("-Wmissing-field-initializers")
 add_check_c_cxx_flag("-Wshadow")
 add_check_c_cxx_flag("-Wtype-limits")
-add_check_c_cxx_flag("-Wunused-parameter")
 add_check_c_cxx_flag("-fno-operator-names")
 
 # Assume no dynamic initialization of thread-local variables in non-defining

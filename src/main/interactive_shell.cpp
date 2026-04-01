@@ -62,12 +62,14 @@ using __gnu_cxx::stdio_filebuf;
 #endif /* HAVE_EXT_STDIO_FILEBUF_H */
 
 char** commandCompletion(const char* text, int start, int end);
-#if EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP
 char* commandGenerator(const char* text, int state);
-#else /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
-int commandGenerator(const char* text, int state);
-#endif /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
 
+char **completion(const char *text, int start, int end) {
+    (void)start;
+    (void)end;
+
+    return rl_completion_matches(text, commandGenerator);
+}
 
 static const std::string smt2_commands[] = {
 #include "main/smt2_tokens.h"
@@ -116,7 +118,7 @@ InteractiveShell::InteractiveShell(main::CommandExecutor* cexec,
   if (&d_in == &std::cin && isatty(fileno(stdin)))
   {
     ::rl_readline_name = const_cast<char*>("cvc5");
-    ::rl_completion_entry_function = commandGenerator;
+    ::rl_attempted_completion_function = completion;
     ::using_history();
 
     if (d_lang == modes::InputLanguage::SMT_LIB_2_6)
@@ -438,12 +440,7 @@ struct StringPrefix2Less {
   }
 };/* struct StringPrefix2Less */
 
-#if EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP
-char* commandGenerator(const char* text, int state)
-#else /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
-int commandGenerator(const char* text, int state)
-#endif /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
-{
+char* commandGenerator(const char* text, int state) {
   static thread_local const std::string* rlCommand;
   static thread_local set<string>::const_iterator* rlDeclaration;
 

@@ -439,10 +439,11 @@ struct StringPrefix2Less {
 };/* struct StringPrefix2Less */
 
 #if EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP
-char* commandGenerator(const char* text, int state);
+char* commandGenerator(const char* text, int state)
 #else /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
-int commandGenerator(const char* text, int state);
+int commandGenerator(const char* text, int state)
 #endif /* EDITLINE_COMPENTRY_FUNC_RETURNS_CHARP */
+{
   static thread_local const std::string* rlCommand;
   static thread_local set<string>::const_iterator* rlDeclaration;
 

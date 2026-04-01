@@ -142,7 +142,7 @@ endmacro()
 
 # Check if C/CXX warning suppression flag is supported and add to global list of
 # C/CXX flags if compiler id and compiler_major_version match
-function(add_check_c_cxx_suppression_flag_if_compiler suppression_flag compiler_id compiler_major_version)
+macro(add_check_c_cxx_suppression_flag_if_compiler suppression_flag compiler_id compiler_major_version)
   # C compiler
   if (CMAKE_C_COMPILER_ID STREQUAL "${compiler_id}")
     string(REGEX MATCH "^[0-9]+" ACTUAL_MAJOR_VERSION "${CMAKE_C_COMPILER_VERSION}")
@@ -158,7 +158,7 @@ function(add_check_c_cxx_suppression_flag_if_compiler suppression_flag compiler_
       add_check_cxx_suppression_flag(${suppression_flag})
     endif()
   endif()
-endfunction()
+endmacro()
 
 # Add required CXX flag. Configuration fails if the CXX flag is not supported
 # by the compiler.

@@ -30,9 +30,6 @@ class EmptySet
    * is the type of the set itself, NOT the type of the elements.
    */
   EmptySet(const TypeNode& setType);
-  ~EmptySet();
-  EmptySet(const EmptySet& other);
-  EmptySet& operator=(const EmptySet& other);
 
   const TypeNode& getType() const;
   bool operator==(const EmptySet& es) const;
@@ -40,7 +37,7 @@ class EmptySet
  private:
   EmptySet();
 
-  std::unique_ptr<TypeNode> d_type;
+  const TypeNode& d_type;
 }; /* class EmptySet */
 
 std::ostream& operator<<(std::ostream& out, const EmptySet& es);

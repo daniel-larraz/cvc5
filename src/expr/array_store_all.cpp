@@ -24,7 +24,7 @@ using namespace std;
 namespace cvc5::internal {
 
 ArrayStoreAll::ArrayStoreAll(const TypeNode& type, const Node& value)
-    : d_type(), d_value()
+    : d_type(type), d_value(value)
 {
   // this check is stronger than the assertion check in the expr manager that
   // ArrayTypes are actually array types
@@ -39,29 +39,11 @@ ArrayStoreAll::ArrayStoreAll(const TypeNode& type, const Node& value)
   Trace("arrays") << "constructing constant array of type: '" << type
                   << "' and value: '" << value << "'" << std::endl;
   Assert(value.isConst()) << "ArrayStoreAll requires a constant expression";
-
-  // Delay allocation until the checks above have been performed. If these
-  // fail, the memory for d_type and d_value should not leak. The alternative
-  // is catch, delete and re-throw.
-  d_type.reset(new TypeNode(type));
-  d_value.reset(new Node(value));
 }
 
-ArrayStoreAll::ArrayStoreAll(const ArrayStoreAll& other)
-    : d_type(new TypeNode(other.getType())), d_value(new Node(other.getValue()))
-{
-}
+const TypeNode& ArrayStoreAll::getType() const { return d_type; }
 
-ArrayStoreAll::~ArrayStoreAll() {}
-ArrayStoreAll& ArrayStoreAll::operator=(const ArrayStoreAll& other) {
-  (*d_type) = other.getType();
-  (*d_value) = other.getValue();
-  return *this;
-}
-
-const TypeNode& ArrayStoreAll::getType() const { return *d_type; }
-
-const Node& ArrayStoreAll::getValue() const { return *d_value; }
+const Node& ArrayStoreAll::getValue() const { return d_value; }
 
 bool ArrayStoreAll::operator==(const ArrayStoreAll& asa) const
 {

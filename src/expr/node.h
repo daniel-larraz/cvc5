@@ -1109,6 +1109,7 @@ void NodeTemplate<ref_count>::assignNodeValue(expr::NodeValue* ev) {
 
 template <bool ref_count>
 NodeTemplate<ref_count>& NodeTemplate<ref_count>::
+// NOLINTNEXTLINE(bugprone-unhandled-self-assignment)
 operator=(const NodeTemplate& e) {
   Assert(d_nv != nullptr) << "Expecting a non-NULL expression value!";
   Assert(e.d_nv != nullptr) << "Expecting a non-NULL expression value on RHS!";

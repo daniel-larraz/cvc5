@@ -32,18 +32,9 @@ size_t EmptyBagHashFunction::operator()(const EmptyBag& es) const
  * Constructs an emptybag of the specified type. Note that the argument
  * is the type of the bag itself, NOT the type of the elements.
  */
-EmptyBag::EmptyBag(const TypeNode& bagType) : d_type(new TypeNode(bagType)) {}
+EmptyBag::EmptyBag(const TypeNode& bagType) : d_type(bagType) {}
 
-EmptyBag::EmptyBag(const EmptyBag& es) : d_type(new TypeNode(es.getType())) {}
-
-EmptyBag& EmptyBag::operator=(const EmptyBag& es)
-{
-  (*d_type) = es.getType();
-  return *this;
-}
-
-EmptyBag::~EmptyBag() {}
-const TypeNode& EmptyBag::getType() const { return *d_type; }
+const TypeNode& EmptyBag::getType() const { return d_type; }
 bool EmptyBag::operator==(const EmptyBag& es) const
 {
   return getType() == es.getType();

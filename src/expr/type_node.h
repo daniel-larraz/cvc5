@@ -891,6 +891,7 @@ inline void TypeNode::assignNodeValue(expr::NodeValue* ev) {
   d_nv->inc();
 }
 
+// NOLINTNEXTLINE(bugprone-unhandled-self-assignment)
 inline TypeNode& TypeNode::operator=(const TypeNode& typeNode) {
   Assert(d_nv != nullptr) << "Expecting a non-NULL expression value!";
   Assert(typeNode.d_nv != nullptr)

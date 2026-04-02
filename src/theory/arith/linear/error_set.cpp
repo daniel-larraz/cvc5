@@ -87,6 +87,7 @@ ErrorInformation::ErrorInformation(const ErrorInformation& ei)
 }
 
 ErrorInformation& ErrorInformation::operator=(const ErrorInformation& ei){
+  if (this == &ei) { return *this; }
   d_variable = ei.d_variable;
   d_violated = ei.d_violated;
   d_sgn = ei.d_sgn;

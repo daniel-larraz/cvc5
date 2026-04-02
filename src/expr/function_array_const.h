@@ -47,10 +47,6 @@ class FunctionArrayConst
    * Note that T may itself be an array, e.g. for functions returning arrays.
    */
   FunctionArrayConst(const TypeNode& type, const Node& avalue);
-  ~FunctionArrayConst();
-
-  FunctionArrayConst(const FunctionArrayConst& other);
-  FunctionArrayConst& operator=(const FunctionArrayConst& other);
 
   const TypeNode& getType() const;
   const Node& getArrayValue() const;
@@ -64,9 +60,9 @@ class FunctionArrayConst
 
  private:
   /** The (function) type (-> T1 T2 ... Tn T) */
-  std::unique_ptr<TypeNode> d_type;
+  const TypeNode& d_type;
   /** The value, which has type (Array T1 (Array T2 .. (Array Tn T))) */
-  std::unique_ptr<Node> d_avalue;
+  const Node& d_avalue;
 };
 
 std::ostream& operator<<(std::ostream& out, const FunctionArrayConst& fc);

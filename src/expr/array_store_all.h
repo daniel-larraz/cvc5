@@ -34,10 +34,6 @@ class ArrayStoreAll
    * not a constant of type `type`.
    */
   ArrayStoreAll(const TypeNode& type, const Node& value);
-  ~ArrayStoreAll();
-
-  ArrayStoreAll(const ArrayStoreAll& other);
-  ArrayStoreAll& operator=(const ArrayStoreAll& other);
 
   const TypeNode& getType() const;
   const Node& getValue() const;
@@ -50,8 +46,8 @@ class ArrayStoreAll
   bool operator>=(const ArrayStoreAll& asa) const;
 
  private:
-  std::unique_ptr<TypeNode> d_type;
-  std::unique_ptr<Node> d_value;
+  const TypeNode& d_type;
+  const Node& d_value;
 }; /* class ArrayStoreAll */
 
 std::ostream& operator<<(std::ostream& out, const ArrayStoreAll& asa);

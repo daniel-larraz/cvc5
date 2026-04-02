@@ -42,34 +42,16 @@ bool isFunctionCompatibleWithArray(const TypeNode& ftype, const TypeNode& atype)
 }
 
 FunctionArrayConst::FunctionArrayConst(const TypeNode& type, const Node& avalue)
-    : d_type(), d_avalue()
+    : d_type(type), d_avalue(avalue)
 {
   Assert(avalue.isConst());
   Assert(avalue.getType().isArray());
   Assert(isFunctionCompatibleWithArray(type, avalue.getType()));
-
-  d_type.reset(new TypeNode(type));
-  d_avalue.reset(new Node(avalue));
 }
 
-FunctionArrayConst::FunctionArrayConst(const FunctionArrayConst& other)
-    : d_type(new TypeNode(other.getType())),
-      d_avalue(new Node(other.getArrayValue()))
-{
-}
+const TypeNode& FunctionArrayConst::getType() const { return d_type; }
 
-FunctionArrayConst::~FunctionArrayConst() {}
-FunctionArrayConst& FunctionArrayConst::operator=(
-    const FunctionArrayConst& other)
-{
-  (*d_type) = other.getType();
-  (*d_avalue) = other.getArrayValue();
-  return *this;
-}
-
-const TypeNode& FunctionArrayConst::getType() const { return *d_type; }
-
-const Node& FunctionArrayConst::getArrayValue() const { return *d_avalue; }
+const Node& FunctionArrayConst::getArrayValue() const { return d_avalue; }
 
 bool FunctionArrayConst::operator==(const FunctionArrayConst& fc) const
 {

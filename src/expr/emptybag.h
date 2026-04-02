@@ -30,9 +30,6 @@ class EmptyBag
    * is the type of the bag itself, NOT the type of the elements.
    */
   EmptyBag(const TypeNode& bagType);
-  ~EmptyBag();
-  EmptyBag(const EmptyBag& other);
-  EmptyBag& operator=(const EmptyBag& other);
 
   const TypeNode& getType() const;
   bool operator==(const EmptyBag& es) const;
@@ -41,7 +38,7 @@ class EmptyBag
   EmptyBag();
 
   /** the type of the empty bag itself (not the type of the elements)*/
-  std::unique_ptr<TypeNode> d_type;
+  const TypeNode& d_type;
 }; /* class EmptyBag */
 
 std::ostream& operator<<(std::ostream& out, const EmptyBag& es);

@@ -4923,12 +4923,20 @@ Stat::Stat(const Stat& s) : d_internal(s.d_internal), d_default(s.d_default)
 }
 Stat& Stat::operator=(const Stat& s)
 {
+  if (this == &s) return *this;
+
   d_internal = s.d_internal;
   d_default = s.d_default;
+
   if (s.d_data)
   {
     d_data = std::make_unique<StatData>(s.d_data->data);
   }
+  else
+  {
+    d_data.reset();
+  }
+
   return *this;
 }
 

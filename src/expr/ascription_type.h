@@ -32,17 +32,14 @@ class TypeNode;
 class AscriptionType
 {
  public:
-  AscriptionType(TypeNode t);
-  ~AscriptionType();
-  AscriptionType(const AscriptionType& other);
-  AscriptionType& operator=(const AscriptionType& other);
+  AscriptionType(const TypeNode& t);
   TypeNode getType() const;
   bool operator==(const AscriptionType& other) const;
   bool operator!=(const AscriptionType& other) const;
 
  private:
   /** The type */
-  std::unique_ptr<TypeNode> d_type;
+  const TypeNode& d_type;
 }; /* class AscriptionType */
 
 /**

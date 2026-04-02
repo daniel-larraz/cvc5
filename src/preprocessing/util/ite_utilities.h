@@ -393,7 +393,7 @@ class ITECareSimplifier
     }
     CareSetPtr& operator=(const CareSetPtr& cs)
     {
-      if (d_val != cs.d_val)
+      if (this != &cs)
       {
         if (d_val != nullptr && (--(d_val->d_refCount) == 0))
         {

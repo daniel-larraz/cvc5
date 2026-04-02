@@ -123,9 +123,8 @@ class TypeEnumerator {
   }
   TypeEnumerator(TypeEnumeratorInterface* te) : d_te(te){
   }
-  TypeEnumerator& operator=(const TypeEnumerator& te) {
-    delete d_te;
-    d_te = te.d_te->clone();
+  TypeEnumerator& operator=(TypeEnumerator te) {
+    std::swap(d_te, te.d_te);
     return *this;
   }
 

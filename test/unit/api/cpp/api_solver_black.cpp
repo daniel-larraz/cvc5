@@ -1138,6 +1138,10 @@ TEST_F(TestApiBlackSolver, getStatistics)
     ASSERT_TRUE(s.isInt());
     ASSERT_TRUE(s.getInt() >= 0);
     ss << s << s.toString();
+    cvc5::Stat empty_s;
+    ASSERT_FALSE(empty_s.isInt());
+    s = empty_s;
+    ASSERT_FALSE(s.isInt());
   }
   bool hasstats = false;
   for (const auto& s : stats)

@@ -39,6 +39,7 @@ class TestTheoryWhiteTypeEnumerator : public TestSmt
 TEST_F(TestTheoryWhiteTypeEnumerator, booleans)
 {
   TypeEnumerator te(d_nodeManager->booleanType());
+  ASSERT_NO_THROW(te = te);
   ASSERT_FALSE(te.isFinished());
   ASSERT_EQ(*te, d_nodeManager->mkConst(false));
   ASSERT_FALSE(te.isFinished());

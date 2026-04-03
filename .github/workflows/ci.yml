@@ -38,7 +38,7 @@ jobs:
       - name: Install clang-format and run format check
         run: |
           python3 -m pip install clang-format==22.1.2
-          find . -name '*.cpp' -o -name '*.h' -o -name '*.java' | xargs clang-format --dry-run --Werror -style=file
+          ./contrib/format-code.sh check
 
   builds:
     needs: [setup-release-pages]

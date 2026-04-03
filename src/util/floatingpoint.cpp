@@ -187,9 +187,7 @@ FloatingPoint::FloatingPoint(const FloatingPointSize& size,
   }
 }
 
-FloatingPoint::~FloatingPoint()
-{
-}
+FloatingPoint::~FloatingPoint() {}
 
 const FloatingPointSize& FloatingPoint::getSize() const
 {

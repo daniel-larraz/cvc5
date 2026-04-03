@@ -15,42 +15,46 @@
 
 #include "cvc5_private.h"
 
-#ifndef CVC5__OPTIONS__${id_cap}$_H
-#define CVC5__OPTIONS__${id_cap}$_H
+#ifndef CVC5__OPTIONS__${id_cap } $_H
+#define CVC5__OPTIONS__$ {id_cap} $_H
 
 #include "options/options.h"
 
 // clang-format off
 ${includes}$
-// clang-format on
+    // clang-format on
 
-namespace cvc5::internal::options {
-
-namespace ${id}$::longName {
-// clang-format off
+    namespace cvc5::internal::options
+{
+  namespace $ {
+  id
+  }
+  $::longName{
+      // clang-format off
   ${long_name_decl}$
-// clang-format on
-}
+      // clang-format on
+  }
 
-// clang-format off
+  // clang-format off
 ${modes_decl}$
-// clang-format on
+  // clang-format on
 
 #if defined(CVC5_MUZZLED) || defined(CVC5_COMPETITION_MODE)
-#  define DO_SEMANTIC_CHECKS_BY_DEFAULT false
+#define DO_SEMANTIC_CHECKS_BY_DEFAULT false
 #else /* CVC5_MUZZLED || CVC5_COMPETITION_MODE */
-#  define DO_SEMANTIC_CHECKS_BY_DEFAULT true
+#define DO_SEMANTIC_CHECKS_BY_DEFAULT true
 #endif /* CVC5_MUZZLED || CVC5_COMPETITION_MODE */
 
-struct Holder${id_cap}$
-{
-// clang-format off
+      struct Holder$
+  {
+    id_cap
+  } ${
+      // clang-format off
   ${holder_decl}$
-// clang-format on
-};
+      // clang-format on
+  };
 
 #undef DO_SEMANTIC_CHECKS_BY_DEFAULT
-
 
 }  // namespace cvc5::internal::options
 

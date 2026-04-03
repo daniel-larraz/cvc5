@@ -223,7 +223,7 @@ void SineSolver::checkInitialRefine()
       // initial refinements
       if (d_tf_initial_refine.find(t) == d_tf_initial_refine.end())
       {
-        NodeManager * nm = nodeManager();
+        NodeManager* nm = nodeManager();
         Node zero = nm->mkConstReal(Rational(0));
         Node one = nm->mkConstReal(Rational(1));
         Node mone = nm->mkConstReal(Rational(-1));
@@ -233,10 +233,10 @@ void SineSolver::checkInitialRefine()
         Assert(d_data->isPurified(t));
         {
           // sine bounds: -1 <= sin(t) <= 1
-          Node lem = NodeManager::mkNode(
-              Kind::AND,
-              NodeManager::mkNode(Kind::LEQ, t, one),
-              NodeManager::mkNode(Kind::GEQ, t, mone));
+          Node lem =
+              NodeManager::mkNode(Kind::AND,
+                                  NodeManager::mkNode(Kind::LEQ, t, one),
+                                  NodeManager::mkNode(Kind::GEQ, t, mone));
           CDProof* proof = nullptr;
           if (d_data->isProofEnabled())
           {
@@ -252,14 +252,12 @@ void SineSolver::checkInitialRefine()
           //   t < 0  =>  sin(t) > t
           Node lem = NodeManager::mkNode(
               Kind::AND,
-              NodeManager::mkNode(
-                  Kind::IMPLIES,
-                  NodeManager::mkNode(Kind::GT, t[0], zero),
-                  NodeManager::mkNode(Kind::LT, t, t[0])),
-              NodeManager::mkNode(
-                  Kind::IMPLIES,
-                  NodeManager::mkNode(Kind::LT, t[0], zero),
-                  NodeManager::mkNode(Kind::GT, t, t[0])));
+              NodeManager::mkNode(Kind::IMPLIES,
+                                  NodeManager::mkNode(Kind::GT, t[0], zero),
+                                  NodeManager::mkNode(Kind::LT, t, t[0])),
+              NodeManager::mkNode(Kind::IMPLIES,
+                                  NodeManager::mkNode(Kind::LT, t[0], zero),
+                                  NodeManager::mkNode(Kind::GT, t, t[0])));
           CDProof* proof = nullptr;
           if (d_data->isProofEnabled())
           {
@@ -280,9 +278,7 @@ void SineSolver::checkInitialRefine()
                   Kind::IMPLIES,
                   NodeManager::mkNode(Kind::GT, t[0], mpi),
                   NodeManager::mkNode(
-                      Kind::GT,
-                      t,
-                      NodeManager::mkNode(Kind::SUB, mpi, t[0]))),
+                      Kind::GT, t, NodeManager::mkNode(Kind::SUB, mpi, t[0]))),
               NodeManager::mkNode(
                   Kind::IMPLIES,
                   NodeManager::mkNode(Kind::LT, t[0], d_pi),
@@ -329,7 +325,6 @@ void SineSolver::checkInitialRefine()
 
 void SineSolver::checkMonotonic()
 {
-
   auto it = d_data->d_funcMap.find(Kind::SINE);
   if (it == d_data->d_funcMap.end())
   {

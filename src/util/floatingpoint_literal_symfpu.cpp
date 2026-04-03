@@ -12,7 +12,6 @@
 #include "util/floatingpoint_literal_symfpu.h"
 
 #include "base/check.h"
-
 #include "symfpu/core/add.h"
 #include "symfpu/core/classify.h"
 #include "symfpu/core/compare.h"
@@ -70,18 +69,16 @@ uint32_t FloatingPointLiteral::getUnpackedSignificandWidth(
 FloatingPointLiteral::FloatingPointLiteral(uint32_t exp_size,
                                            uint32_t sig_size,
                                            const BitVector& bv)
-    : d_fp_size(exp_size, sig_size)
-      ,
+    : d_fp_size(exp_size, sig_size),
       d_symuf(symfpu::unpack<symfpuLiteral::traits>(
           symfpuLiteral::Cvc5FPSize(exp_size, sig_size), bv))
 {
 }
 
 FloatingPointLiteral::FloatingPointLiteral(
-    const FloatingPointSize& size, CVC5_UNUSED FloatingPointLiteral::SpecialConstKind kind)
-    : d_fp_size(size)
-      ,
-      d_symuf(SymFPUUnpackedFloatLiteral::makeNaN(size))
+    const FloatingPointSize& size,
+    CVC5_UNUSED FloatingPointLiteral::SpecialConstKind kind)
+    : d_fp_size(size), d_symuf(SymFPUUnpackedFloatLiteral::makeNaN(size))
 {
   Assert(kind == FloatingPointLiteral::SpecialConstKind::FPNAN);
 }
@@ -90,8 +87,7 @@ FloatingPointLiteral::FloatingPointLiteral(
     const FloatingPointSize& size,
     FloatingPointLiteral::SpecialConstKind kind,
     bool sign)
-    : d_fp_size(size)
-      ,
+    : d_fp_size(size),
       d_symuf(kind == FloatingPointLiteral::SpecialConstKind::FPINF
                   ? SymFPUUnpackedFloatLiteral::makeInf(size, sign)
                   : SymFPUUnpackedFloatLiteral::makeZero(size, sign))
@@ -102,9 +98,7 @@ FloatingPointLiteral::FloatingPointLiteral(
 
 FloatingPointLiteral::FloatingPointLiteral(const FloatingPointSize& size,
                                            const BitVector& bv)
-    : d_fp_size(size)
-      ,
-      d_symuf(symfpu::unpack<symfpuLiteral::traits>(size, bv))
+    : d_fp_size(size), d_symuf(symfpu::unpack<symfpuLiteral::traits>(size, bv))
 {
 }
 
@@ -112,16 +106,15 @@ FloatingPointLiteral::FloatingPointLiteral(const FloatingPointSize& size,
                                            const RoundingMode& rm,
                                            const BitVector& bv,
                                            bool signedBV)
-    : d_fp_size(size)
-      ,
+    : d_fp_size(size),
       d_symuf(signedBV ? symfpu::convertSBVToFloat<symfpuLiteral::traits>(
-                  symfpuLiteral::Cvc5FPSize(size),
-                  symfpuLiteral::Cvc5RM(rm),
-                  symfpuLiteral::Cvc5SignedBitVector(bv))
+                             symfpuLiteral::Cvc5FPSize(size),
+                             symfpuLiteral::Cvc5RM(rm),
+                             symfpuLiteral::Cvc5SignedBitVector(bv))
                        : symfpu::convertUBVToFloat<symfpuLiteral::traits>(
-                           symfpuLiteral::Cvc5FPSize(size),
-                           symfpuLiteral::Cvc5RM(rm),
-                           symfpuLiteral::Cvc5UnsignedBitVector(bv)))
+                             symfpuLiteral::Cvc5FPSize(size),
+                             symfpuLiteral::Cvc5RM(rm),
+                             symfpuLiteral::Cvc5UnsignedBitVector(bv)))
 {
 }
 
@@ -255,20 +248,14 @@ bool FloatingPointLiteral::operator<(const FloatingPointLiteral& arg) const
       d_fp_size, d_symuf, arg.d_symuf);
 }
 
-BitVector FloatingPointLiteral::getExponent() const
-{
-  return d_symuf.exponent;
-}
+BitVector FloatingPointLiteral::getExponent() const { return d_symuf.exponent; }
 
 BitVector FloatingPointLiteral::getSignificand() const
 {
   return d_symuf.significand;
 }
 
-bool FloatingPointLiteral::getSign() const
-{
-  return d_symuf.sign;
-}
+bool FloatingPointLiteral::getSign() const { return d_symuf.sign; }
 
 bool FloatingPointLiteral::isNormal(void) const
 {

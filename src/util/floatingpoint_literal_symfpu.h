@@ -208,7 +208,7 @@ class FloatingPointLiteral
   /** Create a FP literal from a symFPU unpacked float. */
   FloatingPointLiteral(const FloatingPointSize& size,
                        SymFPUUnpackedFloatLiteral symuf)
-      : d_fp_size(size), d_symuf(symuf){};
+      : d_fp_size(size), d_symuf(symuf) {};
 
   /** The floating-point size of this floating-point literal. */
   FloatingPointSize d_fp_size;

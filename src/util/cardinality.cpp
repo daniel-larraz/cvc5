@@ -45,7 +45,7 @@ Cardinality::Cardinality(long card) : d_card(card) {
 
 Cardinality::Cardinality(const Integer& card) : d_card(card) {
   Assert(card >= 0) << "Cardinality must be a nonnegative integer, not "
-                    << card.toString().c_str();
+  << card.toString().c_str();
   d_card += 1;
 }
 

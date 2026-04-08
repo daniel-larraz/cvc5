@@ -187,7 +187,7 @@ Node ArithEntail::rewriteLengthIntro(const Node& n,
           arg = expr::getACINormalForm(arg);
           if (arg != ret[0])
           {
-            Node ret2 = nm->mkNode(k, {arg});
+            Node ret2 = nm->mkNode(k, arg);
             if (pg != nullptr)
             {
               pg->addRewriteStep(ret,

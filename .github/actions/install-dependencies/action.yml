@@ -39,15 +39,15 @@ runs:
         echo "SED=sed" >> $GITHUB_ENV
         echo "::endgroup::"
 
-    - name: Install Clang 11
+    - name: Install Clang 12
       if: inputs.use-clang == 'true' && inputs.use-libcxx != 'true'
       shell: ${{ inputs.shell }}
       run: |
-        sudo apt-get install -y clang-11
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
-        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 100
-        sudo update-alternatives --set clang /usr/bin/clang-11
-        sudo update-alternatives --set clang++ /usr/bin/clang++-11
+        sudo apt-get install -y clang-12
+        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-12 100
+        sudo update-alternatives --set clang /usr/bin/clang-12
+        sudo update-alternatives --set clang++ /usr/bin/clang++-12
         clang --version
         clang++ --version
 

@@ -46,6 +46,8 @@ runs:
         sudo apt-get install -y clang-11
         sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
         sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 100
+        sudo update-alternatives --set clang /usr/bin/clang-11
+        sudo update-alternatives --set clang++ /usr/bin/clang++-11
         clang --version
         clang++ --version
 

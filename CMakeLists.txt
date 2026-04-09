@@ -456,17 +456,21 @@ if(ENABLE_AUTO_DOWNLOAD)
   if(USE_PYTHON_VENV)
     # Set up Python venv if one doesn't exist already
     set(VENV_PATH "${CMAKE_BINARY_DIR}/venv-${Python_VERSION}")
+    get_filename_component(VENV_PATH "${VENV_PATH}" ABSOLUTE)
     if(NOT EXISTS ${VENV_PATH})
       create_venv()
     endif()
+    get_filename_component(VENV_PATH "${VENV_PATH}" REALPATH)
 
     # Set up variables to find Python within the virtual environment
     set(ENV{VIRTUAL_ENV} "${VENV_PATH}")
     unset(Python_EXECUTABLE CACHE)
     if(EXISTS ${VENV_PATH}/bin/python3)
-      set(Python_EXECUTABLE ${VENV_PATH}/bin/python3)
+      get_filename_component(Python_EXECUTABLE "${VENV_PATH}/bin/python3" REALPATH)
+      set(Python_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "Python executable")
     elseif(EXISTS ${VENV_PATH}/Scripts/python.exe)
-      set(Python_EXECUTABLE ${VENV_PATH}/Scripts/python.exe)
+      get_filename_component(Python_EXECUTABLE "${VENV_PATH}/Scripts/python.exe" REALPATH)
+      set(Python_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "Python executable")
     else()
       message(FATAL_ERROR "Could not find Python interpreter in venv")
     endif()
@@ -761,7 +765,7 @@ install(EXPORT cvc5-targets
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cvc5)
 
 configure_package_config_file(
-  ${CMAKE_SOURCE_DIR}/cmake/cvc5Config.cmake.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cvc5Config.cmake.in
   ${CMAKE_BINARY_DIR}/cmake/cvc5Config.cmake
   INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cvc5
   PATH_VARS CMAKE_INSTALL_LIBDIR

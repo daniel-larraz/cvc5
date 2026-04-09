@@ -267,7 +267,7 @@ else()
     -DBUILD_DIR=${CMAKE_BINARY_DIR}
     -DDEPS_BASE=${DEPS_BASE}
     -DINSTALL_CMD=\"${INSTALL_CMD}\"
-    -P ${CMAKE_SOURCE_DIR}/cmake/install_python_wheel.cmake)"
+    -P ${PROJECT_SOURCE_DIR}/cmake/install_python_wheel.cmake)"
     COMPONENT python-api)
 
 endif()

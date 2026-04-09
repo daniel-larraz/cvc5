@@ -39,7 +39,7 @@ if(WIN32)
         -DBUILD_DIR=${CMAKE_BINARY_DIR}
         -DDEPS_BASE=${DEPS_BASE}
         -DINSTALL_CMD="${WHEEL_INSTALL_CMD}"
-        -P ${CMAKE_SOURCE_DIR}/cmake/install_python_wheel.cmake
+        -P ${PROJECT_SOURCE_DIR}/cmake/install_python_wheel.cmake
     DEPENDS cvc5_python_api
   )
 

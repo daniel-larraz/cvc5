@@ -67,7 +67,7 @@ add_custom_command(
       ${Python_EXECUTABLE}
       ${mkrewrites_script}
       rewrite-db
-      --src ${CMAKE_SOURCE_DIR}
+      --src ${PROJECT_SOURCE_DIR}
       --bin ${CMAKE_BINARY_DIR}
       --rewrites_files ${REWRITES_FILES}
       --rewrites_files_expert ${REWRITES_FILES_EXPERT}
@@ -77,8 +77,8 @@ add_custom_command(
       ${REWRITES_FILES_EXPERT}
       ${CMAKE_CURRENT_LIST_DIR}/theory_rewrites_template.cpp
       ${CMAKE_CURRENT_LIST_DIR}/rewrites_template.cpp
-      ${CMAKE_SOURCE_DIR}/src/api/cpp/cvc5_proof_rule_template.cpp
-      ${CMAKE_SOURCE_DIR}/include/cvc5/cvc5_proof_rule.h
+      ${PROJECT_SOURCE_DIR}/src/api/cpp/cvc5_proof_rule_template.cpp
+      ${PROJECT_SOURCE_DIR}/include/cvc5/cvc5_proof_rule.h
     COMMENT
       "Generating rewrites.{h,cpp}"
 )

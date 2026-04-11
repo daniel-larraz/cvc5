@@ -81,7 +81,7 @@ function(_add_python_test example subdir)
 
   add_test(
     NAME     ${test_name}
-    COMMAND  "${Python_EXECUTABLE}"
+    COMMAND  "${Python_EXECUTABLE}" -X dev -X faulthandler
              "${CMAKE_SOURCE_DIR}/${subdir}/${example}.py"
   )
   set_tests_properties(${test_name} PROPERTIES

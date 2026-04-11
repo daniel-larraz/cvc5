@@ -81,7 +81,7 @@ function(_add_python_test example subdir)
 
   add_test(
     NAME     ${test_name}
-    COMMAND  "${Python_EXECUTABLE}" -X dev -X faulthandler
+    COMMAND  "${Python_EXECUTABLE}" ${ARGN}
              "${CMAKE_SOURCE_DIR}/${subdir}/${example}.py"
   )
   set_tests_properties(${test_name} PROPERTIES
@@ -96,7 +96,16 @@ function(create_python_example example)
 
   # Only add the Pythonic version if it is in the list
   if (example IN_LIST EXAMPLES_API_PYTHON_PYTHONIC)
-    _add_python_test(${example} "api/python/pythonic")
+    # The Pythonic version of the bitvectors_and_arrays example is known to
+    # cause a SEGFAULT on ARM64 Windows but it eludes any attempt to debug it.
+    # We run it with debbugging options to get more information if it fails.
+    if(example STREQUAL "bitvectors_and_arrays" AND
+       WIN32 AND
+       CMAKE_SYSTEM_PROCESSOR MATCHES "^(ARM64|arm64|aarch64)$")
+      _add_python_test(${example} "api/python/pythonic" -X dev -X faulthandler)
+    else()
+      _add_python_test(${example} "api/python/pythonic")
+    endif()
   endif()
 endfunction()
 

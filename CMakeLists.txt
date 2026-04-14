@@ -477,6 +477,12 @@ if(ENABLE_AUTO_DOWNLOAD)
   find_package(Pip REQUIRED)
 endif()
 
+# Resolve the real path of the Python executable and update the cached value.
+# This avoids a RuntimeWarning ("Unexpected value in sys.prefix") that can occur
+# when cvc5 is fetched and built via FetchContent.
+get_filename_component(PYTHON_REAL_PATH "${Python_EXECUTABLE}" REALPATH)
+set(Python_EXECUTABLE "${PYTHON_REAL_PATH}" CACHE FILEPATH "Real path to Python" FORCE)
+
 find_package(GMP 6.3 REQUIRED)
 
 if(ENABLE_ASAN)

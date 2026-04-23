@@ -30,10 +30,6 @@ class FloatingPointSize
  public:
   /** Constructors. */
   FloatingPointSize(uint32_t exp_size, uint32_t sig_size);
-  FloatingPointSize(const FloatingPointSize& other);
-
-  /** Copy assignment. */
-  FloatingPointSize& operator=(const FloatingPointSize& other);
 
   /** Operator overload for equality comparison. */
   bool operator==(const FloatingPointSize& fps) const

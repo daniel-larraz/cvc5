@@ -36,7 +36,7 @@ file(GLOB WHL_FILE ${UNREPAIRED_WHEEL_DIR}/cvc5*.whl)
 execute_process(COMMAND
     ${Repairwheel_EXECUTABLE} -o ${BUILD_DIR}/repaired-wheel
     -l ${BUILD_DIR}/src -l ${BUILD_DIR}/src/parser
-    -l ${DEPS_BASE}/bin ${WHL_FILE})
+    -l ${DEPS_BASE}/lib -l ${DEPS_BASE}/bin ${WHL_FILE})
 
 file(GLOB WHL_FILE ${REPAIRED_WHEEL_DIR}/cvc5*.whl)
 

@@ -3,6 +3,9 @@
 #   clang-analyzer-*
 # Additional checks:
 Checks: >
+  bugprone-suspicious-include,
+  misc-definitions-in-headers,
+  modernize-deprecated-headers,
   modernize-use-nullptr
 HeaderFilterRegex: '.*'
 # Use .clang-format for formatting changes

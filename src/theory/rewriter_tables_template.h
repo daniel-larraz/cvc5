@@ -29,7 +29,7 @@ ${rewriter_includes}
 namespace cvc5::internal {
 namespace theory {
 
-Node Rewriter::getPreRewriteCache(theory::TheoryId theoryId, TNode node)
+inline Node Rewriter::getPreRewriteCache(theory::TheoryId theoryId, TNode node)
 {
   switch (theoryId)
   {
@@ -40,7 +40,7 @@ ${pre_rewrite_get_cache}
   }
 }
 
-Node Rewriter::getPostRewriteCache(theory::TheoryId theoryId, TNode node)
+inline Node Rewriter::getPostRewriteCache(theory::TheoryId theoryId, TNode node)
 {
   switch (theoryId)
   {
@@ -51,7 +51,7 @@ ${post_rewrite_get_cache}
   }
 }
 
-void Rewriter::setPreRewriteCache(theory::TheoryId theoryId,
+inline void Rewriter::setPreRewriteCache(theory::TheoryId theoryId,
                                   TNode node,
                                   TNode cache)
 {
@@ -64,7 +64,7 @@ ${pre_rewrite_set_cache}
   }
 }
 
-void Rewriter::setPostRewriteCache(theory::TheoryId theoryId,
+inline void Rewriter::setPostRewriteCache(theory::TheoryId theoryId,
                                    TNode node,
                                    TNode cache)
 {
@@ -77,7 +77,7 @@ ${post_rewrite_set_cache}
   }
 }
 
-Rewriter::Rewriter(NodeManager* nm)
+inline Rewriter::Rewriter(NodeManager* nm)
     : d_nm(nm), d_resourceManager(nullptr), d_tpg(nullptr)
 {
 }

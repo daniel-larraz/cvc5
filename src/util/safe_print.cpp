@@ -18,7 +18,7 @@
 
 #include "safe_print.h"
 
-#include <time.h>
+#include <ctime>
 #include <unistd.h>
 
 #include <cstdlib>

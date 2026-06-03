@@ -18,15 +18,23 @@
 
 namespace cvc5::internal {
 
-CoCoA::GlobalManager* s_cocoaGlobalManager = nullptr;
+namespace {
 
-void initCocoaGlobalManager()
+/**
+ * Returns the singleton CoCoA global manager, constructing it on the first
+ * call. The initialization is thread-safe and happens exactly once per process
+ * (C++11 function-local static semantics). Kept file-private so that the only
+ * way to initialize CoCoA is to construct a CocoaInitializer.
+ */
+CoCoA::GlobalManager& cocoaGlobalManager()
 {
-  if (s_cocoaGlobalManager == nullptr)
-  {
-    s_cocoaGlobalManager = new CoCoA::GlobalManager();
-  }
+  static CoCoA::GlobalManager s_cocoaGlobalManager;
+  return s_cocoaGlobalManager;
 }
+
+}  // namespace
+
+CocoaInitializer::CocoaInitializer() { cocoaGlobalManager(); }
 
 }  // namespace cvc5::internal
 

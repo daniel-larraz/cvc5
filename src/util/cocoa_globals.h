@@ -9,15 +9,19 @@
  *
  * Singleton CoCoA global manager.
  *
- * A manager must be created before most CoCoA operations are performed.
+ * A CoCoA global manager must be created before most CoCoA operations are
+ * performed. It must be created **exactly once** (per process, we believe);
+ * creating it multiple times raises an exception. It is never directly used by
+ * our code: no component of our code accesses it.
  *
- * It must be created **exactly once** (per process, we believe). Creating it
- * multiple times raises an exception.
+ * We store it in a function-local static, so it is constructed lazily on first
+ * use and shared across the entire process (and in particular, all cvc5
+ * solvers). C++11 guarantees this initialization happens exactly once, even if
+ * multiple threads race to trigger it.
  *
- * It is never directly used by our code: no component of our code accesses it.
- *
- * Thus, we store it on a heap, with a static pointer to it. It is thus shared
- * across the entire process (and in particular, all cvc5 solvers).
+ * Rather than expose the manager (or a free "init" function) and rely on every
+ * CoCoA entry point remembering to call it, we make initialization a side
+ * effect of *construction*: see CocoaInitializer below.
  */
 
 #include "cvc5_public.h"
@@ -27,19 +31,31 @@
 #ifndef CVC5__UTIL__COCOA_GLOBALS_H
 #define CVC5__UTIL__COCOA_GLOBALS_H
 
-#include <CoCoA/GlobalManager.H>
-
 namespace cvc5::internal {
 
 /**
- * The pointer to the singleton CoCoA global manager.
+ * Guard that guarantees the singleton CoCoA global manager exists.
+ *
+ * Constructing a CocoaInitializer initializes the manager (exactly once per
+ * process, thread-safely). It does not own the manager: the manager lives for
+ * the lifetime of the process, so destroying the guard is a no-op.
+ *
+ * The intent is that every class that constructs or manipulates CoCoA objects
+ * derives (privately) from this guard. Because base classes are constructed
+ * before the derived object and its members, the manager is guaranteed to exist
+ * before any CoCoA object the derived class owns. This makes "using CoCoA" and
+ * "initializing CoCoA" the same act: one cannot construct a CoCoA-using object
+ * without first running this constructor, so no entry point has to remember to
+ * initialize anything.
+ *
+ * Test code that builds CoCoA objects by hand (rather than through one of those
+ * classes) may construct a CocoaInitializer directly as a local guard.
  */
-extern CoCoA::GlobalManager* s_cocoaGlobalManager;
-
-/**
- * Intializes the CoCoA global manager if it has not been intialized already.
- */
-void initCocoaGlobalManager();
+class CocoaInitializer
+{
+ public:
+  CocoaInitializer();
+};
 
 }  // namespace cvc5::internal
 

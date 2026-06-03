@@ -38,7 +38,7 @@ class TestTheoryFfTracerWhite : public TestInternal
 
 TEST_F(TestTheoryFfTracerWhite, HandlersClearedAfterDestruction)
 {
-  initCocoaGlobalManager();
+  CocoaInitializer cocoaInitializer;
   {
     theory::ff::Tracer tracer({});
     tracer.setFunctionPointers();

@@ -60,7 +60,7 @@ TEST_F(TestTheoryFfTimeoutWhite, GBasisTimeoutFatalsOnCpuTimeLimitErrorInfo)
   ResourceManager rm(stats, options);
   rm.beginCall();
 
-  initCocoaGlobalManager();
+  CocoaInitializer cocoaInitializer;
   CoCoA::SparsePolyRing polyRing =
       CoCoA::NewPolyRing(CoCoA::NewZZmod(7), CoCoA::symbols("x"));
   CoCoA::ideal id = CoCoA::ideal(CoCoA::indet(polyRing, 0));

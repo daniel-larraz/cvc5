@@ -29,7 +29,6 @@
 #include "theory/ff/multi_roots.h"
 #include "theory/ff/split_gb.h"
 #include "theory/ff/util.h"
-#include "util/cocoa_globals.h"
 #include "util/finite_field_value.h"
 #include "util/resource_manager.h"
 
@@ -44,8 +43,8 @@ SubTheory::SubTheory(Env& env, FfStatistics* stats, const Integer& modulus)
       d_stats(stats)
 {
   AlwaysAssert(modulus.isProbablePrime()) << "non-prime fields are unsupported";
-  // must be initialized before using CoCoA.
-  initCocoaGlobalManager();
+  // CoCoA is initialized on demand when the CocoaEncoder is constructed (during
+  // gb()/split()); no explicit init here.
 }
 
 void SubTheory::notifyFact(TNode fact) { d_facts.emplace_back(fact); }

@@ -38,7 +38,7 @@ class TestTheoryFfRootsBlack : public TestSmt
   void SetUp() override
   {
     TestSmt::SetUp();
-    initCocoaGlobalManager();
+    CocoaInitializer cocoaInitializer;
   }
 };
 

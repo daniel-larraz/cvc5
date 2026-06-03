@@ -28,6 +28,7 @@
 #include <optional>
 
 #include "theory/arith/nl/coverings/cocoa_converter.h"
+#include "util/cocoa_globals.h"
 
 namespace cvc5::internal::theory::arith::nl::coverings {
 
@@ -116,7 +117,7 @@ std::ostream& operator<<(std::ostream& os, const LazardEvaluationState& state);
  * to directly replace x_i when appropriate. Also, we have K_i = K_{i-1}.
  *
  */
-struct LazardEvaluationState
+struct LazardEvaluationState : private CocoaInitializer
 {
   /** The libpoly context */
   const poly::Context& d_polyCtx;

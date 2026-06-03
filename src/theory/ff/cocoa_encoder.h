@@ -32,6 +32,7 @@
 #include "theory/ff/cocoa_util.h"
 #include "theory/ff/core.h"
 #include "theory/ff/util.h"
+#include "util/cocoa_globals.h"
 
 namespace cvc5::internal {
 namespace theory {
@@ -57,7 +58,7 @@ CoCoA::symbol cocoaSym(const std::string& varName,
  * are used to encode cvc5 variables, bitsums, and witnesses of disequality (a
  * != b is encoded as (a - b)w = 1, where w is the witness).
  */
-class CocoaEncoder : public FieldObj
+class CocoaEncoder : private CocoaInitializer, public FieldObj
 {
  public:
   /** Create a new encoder, for this field. */

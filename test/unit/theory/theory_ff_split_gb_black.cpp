@@ -42,7 +42,7 @@ class TestTheoryFfSplitGb : public TestEnv
   void SetUp() override
   {
     TestEnv::SetUp();
-    initCocoaGlobalManager();
+    CocoaInitializer cocoaInitializer;
   }
 };
 

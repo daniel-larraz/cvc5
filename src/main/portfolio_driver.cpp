@@ -11,6 +11,7 @@
 #include "main/portfolio_driver.h"
 
 #if HAVE_SYS_WAIT_H
+#include <fcntl.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -21,6 +22,8 @@
 
 #include <chrono>
 #include <cstdlib>
+#include <filesystem>
+#include <fstream>
 #include <optional>
 #include <thread>
 
@@ -293,6 +296,42 @@ class Pipe
   int d_pipe[2];
 };
 
+/**
+ * Redirect the given file descriptor (STDOUT_FILENO or STDERR_FILENO) into the
+ * file at the given path, truncating it. This is called within the child
+ * process after forking, as an alternative to Pipe::dup(), when the user
+ * requested per-strategy log files via --portfolio-log-dir. The output of the
+ * strategy is then written to the log file as it is produced, so it can be
+ * inspected (e.g. with `tail -f`) while the portfolio is still running.
+ * Returns false if the file could not be opened, in which case fd is left
+ * untouched.
+ */
+bool redirectToFile(int fd, const std::string& path)
+{
+  int file = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (file == -1)
+  {
+    return false;
+  }
+  // dup2 may get interrupted by a signal. If this happens the error is EINTR
+  // and we can simply try again.
+  while ((dup2(file, fd) == -1) && (errno == EINTR))
+  {
+  }
+  close(file);
+  return true;
+}
+
+/** Copy the content of the file at the given path into the output stream. */
+void copyFileTo(const std::string& path, std::ostream& os)
+{
+  std::ifstream in(path, std::ios::binary);
+  if (in)
+  {
+    os << in.rdbuf();
+  }
+}
+
 void printPortfolioConfig(Solver& solver, PortfolioConfig& config)
 {
   bool dry_run = solver.getOption("portfolio-dry-run") == "true";
@@ -345,6 +384,13 @@ class PortfolioProcessPool
     Pipe d_errPipe;
     Pipe d_outPipe;
     JobState d_state;
+    /**
+     * Paths of the stdout/stderr log files for this job. Only set and used when
+     * logging to files is enabled (see --portfolio-log-dir); otherwise the
+     * output is captured via d_outPipe/d_errPipe.
+     */
+    std::string d_outLog;
+    std::string d_errLog;
   };
 
  public:
@@ -354,7 +400,8 @@ class PortfolioProcessPool
       : d_ctx(ctx),
         d_parser(parser),
         d_maxJobs(ctx.solver().getOptionInfo("portfolio-jobs").uintValue()),
-        d_timeout(timeout)
+        d_timeout(timeout),
+        d_logDir(ctx.solver().getOption("portfolio-log-dir"))
   {
   }
 
@@ -363,6 +410,31 @@ class PortfolioProcessPool
     for (const auto& s : strategy.d_strategies)
     {
       d_jobs.emplace_back(Job{s});
+    }
+
+    if (!d_logDir.empty())
+    {
+      // Create the log directory (and any missing parents) up front, and write
+      // a manifest mapping each strategy index to the options it runs with, so
+      // the numbered log files can be identified while debugging.
+      std::error_code ec;
+      std::filesystem::create_directories(d_logDir, ec);
+      if (ec)
+      {
+        Warning() << "Could not create portfolio log directory '" << d_logDir
+                  << "': " << ec.message()
+                  << ". Disabling per-strategy logging." << std::endl;
+        d_logDir.clear();
+      }
+      else
+      {
+        std::ofstream manifest(logPath("strategies.log"));
+        for (size_t i = 0; i < d_jobs.size(); ++i)
+        {
+          manifest << "strategy-" << i << ": "
+                   << d_jobs[i].d_config.toOptionString() << "\n";
+        }
+      }
     }
 
     // While there are jobs to be run or jobs still running
@@ -396,6 +468,12 @@ class PortfolioProcessPool
   }
 
  private:
+  /** Build the path of a log file with the given name within d_logDir. */
+  std::string logPath(const std::string& name) const
+  {
+    return (std::filesystem::path(d_logDir) / name).string();
+  }
+
   void startNextJob()
   {
     Assert(d_nextJob < d_jobs.size());
@@ -403,9 +481,20 @@ class PortfolioProcessPool
     Trace("portfolio") << "Starting " << job.d_config << std::endl;
     printPortfolioConfig(d_ctx.solver(), job.d_config);
 
-    // Set up pipes to capture output of worker
-    job.d_errPipe.open();
-    job.d_outPipe.open();
+    const bool logging = !d_logDir.empty();
+    if (logging)
+    {
+      // Each strategy writes its output directly to its own log files, so they
+      // can be inspected while the portfolio is still running.
+      job.d_outLog = logPath("strategy-" + std::to_string(d_nextJob) + ".out");
+      job.d_errLog = logPath("strategy-" + std::to_string(d_nextJob) + ".err");
+    }
+    else
+    {
+      // Set up pipes to capture output of worker
+      job.d_errPipe.open();
+      job.d_outPipe.open();
+    }
     // Start the worker process
     job.d_worker = fork();
     if (job.d_worker == -1)
@@ -414,8 +503,16 @@ class PortfolioProcessPool
     }
     if (job.d_worker == 0)
     {
-      job.d_errPipe.dup(STDERR_FILENO);
-      job.d_outPipe.dup(STDOUT_FILENO);
+      if (logging)
+      {
+        redirectToFile(STDERR_FILENO, job.d_errLog);
+        redirectToFile(STDOUT_FILENO, job.d_outLog);
+      }
+      else
+      {
+        job.d_errPipe.dup(STDERR_FILENO);
+        job.d_outPipe.dup(STDOUT_FILENO);
+      }
 
       std::vector<cvc5::Term> assertions = d_ctx.solver().getAssertions();
       std::string logic = d_ctx.solver().getLogic();
@@ -451,8 +548,11 @@ class PortfolioProcessPool
       }
       _exit(rc);
     }
-    job.d_errPipe.closeIn();
-    job.d_outPipe.closeIn();
+    if (!logging)
+    {
+      job.d_errPipe.closeIn();
+      job.d_outPipe.closeIn();
+    }
 
     // Start the timeout process
     if (d_timeout > 0 && job.d_config.d_timeout > 0)
@@ -529,8 +629,20 @@ class PortfolioProcessPool
             out << "(portfolio-success \"" << job.d_config.toOptionString()
                 << "\")" << std::endl;
           }
-          job.d_errPipe.flushTo(std::cerr);
-          job.d_outPipe.flushTo(std::cout);
+          if (d_logDir.empty())
+          {
+            job.d_errPipe.flushTo(std::cerr);
+            job.d_outPipe.flushTo(std::cout);
+          }
+          else
+          {
+            // The winning strategy wrote its output to its log files; forward
+            // it so that the actual result is printed as usual. The log files
+            // (including those of the unsuccessful strategies) are left in
+            // place for debugging.
+            copyFileTo(job.d_errLog, std::cerr);
+            copyFileTo(job.d_outLog, std::cout);
+          }
           return true;
         }
       }
@@ -548,6 +660,12 @@ class PortfolioProcessPool
   size_t d_running = 0;
   const uint64_t d_maxJobs;
   const uint64_t d_timeout;
+  /**
+   * Directory for per-strategy log files (--portfolio-log-dir). Empty if
+   * logging to files is disabled, in which case strategy output is captured
+   * via pipes and only the winner's output is forwarded.
+   */
+  std::string d_logDir;
 };
 
 }  // namespace

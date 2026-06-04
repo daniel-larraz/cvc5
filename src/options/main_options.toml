@@ -218,6 +218,14 @@ name   = "Driver"
   help       = "Number of parallel jobs the portfolio engine can run"
 
 [[option]]
+  name       = "portfolioLogDir"
+  category   = "expert"
+  long       = "portfolio-log-dir=DIR"
+  type       = "std::string"
+  default    = '""'
+  help       = "If set, write the stdout/stderr of each strategy run by --use-portfolio to separate log files in directory DIR (created if needed) while they are running, for debugging"
+
+[[option]]
   name       = "printSuccess"
   category   = "common"
   long       = "print-success"

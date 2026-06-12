@@ -292,8 +292,7 @@ endif ()
 # Keep the default linker on MSYS, as switching it prevents the build system from
 # using the GMP system library if available. For Linux ARM64, the default linker is
 # also required due to a bug in the gold linker specific to ARM64 architectures.
-if (NOT ("${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles") AND
-    NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" AND
+if (NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" AND
     NOT USE_DEFAULT_LINKER)
   #-----------------------------------------------------------------------------#
   # Use ld.mold if available, otherwise use ld.gold if available

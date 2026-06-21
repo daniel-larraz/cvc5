@@ -103,15 +103,15 @@ runs:
       uses: msys2/setup-msys2@v2.32.0
       with:
         update: false
-        msystem: CLANG64
+        msystem: MINGW64
         path-type: inherit
         install: |
           make
-          mingw-w64-clang-x86_64-autotools
-          mingw-w64-clang-x86_64-ccache
-          mingw-w64-clang-x86_64-clang
-          mingw-w64-clang-x86_64-cmake
-          mingw-w64-clang-x86_64-gmp
+          mingw-w64-x86_64-autotools
+          mingw-w64-x86_64-ccache
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gmp
           zip
 
     # Pin MSYS2 installation to use Clang 22.1.7 (required by lean-cvc5)

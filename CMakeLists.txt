@@ -289,7 +289,8 @@ if (WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,100000000")
 endif ()
 
-if (NOT USE_DEFAULT_LINKER)
+if (NOT ("${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles") AND
+    NOT USE_DEFAULT_LINKER)
   #-----------------------------------------------------------------------------#
   # Use ld.mold if available, otherwise use ld.lld if available, otherwise
   # use ld.gold if available (unless ASan is enabled).

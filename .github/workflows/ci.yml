@@ -147,7 +147,7 @@ jobs:
 
           - name: win64:production
             os: windows-latest
-            config: production --auto-download --all-bindings --gpl --cocoa -DBUILD_GMP=1
+            config: production --auto-download --all-bindings --gpl --cocoa
             cache-key: production-win64-native
             strip-bin: strip
             python-bindings: true
@@ -161,7 +161,7 @@ jobs:
 
           - name: win64:production-arm64
             os: windows-11-arm
-            config: production --auto-download --all-bindings --gpl --cocoa -DBUILD_GMP=1
+            config: production --auto-download --all-bindings --gpl --cocoa
             cache-key: production-win64-native-arm64
             strip-bin: strip
             python-bindings: true
@@ -209,7 +209,7 @@ jobs:
           # GPL versions
           - name: ubuntu:production-gpl
             os: ubuntu-22.04
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1 -DBUILD_CLN=1
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_CLN=1
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-Linux-x86_64
@@ -217,7 +217,7 @@ jobs:
 
           - name: ubuntu:production-arm64-gpl
             os: ubuntu-22.04-arm
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1 -DBUILD_CLN=1
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_CLN=1
             cache-key: production-arm64-gpl
             strip-bin: strip
             package-name: cvc5-Linux-arm64
@@ -225,7 +225,7 @@ jobs:
 
           - name: macos:production-gpl
             os: macos-15-intel
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1 -DBUILD_CLN=1
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_CLN=1
             cache-key: production-gpl
             strip-bin: strip
             package-name: cvc5-macOS-x86_64
@@ -234,7 +234,7 @@ jobs:
 
           - name: macos:production-arm64-gpl
             os: macos-15
-            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_GMP=1 -DBUILD_CLN=1
+            config: production --auto-download --editline --gpl --cln --glpk --cocoa -DBUILD_CLN=1
             cache-key: production-arm64-gpl
             strip-bin: strip
             package-name: cvc5-macOS-arm64
@@ -247,7 +247,7 @@ jobs:
           # for CoCoALib to link under the CLANG64 lld linker.
           - name: win64:production-gpl
             os: windows-latest
-            config: production --auto-download --gpl --cocoa -DBUILD_GMP=1
+            config: production --auto-download --gpl --cocoa
             cache-key: production-win64-native-gpl
             strip-bin: strip
             windows-build: true
@@ -257,7 +257,7 @@ jobs:
 
           - name: win64:production-arm64-gpl
             os: windows-11-arm
-            config: production --auto-download --gpl --cocoa -DBUILD_GMP=1
+            config: production --auto-download --gpl --cocoa
             cache-key: production-win64-native-arm64-gpl
             strip-bin: strip
             windows-build: true

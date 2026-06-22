@@ -166,12 +166,29 @@ if(NOT Poly_FOUND_SYSTEM)
       "${DEPS_BASE}/lib/libpicpolyxx${CMAKE_STATIC_LIBRARY_SUFFIX}")
   endif()
 
-  # Disable a warning triggered by compilers (Emscripten, Apple Clang, etc.)
-  # due to deprecated literal operator syntax in a GMP header used by LibPoly.
+  # Disable warnings triggered by GMP headers used by LibPoly that some
+  # compilers turn fatal under LibPoly's own -Werror:
+  #  - deprecated literal operator syntax (Emscripten, Apple Clang, ...)
+  #  - "dllimport attribute ignored" on inline functions, emitted when GMP is
+  #    built from source as a DLL (-DBUILD_GMP=1) on Windows. LibPoly has C
+  #    sources that include gmp.h, so this must also cover the C compiler.
+  set(POLY_EP_C_FLAGS "")
+  set(POLY_EP_CXX_FLAGS "")
+  check_cxx_compiler_flag(-Wno-error=deprecated-literal-operator HAVE_FLAG_no_deprecated_literal_operator)
+  if(HAVE_FLAG_no_deprecated_literal_operator)
+    string(APPEND POLY_EP_CXX_FLAGS " -Wno-error=deprecated-literal-operator")
+  endif()
+  check_cxx_compiler_flag(-Wno-error=ignored-attributes HAVE_FLAG_no_ignored_attributes)
+  if(HAVE_FLAG_no_ignored_attributes)
+    string(APPEND POLY_EP_C_FLAGS " -Wno-error=ignored-attributes")
+    string(APPEND POLY_EP_CXX_FLAGS " -Wno-error=ignored-attributes")
+  endif()
   set(POLY_CXX_FLAGS "")
-  check_cxx_compiler_flag(-Wno-error=deprecated-literal-operator HAVE_CXX_FLAGWno_error_deprecated_literal_operator)
-  if(HAVE_CXX_FLAGWno_error_deprecated_literal_operator)
-    set(POLY_CXX_FLAGS -DCMAKE_CXX_FLAGS=-Wno-error=deprecated-literal-operator)
+  if(POLY_EP_CXX_FLAGS)
+    list(APPEND POLY_CXX_FLAGS "-DCMAKE_CXX_FLAGS=${POLY_EP_CXX_FLAGS}")
+  endif()
+  if(POLY_EP_C_FLAGS)
+    list(APPEND POLY_CXX_FLAGS "-DCMAKE_C_FLAGS=${POLY_EP_C_FLAGS}")
   endif()
   
   # We pass the full path of GMP to LibPoly, s.t. we can ensure that LibPoly is

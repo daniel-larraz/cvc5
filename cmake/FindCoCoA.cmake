@@ -79,6 +79,13 @@ if(NOT CoCoA_FOUND_SYSTEM)
   if(CMAKE_OSX_SYSROOT)
     set(CoCoA_CXXFLAGS "${CMAKE_CXX_SYSROOT_FLAG} ${CMAKE_OSX_SYSROOT}")
   endif()
+  # When GMP is built from source as a DLL (-DBUILD_GMP=1) on Windows, gmp.h
+  # marks inline functions dllimport, which clang reports as
+  # -Wignored-attributes. Keep that benign warning from failing CoCoALib's
+  # build in case it compiles with -Werror.
+  if(WIN32)
+    set(CoCoA_CXXFLAGS "${CoCoA_CXXFLAGS} -Wno-error=ignored-attributes")
+  endif()
 
   ExternalProject_Add(
     CoCoA-EP

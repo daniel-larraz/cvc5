@@ -287,6 +287,12 @@ endif()
 
 if (WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,100000000")
+  # When GMP is built from source as a DLL (-DBUILD_GMP=1), its gmp.h marks
+  # inline functions dllimport, which clang reports as -Wignored-attributes.
+  # The attribute is harmless (the inline definition is used), so don't let
+  # -Werror turn it into a build failure. Harmless no-op with system GMP.
+  add_check_c_flag("-Wno-error=ignored-attributes")
+  add_check_cxx_flag("-Wno-error=ignored-attributes")
 endif ()
 
 if (NOT USE_DEFAULT_LINKER)

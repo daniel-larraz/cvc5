@@ -42,9 +42,15 @@ elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
     set(BUILD_TRIPLET "aarch64-apple-darwin")
   endif()
 elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
-  if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  # When building natively under MSYS2, CMAKE_HOST_SYSTEM_PROCESSOR is the
+  # Windows value (AMD64/ARM64) rather than the GNU value (x86_64/aarch64), so
+  # match both; otherwise --build is passed as e.g. "AMD64", which autotools
+  # (config.sub) rejects.
+  if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64" OR
+     CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "AMD64")
     set(BUILD_TRIPLET "x86_64-w64-mingw32")
-  elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
+  elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64" OR
+         CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "ARM64")
     set(BUILD_TRIPLET "aarch64-w64-mingw32")
   endif()
 endif()

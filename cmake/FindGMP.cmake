@@ -122,6 +122,16 @@ if(NOT GMP_FOUND_SYSTEM)
     endif()
   else()
     set(CONFIGURE_OPTS --build=${BUILD_TRIPLET}) # Defined in Helpers
+    # On native Windows (MSYS2), GMP's configure otherwise defaults to a `gcc`
+    # from the inherited PATH, which may target a different architecture than
+    # the selected --build triplet (e.g. an x86_64 gcc on the aarch64 runner).
+    # GMP then emits asm for --build but assembles it with the wrong compiler,
+    # producing bogus "no such instruction" errors. Build GMP with the same
+    # compiler as cvc5 (as we already do for CoCoALib via --with-cxx).
+    if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+      set(CONFIGURE_ENV ${CONFIGURE_ENV}
+        env "CC=${CMAKE_C_COMPILER}" env "CXX=${CMAKE_CXX_COMPILER}")
+    endif()
   endif()
   set(CONFIGURE_ENV ${CONFIGURE_ENV} env "CXXFLAGS=${GMP_CXXFLAGS}" env "CFLAGS=${GMP_CFLAGS}")
 

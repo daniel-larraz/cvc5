@@ -47,12 +47,6 @@ if(NOT CLN_FOUND_SYSTEM)
 
   fail_if_cross_compiling("Windows" "" "CLN" "autoconf fails")
 
-  if("${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles")
-    message(FATAL_ERROR
-      "Compilation of CLN in the MSYS2 environment is not supported."
-    )
-  endif()
-
   set(CLN_VERSION "1.3.7")
   set(CLN_SO_MAJOR_VER "6")
   set(CLN_SO_MINOR_VER "0")

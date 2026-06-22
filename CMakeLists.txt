@@ -287,14 +287,16 @@ endif()
 
 if (WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,100000000")
-  # On MSYS2, gmp.h defaults __GMP_LIBGMP_DLL to 1, which makes every reference
-  # to a GMP symbol (e.g. __gmp_default_allocate) a dllimport (__imp_*). When
-  # GMP is linked statically, that import reference clashes with the static
-  # definition. GNU ld reconciles this via auto-import, but lld (clang's default
-  # linker in the CLANG64 environment) rejects it with "<sym> was replaced".
-  # Force the non-DLL declarations so no __imp_* references are emitted; this is
-  # safe for both static and shared GMP linkage.
-  add_compile_definitions(__GMP_LIBGMP_DLL=0)
+  # On MSYS2, gmp.h is patched (gmp-staticlib.diff) so that __GMP_LIBGMP_DLL
+  # defaults to 1 (DLL mode) unless GMP_STATICLIB is defined. In DLL mode,
+  # references to GMP symbols (e.g. __gmp_default_allocate) become dllimports
+  # that clash with the static libgmp.a we link against; GNU ld reconciles this
+  # via auto-import, but lld (clang's default linker in CLANG64) rejects it with
+  # "<sym> was replaced". gmp.h sets __GMP_LIBGMP_DLL unconditionally, so
+  # -D__GMP_LIBGMP_DLL=0 is ignored; GMP_STATICLIB is the macro MSYS2 keys on
+  # (it is what gmp.pc puts in Cflags.private for static linking). On Windows we
+  # always link the static libgmp.a, so this is correct for all builds.
+  add_compile_definitions(GMP_STATICLIB)
 endif ()
 
 if (NOT USE_DEFAULT_LINKER)

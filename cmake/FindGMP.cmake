@@ -46,16 +46,6 @@ if(GMP_INCLUDE_DIR AND GMPXX_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_LIBRARIES)
     set(GMP_VERSION "(unknown version)")
   endif()
 
-  # On MSYS2, gmp.h defaults __GMP_LIBGMP_DLL to 1, which turns every reference
-  # to a GMP symbol into a dllimport (__imp_*). When GMP is linked statically
-  # that import reference clashes with the static definition; GNU ld reconciles
-  # it via auto-import, but lld rejects it with "<sym> was replaced". Force the
-  # non-DLL declarations so the test reflects how cvc5 itself is built.
-  set(GMP_TEST_DEFINITIONS "")
-  if(WIN32)
-    set(GMP_TEST_DEFINITIONS "-D__GMP_LIBGMP_DLL=0")
-  endif()
-
   # This test checks whether GMP is usable and whether the version is new
   # enough
   try_compile(GMP_USABLE "${DEPS_BASE}/try_compile/GMP-EP"
@@ -63,7 +53,6 @@ if(GMP_INCLUDE_DIR AND GMPXX_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_LIBRARIES)
     CMAKE_FLAGS
       "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
       "-DINCLUDE_DIRECTORIES=${GMP_INCLUDE_DIR}"
-    COMPILE_DEFINITIONS ${GMP_TEST_DEFINITIONS}
     LINK_LIBRARIES ${GMP_LIBRARIES} ${GMPXX_LIBRARIES}
   )
   if(NOT GMP_USABLE)

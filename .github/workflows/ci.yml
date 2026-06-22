@@ -147,7 +147,7 @@ jobs:
 
           - name: win64:production
             os: windows-latest
-            config: production --auto-download --all-bindings --gpl --cocoa
+            config: production --auto-download --all-bindings --gpl --cocoa -DBUILD_GMP=1
             cache-key: production-win64-native
             strip-bin: strip
             python-bindings: true
@@ -161,7 +161,7 @@ jobs:
 
           - name: win64:production-arm64
             os: windows-11-arm
-            config: production --auto-download --all-bindings --gpl --cocoa
+            config: production --auto-download --all-bindings --gpl --cocoa -DBUILD_GMP=1
             cache-key: production-win64-native-arm64
             strip-bin: strip
             python-bindings: true
@@ -247,7 +247,7 @@ jobs:
           # for CoCoALib to link under the CLANG64 lld linker.
           - name: win64:production-gpl
             os: windows-latest
-            config: production --auto-download --gpl --cocoa
+            config: production --auto-download --gpl --cocoa -DBUILD_GMP=1
             cache-key: production-win64-native-gpl
             strip-bin: strip
             windows-build: true
@@ -257,7 +257,7 @@ jobs:
 
           - name: win64:production-arm64-gpl
             os: windows-11-arm
-            config: production --auto-download --gpl --cocoa
+            config: production --auto-download --gpl --cocoa -DBUILD_GMP=1
             cache-key: production-win64-native-arm64-gpl
             strip-bin: strip
             windows-build: true

@@ -29,21 +29,12 @@ if(CoCoA_INCLUDE_DIR AND CoCoA_LIBRARIES)
 
   check_system_version("CoCoA")
 
-  # On Windows, force the non-DLL GMP declarations (see the comment in
-  # cmake/FindGMP.cmake and the top-level CMakeLists.txt) so that the link test
-  # does not emit dllimport references that clash with a static GMP under lld.
-  set(CoCoA_TEST_DEFINITIONS "")
-  if(WIN32)
-    set(CoCoA_TEST_DEFINITIONS "-D__GMP_LIBGMP_DLL=0")
-  endif()
-
   # This test checks whether CoCoA has been patched
   try_compile(CoCoA_USABLE "${DEPS_BASE}/try_compile/CoCoA-EP"
     "${CMAKE_CURRENT_LIST_DIR}/deps-utils/cocoa-test.cpp"
     CMAKE_FLAGS
       "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
       "-DINCLUDE_DIRECTORIES=${CoCoA_INCLUDE_DIR}"
-    COMPILE_DEFINITIONS ${CoCoA_TEST_DEFINITIONS}
     LINK_LIBRARIES ${CoCoA_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES}
   )
   if(NOT CoCoA_USABLE)
@@ -87,12 +78,6 @@ if(NOT CoCoA_FOUND_SYSTEM)
   # found because they are not necessarily installed at /usr/include anymore.
   if(CMAKE_OSX_SYSROOT)
     set(CoCoA_CXXFLAGS "${CMAKE_CXX_SYSROOT_FLAG} ${CMAKE_OSX_SYSROOT}")
-  endif()
-  # On Windows, build CoCoALib with the non-DLL GMP declarations so that its
-  # references to GMP symbols match the static GMP it is linked against (see the
-  # comment in cmake/FindGMP.cmake).
-  if(WIN32)
-    set(CoCoA_CXXFLAGS "${CoCoA_CXXFLAGS} -D__GMP_LIBGMP_DLL=0")
   endif()
 
   ExternalProject_Add(

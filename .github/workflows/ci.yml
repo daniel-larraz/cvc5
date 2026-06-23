@@ -258,6 +258,7 @@ jobs:
             config: production --auto-download --gpl --cocoa
             cache-key: production-win64-native-arm64-gpl
             strip-bin: strip
+            java-version: 21
             windows-build: true
             shell: 'msys2 {0}'
             gpl-tag: -gpl

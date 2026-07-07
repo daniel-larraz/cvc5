@@ -246,7 +246,7 @@ jobs:
           # but are not currently uploaded.
           - name: win64:production-gpl
             os: windows-latest
-            config: production --auto-download --gpl --cocoa
+            config: production --auto-download --gpl --cocoa --normaliz
             cache-key: production-win64-native-gpl
             strip-bin: strip
             windows-build: true

@@ -28,7 +28,7 @@ namespace theory {
 namespace strings {
 
 StringsEntail::StringsEntail(Rewriter* r, ArithEntail& aent)
-    : d_rr(r), d_arithEntail(aent)
+    : d_rr(r), d_arithEntail(aent), d_rewriter(nullptr)
 {
 }
 

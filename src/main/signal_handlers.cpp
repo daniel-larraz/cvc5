@@ -264,7 +264,7 @@ void install()
     }
   }
 
-  struct sigaction act1;
+  struct sigaction act1 = {};
   act1.sa_sigaction = sigint_handler;
   act1.sa_flags = SA_SIGINFO;
   sigemptyset(&act1.sa_mask);
@@ -273,7 +273,7 @@ void install()
     throw Exception(string("sigaction(SIGINT) failure: ") + strerror(errno));
   }
 
-  struct sigaction act2;
+  struct sigaction act2 = {};
   act2.sa_sigaction = timeout_handler;
   act2.sa_flags = SA_SIGINFO;
   sigemptyset(&act2.sa_mask);
@@ -282,7 +282,7 @@ void install()
     throw Exception(string("sigaction(SIGXCPU) failure: ") + strerror(errno));
   }
 
-  struct sigaction act3;
+  struct sigaction act3 = {};
   act3.sa_sigaction = ill_handler;
   act3.sa_flags = SA_SIGINFO;
   sigemptyset(&act3.sa_mask);
@@ -308,7 +308,7 @@ void install()
   stackSize = limit.rlim_cur;
   stackBase = ss.ss_sp;
 
-  struct sigaction act4;
+  struct sigaction act4 = {};
   act4.sa_sigaction = segv_handler;
   act4.sa_flags = SA_SIGINFO | SA_ONSTACK;
   sigemptyset(&act4.sa_mask);
@@ -318,7 +318,7 @@ void install()
   }
 #endif /* HAVE_SIGALTSTACK */
 
-  struct sigaction act5;
+  struct sigaction act5 = {};
   act5.sa_sigaction = sigterm_handler;
   act5.sa_flags = SA_SIGINFO;
   sigemptyset(&act5.sa_mask);

@@ -34,14 +34,14 @@ struct NodeInfo
   /** Compressed string encoding of the DAG, aka patterns. */
   std::string encoding;
   /** Equivalence class ID. */
-  size_t equivClass;
+  size_t equivClass = 0;
   /** First occurrence index (counter) of each symbol when traversing the DAG,
    * aka super-pattern */
   std::unordered_map<std::string, int32_t> role;
   /** Variable names and their indices. */
   std::vector<std::pair<std::string, int32_t>> varNames;
   /** Index of the assertion after first round of sorting. */
-  size_t id;
+  size_t id = 0;
 
   /** Default constructor. */
   NodeInfo() {}

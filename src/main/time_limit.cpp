@@ -83,7 +83,7 @@ TimeLimit install_time_limit(uint64_t ms)
 
 #if HAVE_SETITIMER
   // Install a signal handler for SIGALRM
-  struct sigaction sact;
+  struct sigaction sact = {};
   sact.sa_sigaction = posix_timeout_handler;
   sact.sa_flags = SA_SIGINFO;
   sigemptyset(&sact.sa_mask);

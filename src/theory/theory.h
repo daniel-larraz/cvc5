@@ -812,9 +812,6 @@ class Theory : protected EnvObj
 
   /** The care graph the theory will use during combination. */
   CareGraph* d_careGraph;
-
-  /** Pointer to the decision manager. */
-  DecisionManager* d_decManager;
 }; /* class Theory */
 
 std::ostream& operator<<(std::ostream& os, theory::Theory::Effort level);

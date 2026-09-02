@@ -3745,7 +3745,7 @@ Cvc5Result cvc5_result_copy(Cvc5Result result)
   Cvc5Result res = nullptr;
   CVC5_CAPI_TRY_CATCH_BEGIN;
   CVC5_CAPI_CHECK_RESULT(result);
-  res = result->d_tm->copy(result);
+  res = result->copy();
   CVC5_CAPI_TRY_CATCH_END;
   return res;
 }
@@ -3754,7 +3754,7 @@ void cvc5_result_release(Cvc5Result result)
 {
   CVC5_CAPI_TRY_CATCH_BEGIN;
   CVC5_CAPI_CHECK_RESULT(result);
-  result->d_tm->release(result);
+  result->release();
   CVC5_CAPI_TRY_CATCH_END;
 }
 
@@ -3871,7 +3871,7 @@ Cvc5SynthResult cvc5_synth_result_copy(Cvc5SynthResult result)
   Cvc5SynthResult res = nullptr;
   CVC5_CAPI_TRY_CATCH_BEGIN;
   CVC5_CAPI_CHECK_SYNTH_RESULT(result);
-  res = result->d_tm->copy(result);
+  res = result->copy();
   CVC5_CAPI_TRY_CATCH_END;
   return res;
 }
@@ -3880,7 +3880,7 @@ void cvc5_synth_result_release(Cvc5SynthResult result)
 {
   CVC5_CAPI_TRY_CATCH_BEGIN;
   CVC5_CAPI_CHECK_SYNTH_RESULT(result);
-  result->d_tm->release(result);
+  result->release();
   CVC5_CAPI_TRY_CATCH_END;
 }
 

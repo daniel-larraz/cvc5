@@ -232,6 +232,9 @@ CVC5_EXPORT Cvc5Result cvc5_result_copy(Cvc5Result result);
  * @note This step is optional and allows users to release resources in a more
  *       fine-grained manner. Further, any API function that returns a copy
  *       that is owned by the callee of the function and thus, can be released.
+ * @note A result does not keep its term manager alive and stays valid after
+ *       the solver and term manager have been deleted. It is then only freed
+ *       by this function.
  */
 CVC5_EXPORT void cvc5_result_release(Cvc5Result result);
 
@@ -400,6 +403,10 @@ CVC5_EXPORT Cvc5SynthResult cvc5_synth_result_copy(Cvc5SynthResult result);
 
 /**
  * Release copy of synthesis result, decrements reference counter of `result`.
+ *
+ * @note A synthesis result does not keep its term manager alive and stays
+ *       valid after the solver and term manager have been deleted. It is then
+ *       only freed by this function.
  *
  * @param result The result to release.
  *
@@ -2584,13 +2591,20 @@ CVC5_EXPORT Cvc5TermManager* cvc5_term_manager_new();
  *
  * Objects created via the term manager (sorts, terms, operators, datatypes,
  * ...), as well as objects created via solver instances associated with the
- * term manager (results, proofs, grammars, ...), are managed by the term
+ * term manager (proofs, grammars, statistics, ...), are managed by the term
  * manager. They keep the term manager alive and thus remain valid after the
  * term manager has been deleted, until they are released via the
  * corresponding `cvc5_*_release()` function. The memory of the term manager
  * (and of the objects it manages) is only freed once the term manager has been
  * deleted and all of its managed objects have been released, either
  * individually or all at once via `cvc5_term_manager_release()`.
+ *
+ * @note Results (`Cvc5Result`) and synthesis results (`Cvc5SynthResult`) are
+ *       the exception: as in the C++ API, they reference neither the solver
+ *       nor the term manager. They remain valid independently of both and do
+ *       not keep the term manager alive, but must still be released via
+ *       `cvc5_result_release()` resp. `cvc5_synth_result_release()` (or, while
+ *       the term manager is alive, `cvc5_term_manager_release()`).
  *
  * @param tm The term manager instance.
  */

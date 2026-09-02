@@ -216,6 +216,37 @@ TEST_F(TestCApiBlackLifetime, deleteSolverBeforeTermManager)
   cvc5_result_release(res);
 }
 
+TEST_F(TestCApiBlackLifetime, resultDoesNotKeepTermManagerAlive)
+{
+  // As in the C++ API, a result references neither the solver nor the node
+  // manager (`cvc5::Result` only holds a shared pointer to an internal value).
+  // It thus stays valid without keeping the term manager alive: the term
+  // manager is actually freed by the delete below, which the leak checker
+  // would flag otherwise.
+  Cvc5TermManager* tm = cvc5_term_manager_new();
+  Cvc5* slv = cvc5_new(tm);
+  Cvc5Result res = cvc5_check_sat(slv);
+  cvc5_delete(slv);
+  cvc5_term_manager_delete(tm);
+  ASSERT_TRUE(cvc5_result_is_sat(res));
+  ASSERT_EQ(std::string(cvc5_result_to_string(res)), "sat");
+  ASSERT_FALSE(cvc5_has_error());
+  cvc5_result_release(res);
+}
+
+TEST_F(TestCApiBlackLifetime, resultReleasedByTermManagerRelease)
+{
+  // While the term manager is alive it still frees outstanding results, so
+  // the bulk release mode keeps working.
+  Cvc5TermManager* tm = cvc5_term_manager_new();
+  Cvc5* slv = cvc5_new(tm);
+  (void)cvc5_check_sat(slv);
+  cvc5_delete(slv);
+  cvc5_term_manager_release(tm);
+  cvc5_term_manager_delete(tm);
+  ASSERT_FALSE(cvc5_has_error());
+}
+
 TEST_F(TestCApiBlackLifetime, valueOutlivesSolverAndTermManager)
 {
   Cvc5TermManager* tm = cvc5_term_manager_new();

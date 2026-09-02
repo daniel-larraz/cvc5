@@ -194,11 +194,29 @@ struct cvc5_result_t
       : d_result(result), d_tm(tm)
   {
   }
+  /**
+   * Increment the external ref count of this result.
+   * @return This result.
+   */
+  cvc5_result_t* copy();
+  /**
+   * Decrement the external ref count of this result. If the ref count reaches
+   * zero, this result is freed.
+   */
+  void release();
   /** The wrapped C++ result. */
   cvc5::Result d_result;
   /** External refs count. */
   uint32_t d_refs = 1;
-  /** The associated term manager. */
+  /**
+   * The term manager this result was allocated by, while it is still alive.
+   *
+   * @note A result does **not** keep its term manager alive: as in the C++
+   *       API, `cvc5::Result` does not reference the node manager (or the
+   *       solver) at all. This is a non-owning pointer, only used to
+   *       deregister from the term manager's cache when this result is freed.
+   *       It is reset to NULL when the term manager is freed.
+   */
   Cvc5TermManager* d_tm = nullptr;
 };
 
@@ -214,11 +232,24 @@ struct cvc5_synth_result_t
       : d_result(result), d_tm(tm)
   {
   }
+  /**
+   * Increment the external ref count of this synthesis result.
+   * @return This synthesis result.
+   */
+  cvc5_synth_result_t* copy();
+  /**
+   * Decrement the external ref count of this synthesis result. If the ref
+   * count reaches zero, this synthesis result is freed.
+   */
+  void release();
   /** The wrapped C++ result. */
   cvc5::SynthResult d_result;
   /** External refs count. */
   uint32_t d_refs = 1;
-  /** The associated term manager. */
+  /**
+   * The term manager this synthesis result was allocated by, while it is
+   * still alive. Non-owning, see `cvc5_result_t::d_tm`.
+   */
   Cvc5TermManager* d_tm = nullptr;
 };
 
@@ -489,29 +520,18 @@ struct CVC5_EXPORT Cvc5TermManager
    */
   cvc5_dt_cons_decl_t* copy(cvc5_dt_cons_decl_t* decl);
   /**
-   * Decrement the external ref count of a result. If the ref count reaches
-   * zero, the result is released (freed).
-   * @param result The result to release.
+   * Remove a result from the cache of allocated results.
+   * @note Results are self-owned, this only drops the (non-owning) cache
+   *       entry when the result is freed.
+   * @param result The result to remove.
    */
-  void release(cvc5_result_t* result);
+  void deregister(cvc5_result_t* result);
   /**
-   * Increment the external ref count of a result.
-   * @param result The result to copy.
-   * @return The copied result.
+   * Remove a synthesis result from the cache of allocated synthesis results.
+   * @note See `deregister(cvc5_result_t*)`.
+   * @param result The synthesis result to remove.
    */
-  cvc5_result_t* copy(cvc5_result_t* result);
-  /**
-   * Decrement the external ref count of a synthesis result. If the ref count
-   * reaches zero, the result is released (freed).
-   * @param result The result to release.
-   */
-  void release(cvc5_synth_result_t* result);
-  /**
-   * Increment the external ref count of a synthesis result.
-   * @param result The synthesis result to copy.
-   * @return The copied synthesis result.
-   */
-  cvc5_synth_result_t* copy(cvc5_synth_result_t* result);
+  void deregister(cvc5_synth_result_t* result);
   /**
    * Decrement the external ref count of a proof. If the ref count reaches
    * zero, the proof is released (freed).
@@ -589,6 +609,9 @@ struct CVC5_EXPORT Cvc5TermManager
 
   /* ---------------------------------------------------- */
 
+  /** Destructor. */
+  ~Cvc5TermManager();
+
   /** The associated term manager instance. */
   cvc5::TermManager d_tm;
 
@@ -618,10 +641,21 @@ struct CVC5_EXPORT Cvc5TermManager
   /** Cache of allocated datatype constructor declarations. */
   std::unordered_map<cvc5::DatatypeConstructorDecl, cvc5_dt_cons_decl_t>
       d_alloc_dt_cons_decls;
-  /** Cache of allocated results. */
-  std::unordered_map<cvc5::Result, cvc5_result_t> d_alloc_results;
-  /** Cache of allocated synthesis results. */
-  std::unordered_map<cvc5::SynthResult, cvc5_synth_result_t>
+  /**
+   * Cache of allocated results.
+   * @note Results are self-owned and do not keep this term manager alive
+   *       (they are the only objects that don't, mirroring the C++ API where
+   *       `cvc5::Result` references neither the node manager nor the solver).
+   *       This cache is thus non-owning: it exists to deduplicate exports and
+   *       to allow `cvc5_term_manager_release()` to free outstanding results
+   *       while this term manager is alive.
+   */
+  std::unordered_map<cvc5::Result, cvc5_result_t*> d_alloc_results;
+  /**
+   * Cache of allocated synthesis results.
+   * @note See `d_alloc_results`.
+   */
+  std::unordered_map<cvc5::SynthResult, cvc5_synth_result_t*>
       d_alloc_synth_results;
   /** Cache of allocated proofs. */
   std::unordered_map<cvc5::Proof, cvc5_proof_t> d_alloc_proofs;

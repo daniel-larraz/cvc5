@@ -344,71 +344,81 @@ cvc5_dt_cons_decl_t* Cvc5TermManager::copy(cvc5_dt_cons_decl_t* decl)
 Cvc5Result Cvc5TermManager::export_result(const cvc5::Result& result)
 {
   Assert(!result.isNull());
-  auto [it, inserted] = d_alloc_results.try_emplace(result, this, result);
-  if (!inserted)
+  auto it = d_alloc_results.find(result);
+  if (it != d_alloc_results.end())
   {
-    copy(&it->second);
+    return it->second->copy();
   }
-  return &it->second;
+  cvc5_result_t* res = new cvc5_result_t(this, result);
+  d_alloc_results.emplace(result, res);
+  return res;
 }
 
-void Cvc5TermManager::release(cvc5_result_t* result)
+void Cvc5TermManager::deregister(cvc5_result_t* result)
 {
-  if (result)
+  Assert(d_alloc_results.find(result->d_result) != d_alloc_results.end());
+  d_alloc_results.erase(result->d_result);
+}
+
+cvc5_result_t* cvc5_result_t::copy()
+{
+  d_refs += 1;
+  return this;
+}
+
+void cvc5_result_t::release()
+{
+  d_refs -= 1;
+  if (d_refs == 0)
   {
-    result->d_refs -= 1;
-    if (result->d_refs == 0)
+    // A result does not keep its term manager alive, it may thus already be
+    // gone (in which case there is no cache entry left to drop).
+    if (d_tm)
     {
-      Assert(d_alloc_results.find(result->d_result) != d_alloc_results.end());
-      d_alloc_results.erase(result->d_result);
-      free_if_unused();
+      d_tm->deregister(this);
     }
+    delete this;
   }
-}
-
-cvc5_result_t* Cvc5TermManager::copy(cvc5_result_t* result)
-{
-  if (result)
-  {
-    result->d_refs += 1;
-  }
-  return result;
 }
 
 Cvc5SynthResult Cvc5TermManager::export_synth_result(
     const cvc5::SynthResult& result)
 {
   Assert(!result.isNull());
-  auto [it, inserted] = d_alloc_synth_results.try_emplace(result, this, result);
-  if (!inserted)
+  auto it = d_alloc_synth_results.find(result);
+  if (it != d_alloc_synth_results.end())
   {
-    copy(&it->second);
+    return it->second->copy();
   }
-  return &it->second;
+  cvc5_synth_result_t* res = new cvc5_synth_result_t(this, result);
+  d_alloc_synth_results.emplace(result, res);
+  return res;
 }
 
-void Cvc5TermManager::release(cvc5_synth_result_t* result)
+void Cvc5TermManager::deregister(cvc5_synth_result_t* result)
 {
-  if (result)
+  Assert(d_alloc_synth_results.find(result->d_result)
+         != d_alloc_synth_results.end());
+  d_alloc_synth_results.erase(result->d_result);
+}
+
+cvc5_synth_result_t* cvc5_synth_result_t::copy()
+{
+  d_refs += 1;
+  return this;
+}
+
+void cvc5_synth_result_t::release()
+{
+  d_refs -= 1;
+  if (d_refs == 0)
   {
-    result->d_refs -= 1;
-    if (result->d_refs == 0)
+    if (d_tm)
     {
-      Assert(d_alloc_synth_results.find(result->d_result)
-             != d_alloc_synth_results.end());
-      d_alloc_synth_results.erase(result->d_result);
-      free_if_unused();
+      d_tm->deregister(this);
     }
+    delete this;
   }
-}
-
-cvc5_synth_result_t* Cvc5TermManager::copy(cvc5_synth_result_t* result)
-{
-  if (result)
-  {
-    result->d_refs += 1;
-  }
-  return result;
 }
 
 Cvc5Proof Cvc5TermManager::export_proof(const cvc5::Proof& proof)
@@ -531,7 +541,15 @@ void Cvc5TermManager::release()
   d_alloc_dt_sels.clear();
   d_alloc_dt_decls.clear();
   d_alloc_dt_cons_decls.clear();
+  for (auto& [r, res] : d_alloc_results)
+  {
+    delete res;
+  }
   d_alloc_results.clear();
+  for (auto& [r, res] : d_alloc_synth_results)
+  {
+    delete res;
+  }
   d_alloc_synth_results.clear();
   d_alloc_proofs.clear();
   d_alloc_grammars.clear();
@@ -555,9 +573,22 @@ bool Cvc5TermManager::has_objects() const
          || !d_alloc_ops.empty() || !d_alloc_dts.empty()
          || !d_alloc_dt_conss.empty() || !d_alloc_dt_sels.empty()
          || !d_alloc_dt_decls.empty() || !d_alloc_dt_cons_decls.empty()
-         || !d_alloc_results.empty() || !d_alloc_synth_results.empty()
          || !d_alloc_proofs.empty() || !d_alloc_grammars.empty()
          || !d_alloc_stats.empty() || !d_alloc_statistics.empty();
+}
+
+Cvc5TermManager::~Cvc5TermManager()
+{
+  // Outstanding results are self-owned and stay alive; make sure they do not
+  // point to this (now dead) term manager anymore.
+  for (auto& [r, res] : d_alloc_results)
+  {
+    res->d_tm = nullptr;
+  }
+  for (auto& [r, res] : d_alloc_synth_results)
+  {
+    res->d_tm = nullptr;
+  }
 }
 
 void Cvc5TermManager::free_if_unused()

@@ -14,7 +14,7 @@ C level, management to maintain a low overhead needs **more manual
 intervention**.
 
 All objects created via a term manager (:cpp:type:`Cvc5TermManager`) or a
-solver (:cpp:type:`Cvc5`) instance, e.g., sorts, terms, results, proofs and
+solver (:cpp:type:`Cvc5`) instance, e.g., sorts, terms, proofs and
 statistics, are **managed by the term manager**. As in the C++ API, these objects keep
 the term manager alive: they **remain valid** after the term manager and solver
 instances that created them have been deleted via
@@ -22,6 +22,14 @@ instances that created them have been deleted via
 they are released. Consequently, deleting a term manager does not free objects
 that are still referenced. The memory of a term manager is freed once it has
 been deleted and all of its managed objects have been released.
+
+Results (:cpp:type:`Cvc5Result`) and synthesis results
+(:cpp:type:`Cvc5SynthResult`) are the exception: as in the C++ API, they
+reference neither the solver nor the term manager, and thus do **not** keep the
+term manager alive. They stay valid independently of both and are freed by
+:cpp:func:`cvc5_result_release()` resp. :cpp:func:`cvc5_synth_result_release()`
+(or, while the term manager is alive, by
+:cpp:func:`cvc5_term_manager_release()`).
 
 Command objects (:cpp:type:`Cvc5Command`) are managed by the input parser
 (:cpp:type:`Cvc5InputParser`) that created them in the same way: they keep the

@@ -12,8 +12,14 @@
 
 package io.github.cvc5;
 
+import java.util.function.LongConsumer;
+
 /**
  * Abstract base class for handling native pointers in a managed way.
+ *
+ * <p>The native object behind a wrapper is freed automatically once the
+ * wrapper is no longer reachable (see {@link NativeContext}), or explicitly
+ * via {@link #deletePointer()}.</p>
  */
 abstract class AbstractPointer implements IPointer
 {
@@ -21,6 +27,34 @@ abstract class AbstractPointer implements IPointer
    * The raw native pointer value.
    */
   protected long pointer;
+
+  /**
+   * The context of the term manager this object belongs to, or {@code null}
+   * for null objects, which are not associated with any term manager and
+   * share a single, static native object per class.
+   */
+  final NativeContext ctx;
+
+  /**
+   * Tracks the native object, or {@code null} if it is not tracked.
+   */
+  private final NativeContext.Ref ref;
+
+  /**
+   * Construct an {@code AbstractPointer} with the given native pointer.
+   *
+   * @param ctx the context of the term manager the native object belongs to,
+   *            or {@code null} if the native object is a static null object
+   *            that is never freed
+   * @param pointer the native pointer to wrap
+   * @param deleter the function that frees the native object
+   */
+  AbstractPointer(NativeContext ctx, long pointer, LongConsumer deleter)
+  {
+    this.pointer = pointer;
+    this.ctx = ctx;
+    this.ref = ctx == null ? null : ctx.register(this, pointer, deleter);
+  }
 
   /**
    * Return the raw native pointer.
@@ -33,31 +67,22 @@ abstract class AbstractPointer implements IPointer
   }
 
   /**
-   * Delete the native resource associated with the specified pointer.
-   * <p>
-   * Subclasses must implement this method to provide resource-specific cleanup logic.
-   * </p>
-   *
-   * @param pointer the native pointer to delete
-   */
-  protected abstract void deletePointer(long pointer);
-
-  /**
    * Free the native resource associated with this pointer.
    * <p>
-   * This method should be called to explicitly clean up the underlying native resource.
-   * It removes this instance from the {@code Context}, then invokes the subclass-defined
-   * {@link #deletePointer(long)} method to perform the actual cleanup.
+   * Native resources are freed automatically once the Java object is no
+   * longer reachable. This method frees the native resource immediately
+   * instead; the object must not be used afterwards. It must be called from
+   * the thread that is using the associated term manager. Calling it more
+   * than once has no further effect.
    * </p>
    */
   public void deletePointer()
   {
-    if (pointer != 0)
+    if (ref != null)
     {
-      Context.removeAbstractPointer(this);
-      deletePointer(pointer);
+      pointer = 0;
+      ref.release();
     }
-    pointer = 0;
   }
 
   /**
@@ -82,16 +107,4 @@ abstract class AbstractPointer implements IPointer
    * @return a string representation of the pointer
    */
   abstract protected String toString(long pointer);
-
-  /**
-   * Construct an {@code AbstractPointer} with the given native pointer.
-   * Automatically registers this instance with the {@code Context}.
-   *
-   * @param pointer the native pointer to wrap
-   */
-  AbstractPointer(long pointer)
-  {
-    this.pointer = pointer;
-    Context.addAbstractPointer(this);
-  }
 }

@@ -143,14 +143,28 @@ jobject getDoubleObject(JNIEnv* env, double value);
 jobject getBooleanObject(JNIEnv* env, bool value);
 
 /**
- * @param env jni environment
- * @param solverRef a global reference to java Solver object
- * @param oracleRef a global reference to java IOracle object
- * @param terms a list of terms
- * @return the result of calling IOracle.compute(terms)
+ * Get the JNI environment of the current thread.
+ *
+ * A JNIEnv is only valid on the thread it was obtained from. Callbacks into
+ * Java (plugins, oracles) may run on a different thread than the one that
+ * registered them, so they must look up the environment of the calling
+ * thread.
+ *
+ * @param vm the Java VM
+ * @return the JNI environment of the current thread
  */
-cvc5::Term applyOracle(JNIEnv* env,
-                       jobject oracleRef,
+JNIEnv* getEnv(JavaVM* vm);
+
+/**
+ * Call a Java oracle.
+ *
+ * @param vm the Java VM
+ * @param oracleRef a weak global reference to a java Solver.OracleBridge object
+ * @param terms the arguments
+ * @return the result of applying the oracle to the arguments
+ */
+cvc5::Term applyOracle(JavaVM* vm,
+                       jweak oracleRef,
                        const std::vector<cvc5::Term>& terms);
 
 #endif  // CVC5__API_UTILITIES_H

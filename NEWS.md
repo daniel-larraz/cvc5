@@ -13,6 +13,8 @@ cvc5 1.4.2 prerelease
     with, instead of new wrappers around the same native objects. Releasing a
     wrapper obtained from these getters and the original object no longer
     frees the native object twice.
+  * The helper functions `Utils.getSorts()`, `Utils.getTerms()` and
+    `Utils.getProofs()`, which wrap raw native pointers, are no longer public.
 
 cvc5 1.4.1
 ==========

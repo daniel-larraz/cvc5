@@ -87,7 +87,7 @@ public class InputParser extends AbstractPointer implements AutoCloseable
   private static native void deletePointer(long pointer);
 
   /**
-   * Free the native input parser, see {@link #deletePointer()}.
+   * Free the native input parser, see {@code deletePointer()}.
    */
   @Override
   public void close()

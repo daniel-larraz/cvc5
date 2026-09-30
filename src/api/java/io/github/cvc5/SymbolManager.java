@@ -62,7 +62,7 @@ public class SymbolManager extends AbstractPointer implements AutoCloseable
   private static native void deletePointer(long pointer);
 
   /**
-   * Free the native symbol manager, see {@link #deletePointer()}.
+   * Free the native symbol manager, see {@code deletePointer()}.
    */
   @Override
   public void close()

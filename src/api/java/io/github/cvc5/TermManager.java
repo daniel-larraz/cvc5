@@ -55,7 +55,7 @@ public class TermManager extends AbstractPointer implements AutoCloseable
   }
 
   /**
-   * Free the native term manager, see {@link #deletePointer()}.
+   * Free the native term manager, see {@code deletePointer()}.
    *
    * <p>Objects created via this term manager remain valid, they keep the
    * underlying node manager alive.</p>

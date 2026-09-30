@@ -74,7 +74,7 @@ public class Solver extends AbstractPointer implements AutoCloseable
   private static native void deletePointer(long pointer);
 
   /**
-   * Free the native solver, see {@link #deletePointer()}.
+   * Free the native solver, see {@code deletePointer()}.
    */
   @Override
   public void close()

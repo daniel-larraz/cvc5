@@ -14,6 +14,7 @@ import sys
 from math import isnan
 
 from cvc5 import Kind, OptionCategory, SortKind, TermManager, Solver, Plugin
+from cvc5 import Terminator, UnknownExplanation
 from cvc5 import RoundingMode
 from cvc5 import BlockModelsMode, LearnedLitType, FindSynthTarget
 from cvc5 import ProofComponent, ProofFormat
@@ -2317,6 +2318,105 @@ def test_get_quantifier_elimination_disjunct(tm, solver):
 
 def test_get_version(solver):
     print(solver.getVersion())
+
+class TerminatorFlag(Terminator):
+    def __init__(self):
+        super().__init__()
+        self.flag = False
+        self.num_calls = 0
+
+    def terminate(self):
+        self.num_calls += 1
+        return self.flag
+
+
+def test_set_terminator(tm, solver):
+    solver.setOption("incremental", "true")
+    int_sort = tm.getIntegerSort()
+    x = tm.mkConst(int_sort, "x")
+    y = tm.mkConst(int_sort, "y")
+    solver.assertFormula(tm.mkTerm(Kind.GT, x, y))
+    solver.assertFormula(tm.mkTerm(Kind.GT, y, tm.mkInteger(0)))
+    t = TerminatorFlag()
+    solver.setTerminator(t)
+    # termination not requested
+    assert solver.checkSat().isSat()
+    assert t.num_calls > 0
+    # termination requested
+    t.flag = True
+    res = solver.checkSat()
+    assert res.isUnknown()
+    assert res.getUnknownExplanation() == UnknownExplanation.INTERRUPTED
+    # the solver remains usable after termination
+    t.flag = False
+    solver.assertFormula(tm.mkTerm(Kind.LT, x, tm.mkInteger(10)))
+    assert solver.checkSat().isSat()
+    # connecting a terminator replaces the previous one
+    t2 = TerminatorFlag()
+    t2.flag = True
+    solver.setTerminator(t2)
+    num_calls = t.num_calls
+    res = solver.checkSat()
+    assert res.isUnknown()
+    assert res.getUnknownExplanation() == UnknownExplanation.INTERRUPTED
+    assert t.num_calls == num_calls
+    assert t2.num_calls > 0
+    # disconnecting the terminator
+    solver.setTerminator(None)
+    assert solver.checkSat().isSat()
+
+
+def test_set_terminator_thread(tm, solver):
+    import threading
+    # A hard problem: x * y = 2^31 - 1 (a prime number), for 32-bit x, y
+    # (without overflow) and x, y != 1. This is unsatisfiable, but it takes
+    # very long to solve. We terminate the solver from another thread.
+    solver.setLogic("QF_BV")
+    # safety net, must not trigger before the terminator does
+    solver.setOption("tlimit-per", "120000")
+    bv32 = tm.mkBitVectorSort(32)
+    x = tm.mkConst(bv32, "x")
+    y = tm.mkConst(bv32, "y")
+    zext = tm.mkOp(Kind.BITVECTOR_ZERO_EXTEND, 32)
+    prod = tm.mkTerm(Kind.BITVECTOR_MULT, tm.mkTerm(zext, x), tm.mkTerm(zext, y))
+    one = tm.mkBitVector(32, 1)
+    solver.assertFormula(
+        tm.mkTerm(Kind.EQUAL, prod, tm.mkBitVector(64, "2147483647", 10)))
+    solver.assertFormula(tm.mkTerm(Kind.DISTINCT, x, one))
+    solver.assertFormula(tm.mkTerm(Kind.DISTINCT, y, one))
+    t = TerminatorFlag()
+    solver.setTerminator(t)
+
+    def request_termination():
+        t.flag = True
+
+    timer = threading.Timer(0.2, request_termination)
+    timer.start()
+    res = solver.checkSat()
+    timer.join()
+    assert res.isUnknown()
+    assert res.getUnknownExplanation() == UnknownExplanation.INTERRUPTED
+
+
+class TerminatorRaise(Terminator):
+    def terminate(self):
+        raise ValueError("terminate")
+
+
+def test_set_terminator_raise(tm, solver):
+    x = tm.mkConst(tm.getIntegerSort(), "x")
+    solver.assertFormula(tm.mkTerm(Kind.GT, x, tm.mkInteger(0)))
+    # exceptions raised by the terminator are propagated to the caller
+    solver.setTerminator(TerminatorRaise())
+    with pytest.raises(RuntimeError):
+        solver.checkSat()
+    # the default implementation of terminate() is not implemented
+    solver = Solver(tm)
+    solver.assertFormula(tm.mkTerm(Kind.GT, x, tm.mkInteger(0)))
+    solver.setTerminator(Terminator())
+    with pytest.raises(RuntimeError):
+        solver.checkSat()
+
 
 class PluginUnsat(Plugin):
     def __init__(self, tm):

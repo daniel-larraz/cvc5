@@ -2376,6 +2376,115 @@ class SolverTest
     assertFalse(xval.equals(yval));
   }
 
+  class TerminatorFlag extends AbstractTerminator
+  {
+    @Override
+    public boolean terminate()
+    {
+      d_numCalls++;
+      return d_terminate;
+    }
+    /** Whether the solver should be terminated. */
+    public volatile boolean d_terminate = false;
+    /** The number of times terminate() was called. */
+    public volatile long d_numCalls = 0;
+  }
+
+  @Test
+  void setTerminator()
+  {
+    d_solver.setOption("incremental", "true");
+    Sort intSort = d_tm.getIntegerSort();
+    Term x = d_tm.mkConst(intSort, "x");
+    Term y = d_tm.mkConst(intSort, "y");
+    d_solver.assertFormula(d_tm.mkTerm(GT, x, y));
+    d_solver.assertFormula(d_tm.mkTerm(GT, y, d_tm.mkInteger(0)));
+    TerminatorFlag t = new TerminatorFlag();
+    d_solver.setTerminator(t);
+    // termination not requested
+    assertTrue(d_solver.checkSat().isSat());
+    assertTrue(t.d_numCalls > 0);
+    // termination requested
+    t.d_terminate = true;
+    Result res = d_solver.checkSat();
+    assertTrue(res.isUnknown());
+    assertEquals(res.getUnknownExplanation(), UnknownExplanation.INTERRUPTED);
+    // the solver remains usable after termination
+    t.d_terminate = false;
+    d_solver.assertFormula(d_tm.mkTerm(LT, x, d_tm.mkInteger(10)));
+    assertTrue(d_solver.checkSat().isSat());
+    // connecting a terminator replaces the previous one
+    TerminatorFlag t2 = new TerminatorFlag();
+    t2.d_terminate = true;
+    d_solver.setTerminator(t2);
+    long numCalls = t.d_numCalls;
+    res = d_solver.checkSat();
+    assertTrue(res.isUnknown());
+    assertEquals(res.getUnknownExplanation(), UnknownExplanation.INTERRUPTED);
+    assertEquals(t.d_numCalls, numCalls);
+    assertTrue(t2.d_numCalls > 0);
+    // disconnecting the terminator
+    d_solver.setTerminator(null);
+    assertTrue(d_solver.checkSat().isSat());
+  }
+
+  @Test
+  void setTerminatorThread() throws InterruptedException
+  {
+    // A hard problem: x * y = 2^31 - 1 (a prime number), for 32-bit x, y
+    // (without overflow) and x, y != 1. This is unsatisfiable, but it takes
+    // very long to solve. We terminate the solver from another thread.
+    d_solver.setLogic("QF_BV");
+    // safety net, must not trigger before the terminator does
+    d_solver.setOption("tlimit-per", "120000");
+    Sort bv32 = d_tm.mkBitVectorSort(32);
+    Term x = d_tm.mkConst(bv32, "x");
+    Term y = d_tm.mkConst(bv32, "y");
+    Op zext = d_tm.mkOp(BITVECTOR_ZERO_EXTEND, 32);
+    Term prod = d_tm.mkTerm(BITVECTOR_MULT, d_tm.mkTerm(zext, x), d_tm.mkTerm(zext, y));
+    Term one = d_tm.mkBitVector(32, 1);
+    d_solver.assertFormula(d_tm.mkTerm(EQUAL, prod, d_tm.mkBitVector(64, "2147483647", 10)));
+    d_solver.assertFormula(d_tm.mkTerm(DISTINCT, x, one));
+    d_solver.assertFormula(d_tm.mkTerm(DISTINCT, y, one));
+    TerminatorFlag t = new TerminatorFlag();
+    d_solver.setTerminator(t);
+    Thread thread = new Thread(() -> {
+      try
+      {
+        Thread.sleep(200);
+      }
+      catch (InterruptedException e)
+      {
+      }
+      t.d_terminate = true;
+    });
+    thread.start();
+    Result res = d_solver.checkSat();
+    thread.join();
+    assertTrue(res.isUnknown());
+    assertEquals(res.getUnknownExplanation(), UnknownExplanation.INTERRUPTED);
+  }
+
+  class TerminatorThrow extends AbstractTerminator
+  {
+    @Override
+    public boolean terminate()
+    {
+      throw new IllegalStateException("terminate");
+    }
+  }
+
+  @Test
+  void setTerminatorThrow()
+  {
+    Term x = d_tm.mkConst(d_tm.getIntegerSort(), "x");
+    d_solver.assertFormula(d_tm.mkTerm(GT, x, d_tm.mkInteger(0)));
+    d_solver.setTerminator(new TerminatorThrow());
+    // exceptions thrown by the terminator are propagated to the caller
+    CVC5ApiException e = assertThrows(CVC5ApiException.class, () -> d_solver.checkSat());
+    assertTrue(e.getMessage().contains("terminate"));
+  }
+
   class PluginUnsat extends AbstractPlugin
   {
     public PluginUnsat(TermManager tm)

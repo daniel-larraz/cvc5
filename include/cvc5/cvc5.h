@@ -3655,6 +3655,46 @@ class CVC5_EXPORT Plugin
 };
 
 /* -------------------------------------------------------------------------- */
+/* Terminator                                                                 */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A termination callback.
+ *
+ * A terminator is connected to a solver via Solver::setTerminator(). While
+ * the solver is running (e.g., during a call to Solver::checkSat()), it
+ * periodically calls Terminator::terminate() to determine whether the
+ * current call should be terminated. If terminate() returns true, the
+ * solver interrupts the current call as soon as possible and returns an
+ * unknown result with explanation UnknownExplanation::INTERRUPTED. The solver
+ * remains usable afterwards, e.g., further assertions can be added and
+ * further satisfiability checks can be made.
+ *
+ * @note Terminator::terminate() is always invoked from the thread that runs
+ *       the solver. Since it is called frequently, it should be cheap to
+ *       compute. A typical implementation reads a flag that is set from
+ *       another thread or from a signal handler, or checks whether a deadline
+ *       has passed.
+ */
+class CVC5_EXPORT Terminator
+{
+ public:
+  /** Constructor. */
+  Terminator() = default;
+  /** Destructor. */
+  virtual ~Terminator() = default;
+  /**
+   * Determine whether the associated solver should be terminated.
+   *
+   * This function is called periodically while the solver is running.
+   *
+   * @return True if the current call of the associated solver should be
+   *         terminated.
+   */
+  virtual bool terminate() = 0;
+};
+
+/* -------------------------------------------------------------------------- */
 /* Proof                                                                      */
 /* -------------------------------------------------------------------------- */
 
@@ -6411,6 +6451,24 @@ class CVC5_EXPORT Solver
    * @param p The plugin to add to this solver.
    */
   void addPlugin(Plugin& p);
+  /**
+   * Connect a terminator to this solver.
+   *
+   * While this solver is running (e.g., during a call to checkSat()), it
+   * periodically calls Terminator::terminate() of the connected terminator.
+   * If it returns true, the current call is interrupted as soon as possible
+   * and returns an unknown result with explanation
+   * UnknownExplanation::INTERRUPTED. The solver remains usable afterwards.
+   *
+   * @note Only one terminator can be connected at a time. Connecting a
+   *       terminator disconnects the previously connected one. The solver
+   *       does not take ownership of the terminator, which must be kept
+   *       alive for as long as it is connected.
+   *
+   * @param terminator The terminator to connect, or `nullptr` to disconnect
+   *                   the currently connected terminator.
+   */
+  void setTerminator(Terminator* terminator);
   /**
    * Pop (a) level(s) from the assertion stack.
    *

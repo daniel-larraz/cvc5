@@ -47,6 +47,8 @@ from cvc5 cimport TermManager as c_TermManager
 from cvc5 cimport Solver as c_Solver
 from cvc5 cimport Plugin as c_Plugin
 from cvc5 cimport PyPlugin as c_PyPlugin
+from cvc5 cimport Terminator as c_Terminator
+from cvc5 cimport PyTerminator as c_PyTerminator
 from cvc5 cimport Statistics as c_Statistics
 from cvc5 cimport Stat as c_Stat
 from cvc5 cimport Grammar as c_Grammar
@@ -2239,6 +2241,51 @@ cdef class Plugin:
 
 
 # ----------------------------------------------------------------------------
+# Terminator
+# ----------------------------------------------------------------------------
+
+cdef class Terminator:
+    """
+        A termination callback.
+
+        A terminator is connected to a solver via
+        :py:meth:`cvc5.Solver.setTerminator()`. While the solver is running
+        (e.g., during a call to :py:meth:`cvc5.Solver.checkSat()`), it
+        periodically calls :py:meth:`terminate()` to determine whether the
+        current call should be terminated. If :py:meth:`terminate()` returns
+        ``True``, the solver interrupts the current call as soon as possible
+        and returns an unknown result with explanation
+        :py:obj:`cvc5.UnknownExplanation.INTERRUPTED`. The solver remains
+        usable afterwards.
+
+        Subclasses must override :py:meth:`terminate()`.
+
+        Wrapper class for :cpp:class:`cvc5::Terminator`.
+    """
+    cdef c_PyTerminator* cterminator
+
+    # Accept arbitrary arguments so that subclasses can define their own
+    # constructor signature.
+    def __cinit__(self, *args, **kwargs):
+        self.cterminator = new c_PyTerminator(<cpy_ref.PyObject*>self)
+
+    def __dealloc__(self):
+        del self.cterminator
+
+    def terminate(self):
+        """
+            Determine whether the associated solver should be terminated.
+
+            This method is called periodically while the solver is running.
+            Since it is called frequently, it should be cheap to compute.
+
+            :return: ``True`` if the current call of the associated solver
+                     should be terminated.
+        """
+        raise NotImplementedError
+
+
+# ----------------------------------------------------------------------------
 # Solver
 # ----------------------------------------------------------------------------
 
@@ -2250,6 +2297,7 @@ cdef class Solver:
     """
     cdef c_Solver* csolver
     cdef TermManager tm
+    cdef Terminator terminator
 
     def __cinit__(self, TermManager tm = None):
         if not tm:
@@ -4479,6 +4527,32 @@ cdef class Solver:
         cdef c_Plugin* ptr = <c_Plugin*> p.cplugin
         self.csolver.addPlugin(dereference(ptr))
 
+    def setTerminator(self, Terminator terminator):
+        """
+            Connect a terminator to this solver.
+
+            While this solver is running (e.g., during a call to
+            :py:meth:`checkSat()`), it periodically calls
+            :py:meth:`cvc5.Terminator.terminate()` of the connected
+            terminator. If it returns ``True``, the current call is
+            interrupted as soon as possible and returns an unknown result with
+            explanation :py:obj:`cvc5.UnknownExplanation.INTERRUPTED`. The
+            solver remains usable afterwards.
+
+            .. note::
+                Only one terminator can be connected at a time. Connecting a
+                terminator disconnects the previously connected one.
+
+            :param terminator: The terminator to connect, or ``None`` to
+                               disconnect the currently connected terminator.
+        """
+        if terminator is None:
+            self.csolver.setTerminator(NULL)
+        else:
+            self.csolver.setTerminator(<c_Terminator*> terminator.cterminator)
+        # keep the terminator alive for as long as it is connected
+        self.terminator = terminator
+
     def pop(self, nscopes=1):
         """
             Pop ``nscopes`` level(s) from the assertion stack.
@@ -6234,4 +6308,12 @@ cdef public api:
             func(_term(self._Plugin__term_manager(), t))
         except Exception as e:
             error[0] = traceback.format_exc().encode()
+
+    bint cy_call_bool_func(object self, string method, string *error):
+        try:
+            func = getattr(self, method.decode())
+            return bool(func())
+        except Exception as e:
+            error[0] = traceback.format_exc().encode()
+        return False
 

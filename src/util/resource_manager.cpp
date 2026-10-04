@@ -153,6 +153,8 @@ ResourceManager::ResourceManager(StatisticsRegistry& stats,
     : d_options(options),
       d_enabled(true),
       d_perCallTimer(),
+      d_terminationCallback(),
+      d_terminated(false),
       d_cumulativeTimeUsed(0),
       d_cumulativeResourceUsed(0),
       d_thisCallResourceUsed(0),
@@ -207,6 +209,14 @@ void ResourceManager::spendResource(uint64_t amount)
 
   Trace("limit") << "ResourceManager::spendResource()" << std::endl;
   d_thisCallResourceUsed += amount;
+  // Poll the termination callback, if any. Once it has requested termination,
+  // we do not query it again until the next call to beginCall().
+  if (!d_terminated && d_terminationCallback && d_terminationCallback())
+  {
+    Trace("limit") << "ResourceManager::spendResource: termination requested"
+                   << std::endl;
+    d_terminated = true;
+  }
   if (out())
   {
     Trace("limit") << "ResourceManager::spendResource: interrupt!" << std::endl;
@@ -253,6 +263,7 @@ void ResourceManager::beginCall()
   // begin call
   d_perCallTimer.set(d_options.base.perCallMillisecondLimit);
   d_thisCallResourceUsed = 0;
+  d_terminated = false;
 
   if (d_options.base.cumulativeResourceLimit > 0)
   {
@@ -319,9 +330,29 @@ bool ResourceManager::outOfTime() const
   return d_perCallTimer.expired();
 }
 
+bool ResourceManager::terminated() const
+{
+  if (!d_enabled)
+  {
+    return false;
+  }
+  return d_terminated;
+}
+
 void ResourceManager::registerListener(Listener* listener)
 {
   return d_listeners.push_back(listener);
+}
+
+void ResourceManager::setTerminationCallback(std::function<bool()> callback)
+{
+  d_terminationCallback = std::move(callback);
+  d_terminated = false;
+}
+
+const std::function<bool()>& ResourceManager::getTerminationCallback() const
+{
+  return d_terminationCallback;
 }
 
 }  // namespace cvc5::internal

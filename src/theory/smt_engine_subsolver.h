@@ -16,6 +16,7 @@
 #ifndef CVC5__THEORY__SMT_ENGINE_SUBSOLVER_H
 #define CVC5__THEORY__SMT_ENGINE_SUBSOLVER_H
 
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -44,6 +45,11 @@ struct SubsolverSetupInfo
   /** The separation logic location and data types */
   TypeNode d_sepLocType;
   TypeNode d_sepDataType;
+  /**
+   * The termination callback of the subsolver (may be empty), inherited from
+   * the resource manager of the environment it was constructed from.
+   */
+  std::function<bool()> d_terminationCallback;
 };
 
 /**

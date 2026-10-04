@@ -3,6 +3,16 @@ This file contains a summary of important user-visible changes.
 cvc5 1.4.2 prerelease
 =====================
 
+- Added a termination API that allows users to interrupt a running solver
+  (e.g., from another thread) via a user-defined termination callback, while
+  keeping the solver usable afterwards. The callback is polled periodically
+  while the solver is running; if it requests termination, the current call
+  returns `unknown` with explanation `INTERRUPTED`. See
+  `Solver::setTerminator()` and class `Terminator` (C++),
+  `cvc5_set_terminator()` (C), `Solver.setTerminator()` and class
+  `Terminator` (Python), and `Solver.setTerminator()` and class
+  `AbstractTerminator` (Java).
+
 - Adds techniques for returning "sat" when the returned candidate model
   happens to satisfy the set of input assertions (`--model-verify`).
 

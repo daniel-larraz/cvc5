@@ -2354,6 +2354,11 @@ void SolverEngine::interrupt()
   d_smtSolver->interrupt();
 }
 
+void SolverEngine::setTerminationCallback(std::function<bool()> callback)
+{
+  getResourceManager()->setTerminationCallback(std::move(callback));
+}
+
 void SolverEngine::setResourceLimit(uint64_t units, bool cumulative)
 {
   if (cumulative)

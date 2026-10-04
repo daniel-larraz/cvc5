@@ -106,6 +106,7 @@ include(UseJava)
 set(JAVA_FILES
   ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/AbstractPointer.java
   ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/AbstractPlugin.java
+  ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/AbstractTerminator.java
   ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/Command.java
   ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/Context.java
   ${CMAKE_CURRENT_LIST_DIR}/io/github/cvc5/CVC5ApiException.java
@@ -269,6 +270,8 @@ set(jni_files
   jni/api_plugin.h
   jni/api_solver.cpp
   jni/api_solver.h
+  jni/api_terminator.cpp
+  jni/api_terminator.h
   jni/api_utilities.cpp
   jni/datatype.cpp
   jni/command.cpp

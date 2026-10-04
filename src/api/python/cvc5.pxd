@@ -69,6 +69,17 @@ cdef extern from "<cvc5/cvc5.h>" namespace "cvc5":
         pass
 
 
+cdef extern from "<cvc5/cvc5.h>" namespace "cvc5":
+    cdef cppclass Terminator:
+        bint terminate() except +
+
+
+cdef extern from "py_terminator.h" namespace "cvc5":
+    cdef cppclass PyTerminator(Terminator):
+        PyTerminator(cpy_ref.PyObject *obj) except +
+        bint terminate() except +
+
+
 cdef extern from "py_plugin.h" namespace "cvc5":
     cdef cppclass PyPlugin:
         PyPlugin(cpy_ref.PyObject *obj, TermManager& tm) except +
@@ -485,6 +496,7 @@ cdef extern from "<cvc5/cvc5.h>" namespace "cvc5":
         Term getValueSepNil() except +
         Term declarePool(const string& name, Sort sort, vector[Term]& initValue) except +
         void addPlugin(Plugin& p) except +
+        void setTerminator(Terminator* terminator) except +
         void pop(uint32_t nscopes) except +
         void push(uint32_t nscopes) except +
         void reset() except +

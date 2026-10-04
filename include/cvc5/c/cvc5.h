@@ -5081,6 +5081,32 @@ CVC5_EXPORT Cvc5Term cvc5_declare_oracle_fun(Cvc5* cvc5,
 CVC5_EXPORT void cvc5_add_plugin(Cvc5* cvc5, Cvc5Plugin* plugin);
 
 /**
+ * Configure a termination callback for the given solver instance.
+ *
+ * While the solver is running (e.g., during a call to cvc5_check_sat()), it
+ * periodically calls `fun` to determine whether the current call should be
+ * terminated. If `fun` returns true, the solver interrupts the current call
+ * as soon as possible and returns an unknown result with explanation
+ * #CVC5_UNKNOWN_EXPLANATION_INTERRUPTED. The solver remains usable
+ * afterwards.
+ *
+ * @note Only one termination callback can be configured at a time.
+ *       Configuring a termination callback replaces the previously configured
+ *       one. The callback is always invoked from the thread that runs the
+ *       solver and, since it is called frequently, it should be cheap to
+ *       compute.
+ *
+ * @param cvc5  The solver instance.
+ * @param fun   The termination callback, returns true if the current call
+ *              of the solver should be terminated. May be NULL to remove the
+ *              currently configured termination callback.
+ * @param state The state data for the termination callback, may be NULL.
+ */
+CVC5_EXPORT void cvc5_set_terminator(Cvc5* cvc5,
+                                     bool (*fun)(void* state),
+                                     void* state);
+
+/**
  * Get an interpolant.
  *
  * Given that @f$A \rightarrow B@f$ is valid,

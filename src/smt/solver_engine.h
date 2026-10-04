@@ -17,6 +17,7 @@
 
 #include <cvc5/cvc5_export.h>
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -768,6 +769,21 @@ class CVC5_EXPORT SolverEngine
    * @throw ModalException
    */
   void interrupt();
+
+  /**
+   * Set the termination callback of this solver engine.
+   *
+   * The callback is polled periodically while this solver engine is running
+   * a query. If it returns true, the current query is interrupted and returns
+   * unknown with explanation UnknownExplanation::INTERRUPTED. The solver
+   * engine remains usable afterwards.
+   *
+   * The callback is inherited by subsolvers created by this solver engine.
+   *
+   * @param callback The termination callback. An empty function disconnects
+   *                 the currently configured callback.
+   */
+  void setTerminationCallback(std::function<bool()> callback);
 
   /**
    * Set a resource limit for SolverEngine operations.  This is like a time

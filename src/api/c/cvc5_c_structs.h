@@ -719,6 +719,14 @@ struct CVC5_EXPORT Cvc5
   void deregister(cvc5_grammar_t* grammar);
 
   class PluginCpp;
+  class TerminatorCpp;
+  /**
+   * The terminator configured for this solver, if any.
+   * @note The solver only keeps a raw pointer to its terminator, so it must be
+   *       kept alive for as long as it is connected. This member must thus be
+   *       declared before `d_solver` so that it is destroyed after it.
+   */
+  std::unique_ptr<TerminatorCpp> d_terminator;
   /**
    * The plugins added to this solver.
    * @note The solver only keeps raw pointers to its plugins and never removes
@@ -785,6 +793,22 @@ struct CVC5_EXPORT Cvc5
    private:
     Cvc5* d_cvc5;
     Cvc5Plugin* d_plugin;
+  };
+
+  /** Wrapper for C termination callbacks. */
+  class TerminatorCpp : public cvc5::Terminator
+  {
+   public:
+    TerminatorCpp(bool (*fun)(void*), void* state) : d_fun(fun), d_state(state)
+    {
+    }
+    bool terminate() override { return d_fun(d_state); }
+
+   private:
+    /** The termination callback. */
+    bool (*d_fun)(void*);
+    /** The state passed to the termination callback. */
+    void* d_state;
   };
 
  private:

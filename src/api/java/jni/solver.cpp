@@ -15,6 +15,7 @@
 #include "api/java/jni/api_utilities.h"
 #include "api_plugin.h"
 #include "api_solver.h"
+#include "api_terminator.h"
 #include "api_utilities.h"
 #include "io_github_cvc5_Solver.h"
 
@@ -1060,6 +1061,22 @@ Java_io_github_cvc5_Solver_addPlugin(JNIEnv* env,
   api_solver->addPluginPointer(reinterpret_cast<jlong>(p));
   api_solver->addPlugin(*p);
 
+  CVC5_JAVA_API_TRY_CATCH_END(env);
+}
+
+/*
+ * Class:     io_github_cvc5_Solver
+ * Method:    setTerminator
+ * Signature: (JLio/github/cvc5/AbstractTerminator;)V
+ */
+JNIEXPORT void JNICALL Java_io_github_cvc5_Solver_setTerminator(
+    JNIEnv* env, jobject, jlong pointer, jobject terminator)
+{
+  CVC5_JAVA_API_TRY_CATCH_BEGIN;
+  ApiSolver* api_solver = reinterpret_cast<ApiSolver*>(pointer);
+  ApiTerminator* t =
+      terminator == nullptr ? nullptr : new ApiTerminator(env, terminator);
+  api_solver->setApiTerminator(t);
   CVC5_JAVA_API_TRY_CATCH_END(env);
 }
 

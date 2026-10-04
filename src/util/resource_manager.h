@@ -21,6 +21,7 @@
 
 #include <array>
 #include <chrono>
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -106,6 +107,11 @@ constexpr std::size_t ResourceMax = static_cast<std::size_t>(Resource::Unknown);
  * This class manages resource limits (cumulative or per call) and (per call)
  * time limits. The available resources are listed in Resource and their
  * individual costs are configured via command line options.
+ *
+ * Additionally, a user-defined termination callback can be configured via
+ * setTerminationCallback(). The callback is polled whenever a resource is
+ * spent and, if it requests termination, the current call is interrupted in
+ * the same way as when a resource or time limit is exhausted.
  */
 class ResourceManager
 {
@@ -133,8 +139,16 @@ class ResourceManager
   bool outOfResources() const;
   /** Checks whether time has been exhausted. */
   bool outOfTime() const;
-  /** Checks whether any limit has been exhausted. */
-  bool out() const { return outOfResources() || outOfTime(); }
+  /**
+   * Checks whether the termination callback requested the termination of the
+   * current call (see setTerminationCallback()).
+   */
+  bool terminated() const;
+  /**
+   * Checks whether any limit has been exhausted or termination has been
+   * requested.
+   */
+  bool out() const { return outOfResources() || outOfTime() || terminated(); }
 
   /** Retrieves amount of resources used overall. */
   uint64_t getResourceUsage() const;
@@ -173,10 +187,25 @@ class ResourceManager
   void refresh();
 
   /**
-   * Registers a listener that is notified on a resource out or (per-call)
-   * timeout.
+   * Registers a listener that is notified on a resource out, (per-call)
+   * timeout, or when termination was requested by the termination callback.
    */
   void registerListener(Listener* listener);
+
+  /**
+   * Configures the termination callback.
+   *
+   * The callback is invoked each time a resource is spent. If it returns
+   * true, the current call is considered terminated: the listeners are
+   * notified to interrupt the solver, out() returns true, and the callback is
+   * not invoked again until the next call to beginCall().
+   *
+   * @param callback The termination callback. Passing an empty function
+   *                 disconnects the currently configured callback.
+   */
+  void setTerminationCallback(std::function<bool()> callback);
+  /** Retrieves the currently configured termination callback (may be empty). */
+  const std::function<bool()>& getTerminationCallback() const;
 
  private:
   const Options& d_options;
@@ -189,6 +218,11 @@ class ResourceManager
 
   /** The per-call wall clock timer. */
   WallClockTimer d_perCallTimer;
+
+  /** The termination callback, may be empty. */
+  std::function<bool()> d_terminationCallback;
+  /** Whether the termination callback requested termination of this call. */
+  bool d_terminated;
 
   /** The total number of milliseconds used. */
   uint64_t d_cumulativeTimeUsed;

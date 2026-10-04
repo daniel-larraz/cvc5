@@ -15,6 +15,7 @@
 
 #include "proof/unsat_core.h"
 #include "smt/env.h"
+#include "util/resource_manager.h"
 
 namespace cvc5::internal {
 namespace theory {
@@ -34,7 +35,8 @@ SubsolverSetupInfo::SubsolverSetupInfo(const Env& env)
     : d_opts(env.getOptions()),
       d_logicInfo(env.getLogicInfo()),
       d_sepLocType(env.getSepLocType()),
-      d_sepDataType(env.getSepDataType())
+      d_sepDataType(env.getSepDataType()),
+      d_terminationCallback(env.getResourceManager()->getTerminationCallback())
 {
 }
 
@@ -42,7 +44,8 @@ SubsolverSetupInfo::SubsolverSetupInfo(const Env& env, const Options& opts)
     : d_opts(opts),
       d_logicInfo(env.getLogicInfo()),
       d_sepLocType(env.getSepLocType()),
-      d_sepDataType(env.getSepDataType())
+      d_sepDataType(env.getSepDataType()),
+      d_terminationCallback(env.getResourceManager()->getTerminationCallback())
 {
 }
 
@@ -76,6 +79,11 @@ void initializeSubsolver(NodeManager* nm,
   if (needsTimeout)
   {
     smte->setTimeLimit(timeout);
+  }
+  // inherit the termination callback of the parent solver, if any
+  if (info.d_terminationCallback)
+  {
+    smte->setTerminationCallback(info.d_terminationCallback);
   }
   // set up separation logic heap if necessary
   if (!info.d_sepLocType.isNull() && !info.d_sepDataType.isNull())

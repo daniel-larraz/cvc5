@@ -206,6 +206,7 @@ the generated artifacts into your local Maven repository by running
 ...............................................................
 
   * class `AbstractPlugin <io/github/cvc5/AbstractPlugin.html>`_
+  * class `AbstractTerminator <io/github/cvc5/AbstractTerminator.html>`_
   * class `Command <io/github/cvc5/Command.html>`_
   * class `Datatype <io/github/cvc5/Datatype.html>`_
   * class `DatatypeConstructor <io/github/cvc5/DatatypeConstructor.html>`_

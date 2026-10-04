@@ -3097,6 +3097,29 @@ public class Solver extends AbstractPointer
   private native void addPlugin(long pointer, long termManagerPointer, AbstractPlugin p);
 
   /**
+   * Connect a terminator to this solver.
+   *
+   * While this solver is running (e.g., during a call to {@link #checkSat()}),
+   * it periodically calls {@link AbstractTerminator#terminate()} of the
+   * connected terminator. If it returns {@code true}, the current call is
+   * interrupted as soon as possible and returns an unknown result with
+   * explanation {@link UnknownExplanation#INTERRUPTED}. The solver remains
+   * usable afterwards.
+   *
+   * Note that only one terminator can be connected at a time. Connecting a
+   * terminator disconnects the previously connected one.
+   *
+   * @param terminator The terminator to connect, or {@code null} to
+   *                   disconnect the currently connected terminator.
+   */
+  public void setTerminator(AbstractTerminator terminator)
+  {
+    setTerminator(pointer, terminator);
+  }
+
+  private native void setTerminator(long pointer, AbstractTerminator terminator);
+
+  /**
    * Pop a level from the assertion stack.
    *
    * SMT-LIB:

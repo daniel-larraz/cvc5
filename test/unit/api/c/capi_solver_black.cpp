@@ -3899,6 +3899,55 @@ TEST_F(TestCApiBlackSolver, plugin_unsat)
 }
 
 namespace {
+bool terminator_flag(void* state) { return *static_cast<bool*>(state); }
+bool terminator_count(void* state)
+{
+  ++*static_cast<size_t*>(state);
+  return true;
+}
+}  // namespace
+
+TEST_F(TestCApiBlackSolver, set_terminator)
+{
+  cvc5_set_option(d_solver, "incremental", "true");
+  Cvc5Sort int_sort = cvc5_get_integer_sort(d_tm);
+  Cvc5Term x = cvc5_mk_const(d_tm, int_sort, "x");
+  Cvc5Term y = cvc5_mk_const(d_tm, int_sort, "y");
+  std::vector<Cvc5Term> args = {x, y};
+  cvc5_assert_formula(
+      d_solver, cvc5_mk_term(d_tm, CVC5_KIND_GT, args.size(), args.data()));
+  args = {y, cvc5_mk_integer_int64(d_tm, 0)};
+  cvc5_assert_formula(
+      d_solver, cvc5_mk_term(d_tm, CVC5_KIND_GT, args.size(), args.data()));
+  bool terminate = false;
+  cvc5_set_terminator(d_solver, &terminator_flag, &terminate);
+  // termination not requested
+  ASSERT_TRUE(cvc5_result_is_sat(cvc5_check_sat(d_solver)));
+  // termination requested
+  terminate = true;
+  Cvc5Result res = cvc5_check_sat(d_solver);
+  ASSERT_TRUE(cvc5_result_is_unknown(res));
+  ASSERT_EQ(cvc5_result_get_unknown_explanation(res),
+            CVC5_UNKNOWN_EXPLANATION_INTERRUPTED);
+  // the solver remains usable after termination
+  terminate = false;
+  ASSERT_TRUE(cvc5_result_is_sat(cvc5_check_sat(d_solver)));
+  // configuring a termination callback replaces the previous one
+  size_t num_calls = 0;
+  cvc5_set_terminator(d_solver, &terminator_count, &num_calls);
+  res = cvc5_check_sat(d_solver);
+  ASSERT_TRUE(cvc5_result_is_unknown(res));
+  ASSERT_EQ(cvc5_result_get_unknown_explanation(res),
+            CVC5_UNKNOWN_EXPLANATION_INTERRUPTED);
+  ASSERT_GT(num_calls, 0);
+  // removing the termination callback
+  cvc5_set_terminator(d_solver, nullptr, nullptr);
+  ASSERT_TRUE(cvc5_result_is_sat(cvc5_check_sat(d_solver)));
+  ASSERT_CVC5_ERROR(cvc5_set_terminator(nullptr, &terminator_count, &num_calls),
+                    "unexpected NULL argument");
+}
+
+namespace {
 const Cvc5Term* plugin_count_check(size_t* size, void* state)
 {
   static thread_local std::vector<Cvc5Term> lemmas;

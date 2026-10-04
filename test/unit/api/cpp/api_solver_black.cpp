@@ -14,7 +14,10 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <atomic>
+#include <chrono>
 #include <cmath>
+#include <thread>
 
 #include "base/output.h"
 #include "test_api.h"
@@ -2581,6 +2584,121 @@ TEST_F(TestApiBlackSolver, pluginListenCadical)
   // above input formulas should induce a theory lemma and SAT clause learning
   ASSERT_TRUE(pl.hasSeenTheoryLemma());
   ASSERT_TRUE(pl.hasSeenSatClause());
+}
+
+class TerminatorFlag : public Terminator
+{
+ public:
+  TerminatorFlag() : d_terminate(false), d_numCalls(0) {}
+  virtual ~TerminatorFlag() {}
+  bool terminate() override
+  {
+    ++d_numCalls;
+    return d_terminate;
+  }
+  /** Whether the solver should be terminated. */
+  std::atomic<bool> d_terminate;
+  /** The number of times terminate() was called. */
+  std::atomic<size_t> d_numCalls;
+};
+
+TEST_F(TestApiBlackSolver, setTerminator)
+{
+  d_solver->setOption("incremental", "true");
+  Term x = d_tm.mkConst(d_int, "x");
+  Term y = d_tm.mkConst(d_int, "y");
+  d_solver->assertFormula(d_tm.mkTerm(Kind::GT, {x, y}));
+  d_solver->assertFormula(d_tm.mkTerm(Kind::GT, {y, d_tm.mkInteger(0)}));
+  TerminatorFlag t;
+  d_solver->setTerminator(&t);
+  // termination not requested
+  ASSERT_TRUE(d_solver->checkSat().isSat());
+  ASSERT_GT(t.d_numCalls, 0);
+  // termination requested
+  t.d_terminate = true;
+  cvc5::Result res = d_solver->checkSat();
+  ASSERT_TRUE(res.isUnknown());
+  ASSERT_EQ(res.getUnknownExplanation(), UnknownExplanation::INTERRUPTED);
+  // the solver remains usable after termination
+  t.d_terminate = false;
+  d_solver->assertFormula(d_tm.mkTerm(Kind::LT, {x, d_tm.mkInteger(10)}));
+  ASSERT_TRUE(d_solver->checkSat().isSat());
+  // disconnecting the terminator
+  t.d_terminate = true;
+  d_solver->setTerminator(nullptr);
+  ASSERT_TRUE(d_solver->checkSat().isSat());
+  // connecting a terminator replaces the previous one
+  TerminatorFlag t2;
+  t2.d_terminate = true;
+  d_solver->setTerminator(&t);
+  d_solver->setTerminator(&t2);
+  size_t numCalls = t.d_numCalls;
+  res = d_solver->checkSat();
+  ASSERT_TRUE(res.isUnknown());
+  ASSERT_EQ(res.getUnknownExplanation(), UnknownExplanation::INTERRUPTED);
+  ASSERT_EQ(t.d_numCalls, numCalls);
+  ASSERT_GT(t2.d_numCalls, 0);
+  d_solver->setTerminator(nullptr);
+}
+
+TEST_F(TestApiBlackSolver, setTerminatorCheckSatAssuming)
+{
+  Term x = d_tm.mkConst(d_bool, "x");
+  Term y = d_tm.mkConst(d_bool, "y");
+  d_solver->assertFormula(d_tm.mkTerm(Kind::OR, {x, y}));
+  TerminatorFlag t;
+  t.d_terminate = true;
+  d_solver->setTerminator(&t);
+  cvc5::Result res = d_solver->checkSatAssuming({x});
+  ASSERT_TRUE(res.isUnknown());
+  ASSERT_EQ(res.getUnknownExplanation(), UnknownExplanation::INTERRUPTED);
+}
+
+TEST_F(TestApiBlackSolver, setTerminatorThread)
+{
+  // A hard problem: x * y = 2^31 - 1 (a prime number), for 32-bit x, y
+  // (without overflow) and x, y != 1. This is unsatisfiable, but it takes
+  // very long to solve. We terminate the solver from another thread.
+  d_solver->setLogic("QF_BV");
+  // safety net, must not trigger before the terminator does
+  d_solver->setOption("tlimit-per", "120000");
+  Sort bv32 = d_tm.mkBitVectorSort(32);
+  Term x = d_tm.mkConst(bv32, "x");
+  Term y = d_tm.mkConst(bv32, "y");
+  Op zext = d_tm.mkOp(Kind::BITVECTOR_ZERO_EXTEND, {32});
+  Term prod = d_tm.mkTerm(Kind::BITVECTOR_MULT,
+                          {d_tm.mkTerm(zext, {x}), d_tm.mkTerm(zext, {y})});
+  Term one = d_tm.mkBitVector(32, 1);
+  d_solver->assertFormula(
+      d_tm.mkTerm(Kind::EQUAL, {prod, d_tm.mkBitVector(64, "2147483647", 10)}));
+  d_solver->assertFormula(d_tm.mkTerm(Kind::DISTINCT, {x, one}));
+  d_solver->assertFormula(d_tm.mkTerm(Kind::DISTINCT, {y, one}));
+  TerminatorFlag t;
+  d_solver->setTerminator(&t);
+  std::thread thread([&t]() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    t.d_terminate = true;
+  });
+  cvc5::Result res = d_solver->checkSat();
+  thread.join();
+  ASSERT_TRUE(res.isUnknown());
+  ASSERT_EQ(res.getUnknownExplanation(), UnknownExplanation::INTERRUPTED);
+}
+
+class TerminatorThrow : public Terminator
+{
+ public:
+  bool terminate() override { throw std::runtime_error("terminate"); }
+};
+
+TEST_F(TestApiBlackSolver, setTerminatorThrow)
+{
+  Term x = d_tm.mkConst(d_int, "x");
+  d_solver->assertFormula(d_tm.mkTerm(Kind::GT, {x, d_tm.mkInteger(0)}));
+  TerminatorThrow t;
+  d_solver->setTerminator(&t);
+  // exceptions thrown by the terminator are propagated to the caller
+  ASSERT_THROW(d_solver->checkSat(), std::runtime_error);
 }
 
 TEST_F(TestApiBlackSolver, verticalBars)

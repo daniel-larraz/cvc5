@@ -15,6 +15,7 @@
 #include <cvc5/cvc5.h>
 
 #include "api_plugin.h"
+#include "api_terminator.h"
 
 using namespace cvc5;
 
@@ -32,8 +33,17 @@ void ApiSolver::addPluginPointer(jlong pluginPointer)
   d_pluginPointers.push_back(pluginPointer);
 }
 
+void ApiSolver::setApiTerminator(ApiTerminator* terminator)
+{
+  setTerminator(terminator);
+  // delete the previous terminator only after the new one is connected
+  delete d_terminator;
+  d_terminator = terminator;
+}
+
 void ApiSolver::deletePointers(JNIEnv* env)
 {
+  setApiTerminator(nullptr);
   for (jobject ref : d_globalReferences)
   {
     env->DeleteGlobalRef(ref);

@@ -5504,6 +5504,25 @@ void cvc5_add_plugin(Cvc5* cvc5, Cvc5Plugin* plugin)
   CVC5_CAPI_TRY_CATCH_END;
 }
 
+void cvc5_set_terminator(Cvc5* cvc5, bool (*fun)(void*), void* state)
+{
+  CVC5_CAPI_TRY_CATCH_BEGIN;
+  CVC5_CAPI_CHECK_NOT_NULL(cvc5);
+  if (fun == nullptr)
+  {
+    cvc5->d_solver.setTerminator(nullptr);
+    cvc5->d_terminator.reset();
+  }
+  else
+  {
+    auto terminator = std::make_unique<Cvc5::TerminatorCpp>(fun, state);
+    cvc5->d_solver.setTerminator(terminator.get());
+    // Replace the previous terminator only after the new one is connected.
+    cvc5->d_terminator = std::move(terminator);
+  }
+  CVC5_CAPI_TRY_CATCH_END;
+}
+
 Cvc5Term cvc5_get_interpolant(Cvc5* cvc5, Cvc5Term conj)
 {
   Cvc5Term res = nullptr;

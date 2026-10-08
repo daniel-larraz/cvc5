@@ -3,7 +3,10 @@
 This directory builds `Cvc5TidyChecks.so`, a clang-tidy plugin module
 (`cvc5-module`) that registers cvc5-specific checks. The checks are enabled by
 the `cvc5-*` entry in the top-level [`.clang-tidy`](../../.clang-tidy).
-The `static-analysis` build of the cvc5 buildbot runs them nightly.
+The `static-analysis` build of the cvc5 buildbot runs them nightly. In
+addition, the `ubuntu:node-id-determinism` job of the
+[CI workflow](../../.github/workflows/ci.yml) runs `cvc5-node-id-determinism`
+in [dump mode](#dump-mode) on every push and pull request.
 
 Currently one check is provided: `cvc5-node-id-determinism`.
 
@@ -197,8 +200,9 @@ run-clang-tidy-$LLVM_VERSION -clang-tidy-binary clang-tidy-$LLVM_VERSION \
 ### Running `cvc5-node-id-determinism` without CodeQL
 
 Steps 2 to 4 above can be replaced by the three passes of
-[dump mode](#dump-mode). cvc5 still has to be configured and its generated
-sources built, but no CodeQL database is needed.
+[dump mode](#dump-mode). No CodeQL database is needed, and cvc5 does not even
+have to be compiled: the `cvc5-prerequisites` target only builds the generated
+sources and the dependencies that clang-tidy needs to parse cvc5.
 
 ```bash
 export LLVM_VERSION=22
@@ -206,7 +210,7 @@ export CC=clang-$LLVM_VERSION CXX=clang++-$LLVM_VERSION
 TIDY="run-clang-tidy-$LLVM_VERSION -clang-tidy-binary clang-tidy-$LLVM_VERSION \
       -quiet -load deps/cvc5-tidy-checks/Cvc5TidyChecks.so -p build"
 ./configure.sh --auto-download unrestricted --assertions
-make -C build -j$(nproc)
+make -C build -j$(nproc) cvc5-prerequisites
 mkdir -p build/node-id/dump
 
 # 1. Dump the call graph and the candidate sites

@@ -8422,10 +8422,14 @@ Term Solver::declareOracleFun(
   internal::Node fun = d_tm.mkConstHelper(type, symbol);
   // Wrap the terms-to-term function so that it is nodes-to-nodes. Note we
   // make the method return a vector of size one to conform to the interface
-  // at the SolverEngine level.
+  // at the SolverEngine level. The wrapper is owned by the node manager and
+  // may be called by any solver sharing it, so it must not capture this
+  // solver. It holds the node manager weakly, since owning it would create a
+  // reference cycle.
+  std::weak_ptr<internal::NodeManager> wnm = d_tm.d_nm;
   d_slv->declareOracleFun(
-      fun, [&, fn](const std::vector<internal::Node> nodes) {
-        std::vector<Term> terms = Term::nodeVectorToTerms(d_tm.d_nm, nodes);
+      fun, [wnm, fn](const std::vector<internal::Node> nodes) {
+        std::vector<Term> terms = Term::nodeVectorToTerms(wnm.lock(), nodes);
         Term output = fn(terms);
         return Term::termVectorToNodes({output});
       });

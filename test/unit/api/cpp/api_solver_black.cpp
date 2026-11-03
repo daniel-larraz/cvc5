@@ -2531,6 +2531,38 @@ TEST_F(TestApiBlackSolver, declareOracleFunUnsat)
   ASSERT_THROW(slv.checkSat(), CVC5ApiException);
 }
 
+TEST_F(TestApiBlackSolver, declareOracleFunOutlivesSolver)
+{
+  Term f;
+  {
+    Solver slv(d_tm);
+    slv.setOption("oracles", "true");
+    // f is the function implementing (lambda ((x Int)) (+ x 1))
+    f = slv.declareOracleFun(
+        "f", {d_int}, d_int, [this](const std::vector<Term>& input) {
+          if (input[0].isUInt32Value())
+          {
+            return d_tm.mkInteger(input[0].getUInt32Value() + 1);
+          }
+          return d_tm.mkInteger(0);
+        });
+  }
+  // the oracle function is evaluated by sygus in another solver, after the
+  // solver that declared it is gone
+  d_solver->setOption("sygus", "true");
+  d_solver->setOption("oracles", "true");
+  d_solver->setLogic("ALL");
+  Term x = d_tm.mkVar(d_int, "x");
+  Term g = d_solver->synthFun("g", {x}, d_int);
+  Term three = d_tm.mkInteger(3);
+  // (g 3) = (f 3)
+  d_solver->addSygusConstraint(
+      d_tm.mkTerm(Kind::EQUAL,
+                  {d_tm.mkTerm(Kind::APPLY_UF, {g, three}),
+                   d_tm.mkTerm(Kind::APPLY_UF, {f, three})}));
+  ASSERT_TRUE(d_solver->checkSynth().hasSolution());
+}
+
 TEST_F(TestApiBlackSolver, declareOracleFunSat)
 {
   d_solver->setOption("oracles", "true");

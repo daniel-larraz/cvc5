@@ -1,0 +1,69 @@
+diff --git a/include/cvc5/cvc5.h b/include/cvc5/cvc5.h
+index f5bd9038c..e7370c971 100644
+--- a/include/cvc5/cvc5.h
++++ b/include/cvc5/cvc5.h
+@@ -114,6 +114,9 @@ class CVC5_EXPORT CVC5ApiException : public std::exception
+    */
+   virtual void toStream(std::ostream& os) const { os << d_msg; }
+ 
++  /** Destructor. */
++  ~CVC5ApiException() override;
++
+  private:
+   /** The stored error message. */
+   std::string d_msg;
+@@ -145,6 +148,8 @@ class CVC5_EXPORT CVC5ApiRecoverableException : public CVC5ApiException
+       : CVC5ApiException(stream.str())
+   {
+   }
++  /** Destructor. */
++  ~CVC5ApiRecoverableException() override;
+ };
+ 
+ /**
+@@ -171,6 +176,8 @@ class CVC5_EXPORT CVC5ApiUnsupportedException
+       : CVC5ApiRecoverableException(stream.str())
+   {
+   }
++  /** Destructor. */
++  ~CVC5ApiUnsupportedException() override;
+ };
+ 
+ /**
+@@ -196,6 +203,8 @@ class CVC5_EXPORT CVC5ApiOptionException : public CVC5ApiRecoverableException
+       : CVC5ApiRecoverableException(stream.str())
+   {
+   }
++  /** Destructor. */
++  ~CVC5ApiOptionException() override;
+ };
+ 
+ /* -------------------------------------------------------------------------- */
+diff --git a/src/api/cpp/cvc5.cpp b/src/api/cpp/cvc5.cpp
+index 7d29fc38f..50c591c74 100644
+--- a/src/api/cpp/cvc5.cpp
++++ b/src/api/cpp/cvc5.cpp
+@@ -91,6 +91,23 @@
+ 
+ namespace cvc5 {
+ 
++/* -------------------------------------------------------------------------- */
++/* Exceptions                                                                 */
++/* -------------------------------------------------------------------------- */
++
++// The destructors are defined here (and not in the header) so that they are
++// the key functions of the exception classes. The type info of the exceptions
++// is then emitted only in libcvc5, and programs that catch them refer to it
++// there. Otherwise, each program has its own copy, and with link-time
++// optimization, the copy in a program can be made local to it, so that
++// catching an exception thrown by libcvc5 fails on platforms that compare type
++// info by address (e.g., x86-64 macOS).
++
++CVC5ApiException::~CVC5ApiException() = default;
++CVC5ApiRecoverableException::~CVC5ApiRecoverableException() = default;
++CVC5ApiUnsupportedException::~CVC5ApiUnsupportedException() = default;
++CVC5ApiOptionException::~CVC5ApiOptionException() = default;
++
+ /* -------------------------------------------------------------------------- */
+ /* APIStatistics                                                              */
+ /* -------------------------------------------------------------------------- */

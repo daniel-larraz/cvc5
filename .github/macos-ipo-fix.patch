@@ -39,6 +39,20 @@ index f5bd9038c..e7370c971 100644
  };
  
  /* -------------------------------------------------------------------------- */
+diff --git a/include/cvc5/cvc5_parser.h b/include/cvc5/cvc5_parser.h
+index dfcf508ed..211b4af83 100644
+--- a/include/cvc5/cvc5_parser.h
++++ b/include/cvc5/cvc5_parser.h
+@@ -436,7 +436,8 @@ class CVC5_EXPORT ParserEndOfFileException : public ParserException
+                            const std::string& filename,
+                            unsigned long line,
+                            unsigned long column);
+-
++  /** Destructor. */
++  ~ParserEndOfFileException() override;
+ }; /* class ParserEndOfFileException */
+ 
+ }  // namespace parser
 diff --git a/src/api/cpp/cvc5.cpp b/src/api/cpp/cvc5.cpp
 index 7d29fc38f..50c591c74 100644
 --- a/src/api/cpp/cvc5.cpp
@@ -67,3 +81,77 @@ index 7d29fc38f..50c591c74 100644
  /* -------------------------------------------------------------------------- */
  /* APIStatistics                                                              */
  /* -------------------------------------------------------------------------- */
+diff --git a/src/api/cpp/cvc5_parser.cpp b/src/api/cpp/cvc5_parser.cpp
+index a5c2f1e85..30792afba 100644
+--- a/src/api/cpp/cvc5_parser.cpp
++++ b/src/api/cpp/cvc5_parser.cpp
+@@ -479,5 +479,8 @@ ParserEndOfFileException::ParserEndOfFileException(const std::string& msg,
+ {
+ }
+ 
++// Defined here so that it is the key function (see ~CVC5ApiException()).
++ParserEndOfFileException::~ParserEndOfFileException() = default;
++
+ }  // namespace parser
+ }  // namespace cvc5
+diff --git a/src/options/option_exception.cpp b/src/options/option_exception.cpp
+index b82b73079..2457b7dc5 100644
+--- a/src/options/option_exception.cpp
++++ b/src/options/option_exception.cpp
+@@ -16,4 +16,9 @@ namespace cvc5::internal {
+ const std::string OptionException::s_errPrefix = "Error in option parsing: ";
+ const std::string FatalOptionException::s_errPrefix =
+     "Fatal error in option parsing: ";
++
++// Defined here so that they are the key functions of the exceptions (see
++// ~CVC5ApiException() in the API).
++OptionException::~OptionException() = default;
++FatalOptionException::~FatalOptionException() = default;
+ }  // namespace cvc5::internal
+diff --git a/src/options/option_exception.h b/src/options/option_exception.h
+index 89dda8758..97f51a51f 100644
+--- a/src/options/option_exception.h
++++ b/src/options/option_exception.h
+@@ -32,6 +32,7 @@ class CVC5_EXPORT OptionException : public cvc5::internal::Exception
+       : cvc5::internal::Exception(s_errPrefix + s)
+   {
+   }
++  ~OptionException() override;
+ 
+   /**
+    * Get the error message without the prefix that is automatically added for
+@@ -74,6 +75,7 @@ class CVC5_EXPORT FatalOptionException : public cvc5::internal::Exception
+       : cvc5::internal::Exception(s_errPrefix + s)
+   {
+   }
++  ~FatalOptionException() override;
+ 
+   /**
+    * Get the error message without the prefix that is automatically added for
+diff --git a/src/parser/commands.cpp b/src/parser/commands.cpp
+index db93d0579..9b96d2b16 100644
+--- a/src/parser/commands.cpp
++++ b/src/parser/commands.cpp
+@@ -905,6 +905,10 @@ DeclarationDefinitionCommand::DeclarationDefinitionCommand(
+ {
+ }
+ 
++// Defined here so that it is the key function of this abstract class, whose
++// type info is then emitted only in libcvc5parser (see ~CVC5ApiException()).
++DeclarationDefinitionCommand::~DeclarationDefinitionCommand() = default;
++
+ std::string DeclarationDefinitionCommand::getSymbol() const { return d_symbol; }
+ 
+ bool tryBindToTerm(SymManager* sm,
+diff --git a/src/parser/commands.h b/src/parser/commands.h
+index e843f4f1a..d7007c9e6 100644
+--- a/src/parser/commands.h
++++ b/src/parser/commands.h
+@@ -248,6 +248,7 @@ class CVC5_EXPORT DeclarationDefinitionCommand : public Cmd
+ 
+  public:
+   DeclarationDefinitionCommand(const std::string& id);
++  ~DeclarationDefinitionCommand() override;
+ 
+   void invoke(cvc5::Solver* solver, parser::SymManager* sm) override = 0;
+   std::string getSymbol() const;

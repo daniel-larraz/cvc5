@@ -4,8 +4,12 @@ on:
 
 name: macOS IPO diagnostics
 
-# Investigation only: compare macOS x86-64 builds with and without --ipo, and
-# with --ipo plus a candidate fix (.github/macos-ipo-fix.patch).
+# Investigation only: test two candidate fixes for macOS x86-64 builds with
+# --ipo, where type info of classes without a key function is made local to
+# executables, so that catching exceptions and dynamic_cast across libcvc5 /
+# libcvc5parser and the executables fail.
+#  - keyfn: give those classes key functions (.github/macos-ipo-fix.patch)
+#  - export-dynamic: link executables with -Wl,-export_dynamic
 
 jobs:
   diag:
@@ -13,13 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: no-ipo
-            ipo: --no-ipo
-          - name: ipo
-            ipo: --ipo
-          - name: ipo-fix
-            ipo: --ipo
+          - name: ipo-keyfn
             fix: true
+          - name: ipo-export-dynamic
+            extra: -DCMAKE_EXE_LINKER_FLAGS=-Wl,-export_dynamic
     name: macos-15-intel ${{ matrix.name }}
     runs-on: macos-15-intel
     steps:
@@ -36,7 +37,7 @@ jobs:
       id: configure-and-build
       uses: ./.github/actions/configure-and-build
       with:
-        configure-config: unrestricted --auto-download ${{ matrix.ipo }} -DBUILD_GMP=1
+        configure-config: unrestricted --auto-download --ipo -DBUILD_GMP=1 ${{ matrix.extra }}
         macos-target: 10.13
         build-static: false
         strip-bin: strip
@@ -45,36 +46,25 @@ jobs:
       working-directory: ${{ steps.configure-and-build.outputs.shared-build-dir }}
       run: make -j${{ env.num_proc }} build-tests
 
-    - name: Exception type info symbols
+    - name: Type info symbols
       continue-on-error: true
       working-directory: ${{ steps.configure-and-build.outputs.shared-build-dir }}
       run: |
         for f in src/libcvc5.dylib src/parser/libcvc5parser.dylib bin/cvc5 \
                  bin/test/api/cpp/issues/proj-issue373; do
           echo "== nm -m $f"
-          nm -m "$f" | grep -E '__ZT[IS]N4cvc5[0-9]+(CVC5Api|Parser)[A-Za-z]*ExceptionE$' || echo "(none)"
+          nm -m "$f" | grep -E '__ZTIN4cvc5.*(Exception|DeclarationDefinitionCommand)E$' || echo "(none)"
         done
 
-    - name: API tests that catch CVC5ApiException
-      continue-on-error: true
-      working-directory: ${{ steps.configure-and-build.outputs.shared-build-dir }}
-      run: |
-        ctest --output-on-failure -R 'api/cpp/(issues/(issue7000|proj-issue(373|383|386|413|434|436|440|611))|sep_log_api)$'
-
-    - name: Dump round trip
-      continue-on-error: true
-      working-directory: ${{ steps.configure-and-build.outputs.shared-build-dir }}
-      run: |
-        b=$GITHUB_WORKSPACE/test/regress/cli/regress0/arith/arith-eq.smt2
-        set +e
-        ./bin/cvc5 --parse-only -o raw-benchmark --output-lang=smt2 $b > dump.smt2 2> dump.err
-        echo "dump exit=$?"; echo "-- stdout"; cat dump.smt2; echo "-- stderr"; cat dump.err
-        ./bin/cvc5 --parse-only --lang=smt2 dump.smt2; echo "reparse exit=$?"
-
-    - name: regress0 (base and dump testers)
-      continue-on-error: true
+    - name: Tests as in CI (regress0-2, unit, API)
       working-directory: ${{ steps.configure-and-build.outputs.shared-build-dir }}
       env:
         CVC5_REGRESSION_ARGS: --no-early-exit
-        RUN_REGRESSION_ARGS: --tester base --tester dump
-      run: ctest -j${{ env.num_proc }} -L regress0 2>&1 | tail -15
+        RUN_REGRESSION_ARGS: --tester base --tester model --tester synth --tester abduct --tester dump
+      run: |
+        set +e
+        ctest -j${{ env.num_proc }} -LE 'regress[3-4]' > ctest.log 2>&1
+        status=$?
+        grep -E 'tests passed|tests failed' ctest.log
+        sed -n '/The following tests FAILED/,$p' ctest.log | head -100
+        exit $status

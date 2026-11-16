@@ -1,5 +1,7 @@
 on:
   push:
+    # investigation branch: use macos-ipo-diag.yml instead
+    branches-ignore: [investigate-macos-x86-ipo]
   pull_request:
   schedule:
     - cron: '0 5 * * *'

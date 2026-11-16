@@ -1,0 +1,49 @@
+on:
+  push:
+    branches: [investigate-macos-x86-ipo]
+
+name: macOS IPO diagnostics
+
+# Investigation only: compare macOS x86-64 builds with and without --ipo.
+
+jobs:
+  diag:
+    strategy:
+      fail-fast: false
+      matrix:
+        ipo: [--ipo, --no-ipo]
+    name: macos-15-intel ${{ matrix.ipo }}
+    runs-on: macos-15-intel
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+
+    - name: Configure and build
+      run: |
+        ./configure.sh unrestricted --auto-download ${{ matrix.ipo }} -DBUILD_GMP=1
+        cd build
+        make -j$(sysctl -n hw.ncpu) cvc5-bin proj-issue373
+
+    - name: Exported CVC5ApiException symbols
+      working-directory: build
+      run: |
+        for f in lib/libcvc5.dylib bin/test/api/cpp/issues/proj-issue373; do
+          echo "== nm -m $f"
+          nm -m "$f" | grep -E 'Z(TI|TS|TV)N4cvc5.*CVC5Api' || echo "(none)"
+        done
+        echo "== dyld_info -exports lib/libcvc5.dylib"
+        dyld_info -exports lib/libcvc5.dylib | grep -E 'Z(TI|TS|TV)N4cvc5.*CVC5Api' || echo "(none)"
+
+    - name: API test that catches CVC5ApiException
+      working-directory: build
+      run: ./bin/test/api/cpp/issues/proj-issue373; echo "exit=$?"
+
+    - name: Dump round trip
+      working-directory: build
+      run: |
+        b=../test/regress/cli/regress0/arith/arith-eq.smt2
+        ./bin/cvc5 --parse-only -o raw-benchmark --output-lang=smt2 $b > dump.smt2 2> dump.err
+        echo "dump exit=$?"; echo "-- stdout"; cat dump.smt2; echo "-- stderr"; cat dump.err
+        ./bin/cvc5 --parse-only --lang=smt2 dump.smt2; echo "reparse exit=$?"
